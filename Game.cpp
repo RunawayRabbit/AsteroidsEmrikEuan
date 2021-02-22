@@ -1,24 +1,17 @@
 
-#include <iostream>
 #include <SDL.h>
+#include <iostream> // for error messages
 
-void ExitWithSDLError(const std::string errorMessage)
+#include "Game.h"
+
+Game::Game(std::string windowName, int width, int height)
 {
-	std::cout << errorMessage << ": " << SDL_GetError() << std::endl;
-	system("pause");
-}
-
-int main(int argc, char* args[])
-{
-	int screenWidth = 800;
-	int screenHeight = 600;
-
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
 		ExitWithSDLError("Error initializing SDL");
 
 	auto window = SDL_CreateWindow("winD'OH",
 		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-		screenWidth, screenHeight, SDL_WINDOW_SHOWN);
+		width, height, SDL_WINDOW_SHOWN);
 	if (!window)
 		ExitWithSDLError("Error creating window");
 
@@ -35,11 +28,36 @@ int main(int argc, char* args[])
 	auto texture = SDL_CreateTextureFromSurface(renderer, surface);
 	if (!texture)
 		ExitWithSDLError("Error converting Surface to Texture");
+}
 
-	std::cout << "Yea it's all fine.\n";
+bool Game::IsRunning() const
+{
+	return isRunning;
+}
 
-	SDL_Delay(5000);
-	SDL_Quit();
+void Game::ProcessInput()
+{
+	//stub
+}
 
-	return EXIT_SUCCESS;
+void Game::Update()
+{
+	//stub
+}
+
+void Game::Render()
+{
+	//stub
+	SDL_Delay(4);
+}
+
+void Game::Quit()
+{
+	isRunning = false;
+}
+
+void Game::ExitWithSDLError(const std::string errorMessage) const
+{
+	std::cout << errorMessage << ": " << SDL_GetError() << std::endl;
+	system("pause");
 }
