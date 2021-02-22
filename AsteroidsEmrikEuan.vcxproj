@@ -157,7 +157,7 @@
   <ItemGroup>
     <ClCompile Include="FrameTimer.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FrameTimer.h" />
