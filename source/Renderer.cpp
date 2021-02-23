@@ -10,7 +10,7 @@ Renderer::Renderer(std::string windowName, int width, int height)
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
 		ExitWithSDLError("Error initializing SDL");
 
-	window = SDL_CreateWindow("winD'OH",
+	window = SDL_CreateWindow(windowName.c_str(),
 		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 		width, height, SDL_WINDOW_SHOWN);
 	if (!window)

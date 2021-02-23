@@ -4,6 +4,8 @@
 #include <vector>
 #include "Renderer.h"
 #include "Sprite.h"
+#include "Asteroid.h"
+
 
 class Game
 {
@@ -17,20 +19,16 @@ public:
 	bool IsRunning() const;
 
 	void ProcessInput();
-	void Update();
+	void Update(float deltaTime);
 	void Render();
 	void Quit();
 
 private:
-
-	void InitSprites();
-
-	Sprite* ship;
-	Sprite* asteroid;
-
-	std::vector<Vector2> asteroidPositions;
-
 	Renderer renderer;
+	SpriteSet spriteSet;
+
+	std::vector<std::unique_ptr<Entity>> asteroids;
+
 
 	bool isRunning;
 };

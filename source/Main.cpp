@@ -1,6 +1,5 @@
-
-#include <iostream>
 #include <SDL.h>
+#include <iostream>
 
 #include "Game.h"
 #include "FrameTimer.h"
@@ -15,7 +14,8 @@ int main(int argc, char* args[])
 	Game game(windowName, screenWidth, screenHeight);
 
 	// Frame Timer Setup
-	const int updatesPerSecond = 60;
+	constexpr int updatesPerSecond = 60;
+	constexpr float frameTime = 1.0f / updatesPerSecond;
 	FrameTimer timer(updatesPerSecond);
 
 	while (game.IsRunning())
@@ -23,7 +23,7 @@ int main(int argc, char* args[])
 		Timestamp frameBegin = timer.Now();
 
 		game.ProcessInput();
-		game.Update();
+		game.Update(frameTime);
 
 		// lock framerate
 		timer.Sleep(frameBegin);

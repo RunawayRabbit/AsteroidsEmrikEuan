@@ -1,7 +1,22 @@
 #pragma once
 
-struct Vector2
+class Vector2
 {
-	float x;
-	float y;
+public:
+
+	float x, y;
+	Vector2 operator*(const float& b)
+	{
+		return { x * b, y * b };
+	}
+
+	void operator+=(const Vector2& b)
+	{
+		x += b.x;
+		y += b.y;
+	}
+
+	static Vector2 zero() { return { 0.0f, 0.0f }; }
+
 };
+
