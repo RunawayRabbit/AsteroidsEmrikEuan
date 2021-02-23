@@ -2,6 +2,7 @@
 
 #include <cmath> // for fmod
 #include <algorithm> // for clamp
+#include <random> // for mersenne twister
 
 namespace Math
 {
@@ -53,5 +54,13 @@ namespace Math
 		if (delta > 180.0f) delta -= 360.0f;
 
 		return a + delta * std::clamp(t, 0.0f, 1.0f);
+	}
+
+	static float RandomRange(float min, float max)
+	{
+		static std::random_device device;
+		static std::mt19937 generator(device());
+		std::uniform_real<float> range(min, max);
+		return range(generator);
 	}
 }

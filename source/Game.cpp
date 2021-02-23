@@ -14,7 +14,7 @@ Game::Game(std::string windowName, int width, int height) :
 
 	for (size_t i = 0; i < 5; i++)
 	{
-		asteroids.push_back(Entity::Make(Entity::Type::Asteroid, spriteSet, { 10.0f, 10.0f }, 0.0f));
+		asteroids.push_back(Entity::Make(Entity::Type::Asteroid, spriteSet, { 400.0f, 300.0f }, 0.0f));
 	}
 }
 
