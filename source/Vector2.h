@@ -4,7 +4,8 @@ class Vector2
 {
 public:
 
-	float x, y;
+	float x;
+	float y;
 	Vector2 operator*(const float& b)
 	{
 		return { x * b, y * b };

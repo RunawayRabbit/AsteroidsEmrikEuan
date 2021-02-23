@@ -48,6 +48,9 @@
     <ClInclude Include="source\Ship.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\Rect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\FrameTimer.cpp">

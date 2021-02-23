@@ -24,6 +24,7 @@
     <ClInclude Include="source\FrameTimer.h" />
     <ClInclude Include="source\Game.h" />
     <ClInclude Include="source\Math.h" />
+    <ClInclude Include="source\Rect.h" />
     <ClInclude Include="source\Renderer.h" />
     <ClInclude Include="source\Ship.h" />
     <ClInclude Include="source\Sprite.h" />

@@ -4,6 +4,7 @@
 
 #include "SpriteSet.h"
 #include "Vector2.h"
+#include "Rect.h"
 
 
 class Entity
@@ -23,10 +24,15 @@ public:
 	virtual void Update(float deltaTime) = 0;
 
 protected:
-	Entity(Sprite* sprite, Vector2 initialPosition, float initialRotationDeg);
+	Entity(Sprite* sprite, const Rect* gameField, Vector2 initialPosition, float initialRotationDeg);
+
+	void Displace(Vector2 movement);
+
 	Vector2 position;
 	float rotation;
 
 private:
 	Sprite* mySprite;
+	const Rect* gameField;
+	const Rect renderBounds;
 };

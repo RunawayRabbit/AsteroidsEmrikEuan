@@ -28,6 +28,8 @@ private:
 	Renderer renderer;
 	SpriteSet spriteSet;
 
+	const Rect gameField;
+
 	std::unique_ptr<Ship> playerShip;
 	std::vector<std::unique_ptr<Asteroid>> asteroids;
 

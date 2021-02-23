@@ -56,11 +56,20 @@ namespace Math
 		return a + delta * std::clamp(t, 0.0f, 1.0f);
 	}
 
+	// RNG
+
 	static float RandomRange(float min, float max)
 	{
 		static std::random_device device;
 		static std::mt19937 generator(device());
 		std::uniform_real<float> range(min, max);
 		return range(generator);
+	}
+
+	// Modulo
+
+	static float Repeat(float t, float length)
+	{
+		return std::clamp(t - floor(t / length) * length, 0.0f, length);
 	}
 }

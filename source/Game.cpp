@@ -9,15 +9,15 @@
 Game::Game(std::string windowName, int width, int height) :
 	renderer(windowName, width, height),
 	spriteSet(renderer),
-	isRunning(true)
+	isRunning(true),
+	gameField(0, height, 0, width)
 {
-
 	
-	playerShip = std::make_unique<Ship>(Ship(spriteSet, { 100.0f, 200.0f }, 0.0f));
+	playerShip = std::make_unique<Ship>(Ship(spriteSet, &gameField, { 100.0f, 200.0f }, 0.0f));
 
 	for (size_t i = 0; i < 5; i++)
 	{
-		asteroids.push_back(std::make_unique<Asteroid>(Asteroid(spriteSet, { 400.0f, 300.0f }, 0.0f)));
+		asteroids.push_back(std::make_unique<Asteroid>(Asteroid(spriteSet, &gameField, { 400.0f, 300.0f }, 0.0f)));
 	}
 }
 
