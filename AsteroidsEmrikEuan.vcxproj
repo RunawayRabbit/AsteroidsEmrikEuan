@@ -22,11 +22,17 @@
     <ClInclude Include="source\FrameTimer.h" />
     <ClInclude Include="source\Game.h" />
     <ClInclude Include="source\Math.h" />
+    <ClInclude Include="source\Renderer.h" />
+    <ClInclude Include="source\Sprite.h" />
+    <ClInclude Include="source\Vector2.h" />
+    <ClInclude Include="source\Vector2Int.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\FrameTimer.cpp" />
     <ClCompile Include="source\Game.cpp" />
     <ClCompile Include="source\Main.cpp" />
+    <ClCompile Include="source\Renderer.cpp" />
+    <ClCompile Include="source\Sprite.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

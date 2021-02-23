@@ -1,7 +1,9 @@
 #pragma once
 
 #include <string>
-#include <SDL_render.h>
+#include <vector>
+#include "Renderer.h"
+#include "Sprite.h"
 
 class Game
 {
@@ -20,15 +22,15 @@ public:
 	void Quit();
 
 private:
-	// Stuff to move out into the renderer
-	SDL_Texture* LoadSpritemap(const std::string path) const;
-	SDL_Window* window;
-	SDL_Renderer* renderer;
-	SDL_Texture* spritesheet;
 
+	void InitSprites();
 
-	float tempAngle;
+	Sprite* ship;
+	Sprite* asteroid;
+
+	std::vector<Vector2> asteroidPositions;
+
+	Renderer renderer;
+
 	bool isRunning;
-
-	void ExitWithSDLError(const std::string errorMessage) const;
 };
