@@ -6,7 +6,7 @@
 class Asteroid : public Entity
 {
 public:
-	Asteroid(SpriteSet& spriteSet, const Rect* gameField, Vector2 initialPosition, float initialRotationDeg);
+	Asteroid(SpriteAtlas& spriteAtlas, const Rect* gameField, Vector2 initialPosition, float initialRotationDeg);
 	Asteroid() = delete;
 
 	void Update(float deltaTime);

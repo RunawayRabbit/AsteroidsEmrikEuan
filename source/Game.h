@@ -26,7 +26,7 @@ public:
 
 private:
 	Renderer renderer;
-	SpriteSet spriteSet;
+	SpriteAtlas spriteAtlas;
 
 	const Rect gameField;
 

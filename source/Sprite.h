@@ -13,7 +13,11 @@ public:
 	int Width() const { return source.w; };
 	int Height() const { return source.h; };
 
-	void Draw(Vector2 pos, float angle) const;
+	virtual void Draw(Vector2 pos, float angle) const;
+
+
+protected:
+	virtual void Draw(Vector2 pos, float angle, SDL_Rect source) const;
 
 private:
 	const SDL_Rect source;

@@ -6,7 +6,7 @@
 class Ship : public Entity
 {
 public:
-	Ship(SpriteSet& spriteSet, const Rect* gameField, Vector2 initialPosition, float initialRotationDeg);
+	Ship(SpriteAtlas& spriteAtlas, const Rect* gameField, Vector2 initialPosition, float initialRotationDeg);
 	Ship() = delete;
 
 	void Update(float deltaTime);

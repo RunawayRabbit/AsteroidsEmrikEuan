@@ -42,13 +42,16 @@
     <ClInclude Include="source\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\SpriteSet.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="source\Ship.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\Rect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\AnimatedSprite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SpriteAtlas.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -74,10 +77,13 @@
     <ClCompile Include="source\Asteroid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\SpriteSet.cpp">
+    <ClCompile Include="source\Ship.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\Ship.cpp">
+    <ClCompile Include="source\AnimatedSprite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SpriteAtlas.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

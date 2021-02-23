@@ -2,8 +2,8 @@
 #include "Asteroid.h"
 #include "Math.h"
 
-Asteroid::Asteroid(SpriteSet& spriteSet, const Rect* gameField, Vector2 initialPosition, float initialRotationDeg) :
-	Entity(spriteSet.asteroidSprite, gameField, initialPosition, initialRotationDeg)
+Asteroid::Asteroid(SpriteAtlas& spriteAtlas, const Rect* gameField, Vector2 initialPosition, float initialRotationDeg) :
+	Entity(spriteAtlas.asteroidSprite, gameField, initialPosition, initialRotationDeg)
 {
 	float x = Math::RandomRange(-70.0f, 70.0f);
 	float y = Math::RandomRange(-70.0f, 70.0f);

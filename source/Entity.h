@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "SpriteSet.h"
+#include "SpriteAtlas.h"
 #include "Vector2.h"
 #include "Rect.h"
 
