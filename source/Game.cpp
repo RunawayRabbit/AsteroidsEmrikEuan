@@ -12,9 +12,12 @@ Game::Game(std::string windowName, int width, int height) :
 	isRunning(true)
 {
 
+	
+	playerShip = std::make_unique<Ship>(Ship(spriteSet, { 100.0f, 200.0f }, 0.0f));
+
 	for (size_t i = 0; i < 5; i++)
 	{
-		asteroids.push_back(Entity::Make(Entity::Type::Asteroid, spriteSet, { 400.0f, 300.0f }, 0.0f));
+		asteroids.push_back(std::make_unique<Asteroid>(Asteroid(spriteSet, { 400.0f, 300.0f }, 0.0f)));
 	}
 }
 
@@ -35,6 +38,8 @@ void Game::ProcessInput()
 
 void Game::Update(float deltaTime)
 {
+	playerShip->Update(deltaTime);
+
 	for (auto& asteroid : asteroids)
 	{
 		asteroid->Update(deltaTime);
@@ -46,10 +51,7 @@ void Game::Render()
 {
 	renderer.Clear();
 
-	Vector2 shipPosition;
-	shipPosition.x = 100;
-	shipPosition.y = 200;
-	//ship->Draw(shipPosition, 0.0f);
+	playerShip->Draw();
 
 	for (auto& asteroid : asteroids)
 	{

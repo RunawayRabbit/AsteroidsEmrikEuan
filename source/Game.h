@@ -5,6 +5,7 @@
 #include "Renderer.h"
 #include "Sprite.h"
 #include "Asteroid.h"
+#include "Ship.h"
 
 
 class Game
@@ -27,7 +28,8 @@ private:
 	Renderer renderer;
 	SpriteSet spriteSet;
 
-	std::vector<std::unique_ptr<Entity>> asteroids;
+	std::unique_ptr<Ship> playerShip;
+	std::vector<std::unique_ptr<Asteroid>> asteroids;
 
 
 	bool isRunning;

@@ -25,6 +25,7 @@
     <ClInclude Include="source\Game.h" />
     <ClInclude Include="source\Math.h" />
     <ClInclude Include="source\Renderer.h" />
+    <ClInclude Include="source\Ship.h" />
     <ClInclude Include="source\Sprite.h" />
     <ClInclude Include="source\SpriteSet.h" />
     <ClInclude Include="source\Vector2.h" />
@@ -37,6 +38,7 @@
     <ClCompile Include="source\Game.cpp" />
     <ClCompile Include="source\Main.cpp" />
     <ClCompile Include="source\Renderer.cpp" />
+    <ClCompile Include="source\Ship.cpp" />
     <ClCompile Include="source\Sprite.cpp" />
     <ClCompile Include="source\SpriteSet.cpp" />
   </ItemGroup>

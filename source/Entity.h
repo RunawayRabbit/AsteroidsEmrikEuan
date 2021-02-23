@@ -17,7 +17,7 @@ public:
 
 	Entity() = delete;
 
-	static std::unique_ptr<Entity> Make(Entity::Type type, SpriteSet& spriteSet, Vector2 initialPosition, float initialRotationDeg);
+	//static std::unique_ptr<Entity> Make(Entity::Type type, SpriteSet& spriteSet, Vector2 initialPosition, float initialRotationDeg);
 
 	void Draw() const;
 	virtual void Update(float deltaTime) = 0;
