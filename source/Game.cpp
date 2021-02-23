@@ -10,7 +10,7 @@ Game::Game(std::string windowName, int width, int height) :
 	renderer(windowName, width, height),
 	spriteSet(renderer),
 	isRunning(true),
-	gameField(0, height, 0, width)
+	gameField(0.0f, (float)height, 0.0f, (float)width)
 {
 	
 	playerShip = std::make_unique<Ship>(Ship(spriteSet, &gameField, { 100.0f, 200.0f }, 0.0f));

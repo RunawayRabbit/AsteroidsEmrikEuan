@@ -28,11 +28,13 @@ protected:
 
 	void Displace(Vector2 movement);
 
-	Vector2 position;
 	float rotation;
 
 private:
 	Sprite* mySprite;
+
+	Vector2 position; // No direct access for children. Use Displace() instead. (Required to make toroidal scrolling work.)
+
 	const Rect* gameField;
 	const Rect renderBounds;
 };
