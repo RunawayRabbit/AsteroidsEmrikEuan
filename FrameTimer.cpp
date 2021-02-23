@@ -10,7 +10,7 @@
 FrameTimer::FrameTimer(float fps) :
 	prefFrequencySeconds((float)SDL_GetPerformanceFrequency()),
 	fixedDeltaTime(1000.0f / fps),
-	fixedDeltaTimeTicks((uint64_t)(Now().e / fps))
+	fixedDeltaTimeTicks(Now().e / fps)
 {
 	renderTimes = std::vector<float>(renderTimesCount, 0.0f);
 }
@@ -60,7 +60,7 @@ void FrameTimer::Sleep(Timestamp frameBegin) const
 	float frameTime = GetSecondsElapsed(frameBegin);
 	float renderTime = EstimatedRenderTime();
 
-	int32_t sleepTime = (int32_t)floor((int32_t)(fixedDeltaTime - renderTime - frameTime)) - 1;
+	int32_t sleepTime = floor((int32_t)(fixedDeltaTime - renderTime - frameTime)) - 1;
 	
 	
 	if (sleepTime > 1)
