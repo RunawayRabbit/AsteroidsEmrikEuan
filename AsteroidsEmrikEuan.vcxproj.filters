@@ -21,6 +21,9 @@
     <ClInclude Include="source\Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\Math.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\FrameTimer.cpp">

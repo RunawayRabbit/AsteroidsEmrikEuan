@@ -4,12 +4,14 @@
 
 // Move out into Renderer
 #include <SDL_image.h> 
-#include <cmath> // for fmod
+#include "Math.h"
 
 #include "Game.h"
 
 Game::Game(std::string windowName, int width, int height)
 {
+	tempAngle = 0.0f;
+
 	isRunning = true;
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
@@ -84,21 +86,15 @@ void Game::Update()
 	//stub
 }
 
-float AngleDelta(float a, float b)
-{
-	const float TAU{ 6.28318530717958647692 };
-	float delta = fmod((a - b), TAU);
-	float mapped = fmod(delta* 2.0f, TAU) - delta;
-	return mapped;
-}
 
 void Game::Render()
 {
 	// All of this goes out to the renderer.
 	SDL_RenderClear(renderer);
 
-	static float t = 0;
-	t += 2.0f;
+	static float t = 0.0f;
+	t += 0.01f;
+	tempAngle = Math::LerpAngleDegClamped(0.0f, 180.0f, t);
 
 	SDL_Rect asteroidSrc;
 	asteroidSrc.w = 58;
@@ -112,7 +108,7 @@ void Game::Render()
 	asteroidDest.x = 500;
 	asteroidDest.y = 300;
 	SDL_RenderCopyEx(renderer, spritesheet, &asteroidSrc, &asteroidDest,
-		t, NULL, SDL_FLIP_NONE);
+		tempAngle, NULL, SDL_FLIP_NONE);
 
 
 	SDL_Rect shipSrc;
@@ -127,7 +123,7 @@ void Game::Render()
 	shipDest.x = 400;
 	shipDest.y = 300;
 
-	SDL_RenderCopyEx(renderer, spritesheet, &shipSrc, &shipDest, -t/2,
+	SDL_RenderCopyEx(renderer, spritesheet, &shipSrc, &shipDest, -tempAngle /2,
 		NULL, SDL_FLIP_NONE);
 
 	SDL_RenderPresent(renderer);

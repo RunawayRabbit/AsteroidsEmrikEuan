@@ -26,6 +26,8 @@ private:
 	SDL_Renderer* renderer;
 	SDL_Texture* spritesheet;
 
+
+	float tempAngle;
 	bool isRunning;
 
 	void ExitWithSDLError(const std::string errorMessage) const;
