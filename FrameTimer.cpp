@@ -20,9 +20,10 @@ float FrameTimer::GetSecondsElapsed(Timestamp start, Timestamp end = Now()) cons
 	return (float)(end.e - start.e) / prefFrequencySeconds;
 }
 
+// Estimated render time in miliseconds, based on the render times of the last 10 frames.
 float FrameTimer::EstimatedRenderTime() const
 {
-	return (std::accumulate(renderTimes.begin(), renderTimes.end(), 0.0f) / renderTimes.size());
+	return 1000.0f * (std::accumulate(renderTimes.begin(), renderTimes.end(), 0.0f) / renderTimes.size());
 }
 
 void FrameTimer::PrintDebugStats() const
@@ -33,8 +34,12 @@ void FrameTimer::PrintDebugStats() const
 	if(GetSecondsElapsed(lastPrint) > 1.0f)
 	{
 		Timestamp now = Now();
-		float debugDisplayTime = GetSecondsElapsed(lastPrint, now);
-		std::cout << "Average Framerate:" << framesElapsed << ". Average Render Time: " << std::to_string(EstimatedRenderTime()) << "." << std::endl;
+		std::string averageRenderTimePerFrame = 
+			std::to_string(EstimatedRenderTime());
+
+		std::cout << "Average Framerate: " << framesElapsed
+			<< ".   Average Render Time: "
+			<< averageRenderTimePerFrame << " ms.\n";
 		
 		lastPrint = now;
 		framesElapsed = 0;
@@ -56,13 +61,17 @@ void FrameTimer::Sleep(Timestamp frameBegin) const
 	float renderTime = EstimatedRenderTime();
 
 	int32_t sleepTime = floor((int32_t)(fixedDeltaTime - renderTime - frameTime)) - 1;
+	
+	
 	if (sleepTime > 1)
 	{
 		SDL_Delay(sleepTime);
 	}
 
 	//spin for the rest
-	while (GetSecondsElapsed(frameBegin) < fixedDeltaTime - renderTime);
+	float targetFrameTime = (fixedDeltaTime - renderTime) / 1000.0f;
+	float epsilon = 0.0001f; // subtle adjustment to account for this loop's overhead.
+	while (GetSecondsElapsed(frameBegin) < (targetFrameTime - epsilon));
 }
 
 void FrameTimer::UpdateEstimatedRenderTime(Timestamp renderBegin)

@@ -25,6 +25,9 @@ int main(int argc, char* args[])
 		game.ProcessInput();
 		game.Update();
 
+		// lock framerate
+		timer.Sleep(frameBegin);
+
 		Timestamp renderBegin = timer.Now();
 		game.Render();
 		timer.UpdateEstimatedRenderTime(renderBegin);
