@@ -2,10 +2,13 @@
 
 #include <string>
 #include <vector>
+
 #include "Renderer.h"
-#include "Sprite.h"
+#include "SpriteAtlas.h"
 #include "Asteroid.h"
 #include "Ship.h"
+
+#include "InputHandler.h"
 
 
 class Game
@@ -27,6 +30,8 @@ public:
 private:
 	Renderer renderer;
 	SpriteAtlas spriteAtlas;
+
+	InputHandler input;
 
 	const Rect gameField;
 

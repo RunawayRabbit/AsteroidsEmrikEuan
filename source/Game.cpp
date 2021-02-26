@@ -8,11 +8,14 @@
 
 Game::Game(std::string windowName, int width, int height) :
 	renderer(windowName, width, height),
+	input(InputHandler(*this)),
 	spriteAtlas(renderer),
 	isRunning(true),
 	gameField(0.0f, (float)height, 0.0f, (float)width)
-{
-	
+{	
+
+	// Instantiate Game Objects
+
 	playerShip = std::make_unique<Ship>(Ship(spriteAtlas, &gameField, { 100.0f, 200.0f }, 0.0f));
 
 	for (size_t i = 0; i < 5; i++)
@@ -33,11 +36,12 @@ bool Game::IsRunning() const
 
 void Game::ProcessInput()
 {
-	//stub
+	input.ProcessInput();
 }
 
 void Game::Update(float deltaTime)
 {
+	playerShip->ProcessInput(deltaTime, input.GetBuffer());
 	playerShip->Update(deltaTime);
 
 	for (auto& asteroid : asteroids)
@@ -46,18 +50,18 @@ void Game::Update(float deltaTime)
 	}
 }
 
-
 void Game::Render()
 {
 	renderer.Clear();
 	
+	
 	static int frameCount = 0;
 	static int animTest = 0;
 	frameCount++;
-	if (frameCount % 120) animTest++;
+	if ((frameCount % 5) == 0) animTest++;
 
 	spriteAtlas.shipTrailSprite->Draw({ 300, 300 }, 0.0f, animTest % 4);
-
+	
 	playerShip->Draw();
 
 	for (auto& asteroid : asteroids)

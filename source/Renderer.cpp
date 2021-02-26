@@ -3,9 +3,14 @@
 #include <SDL.h>
 #include <SDL_image.h> // PNG imports
 #include <iostream> // for error reporting
+
+#include "Color.h" // for bloom
+
 #include "Renderer.h"
 
-Renderer::Renderer(std::string windowName, int width, int height)
+Renderer::Renderer(std::string windowName, int width, int height) :
+	width(width),
+	height(height)
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
 		ExitWithSDLError("Error initializing SDL");
@@ -22,18 +27,28 @@ Renderer::Renderer(std::string windowName, int width, int height)
 
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
+
+	// Perform ALL Image loading Here!
 	if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
 	{
 		ExitWithSDLError("Error initializing PNG extensions");
 	}
-
 	spritesheet = LoadSpritemap("resources/asteroids-arcade.png");
+
+	IMG_Quit(); // Shut down the image loading stuff, we don't need it anymore.
+
+	// @TODO: How exactly do we use this as a render target?
+	postprocess = SDL_CreateTexture(renderer, SDL_GetWindowPixelFormat(window),
+		SDL_TEXTUREACCESS_STREAMING, width, height);
+	SDL_SetTextureBlendMode(postprocess, SDL_BLENDMODE_ADD);
+
 }
 Renderer::~Renderer()
 {
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_DestroyTexture(spritesheet);
+	SDL_DestroyTexture(postprocess);
 }
 
 SDL_Texture* Renderer::LoadSpritemap(const std::string path) const
@@ -69,6 +84,37 @@ void Renderer::Clear()
 {
 	SDL_RenderClear(renderer);
 }
+
+#if 0
+void Renderer::ApplyBloom()
+{
+	constexpr uint8_t lumiThreshold = 180;
+
+	Color* pixels;
+	int pitch;
+	SDL_LockTexture(postprocess, NULL, (void**)&pixels, &pitch);
+	SDL_RenderReadPixels(renderer, NULL, 0, pixels, pitch);
+
+
+	// Converts image to greyscale based on lumi
+	/* 
+	for (auto i = 0; i < width*height; i++)
+	{
+		Color* pixel = pixels + i;
+		if (pixel->value == 0) continue;
+
+		uint8_t lumi = (uint8_t)((0.299f * pixel->red) + (0.587f * pixel->green) + (0.114f * pixel->blue));
+		lumi = lumi < lumiThreshold ? 0 : lumi;
+
+		pixel->value = lumi;
+	}*/
+		
+	GaussianBlur(pixels, width, height, 10.0f);
+
+	SDL_UnlockTexture(postprocess);
+	SDL_RenderCopy(renderer, postprocess, NULL, NULL);
+}
+#endif
 
 void Renderer::Flip()
 {

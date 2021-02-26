@@ -21,9 +21,15 @@
   <ItemGroup>
     <ClInclude Include="source\AnimatedSprite.h" />
     <ClInclude Include="source\Asteroid.h" />
+    <ClInclude Include="source\Color.h" />
     <ClInclude Include="source\Entity.h" />
     <ClInclude Include="source\FrameTimer.h" />
     <ClInclude Include="source\Game.h" />
+    <ClInclude Include="source\GaussianBlur.h" />
+    <ClInclude Include="source\InputBuffer.h" />
+    <ClInclude Include="source\InputContext.h" />
+    <ClInclude Include="source\InputDefinitions.h" />
+    <ClInclude Include="source\InputHandler.h" />
     <ClInclude Include="source\Math.h" />
     <ClInclude Include="source\Rect.h" />
     <ClInclude Include="source\Renderer.h" />
@@ -37,8 +43,12 @@
     <ClCompile Include="source\AnimatedSprite.cpp" />
     <ClCompile Include="source\Asteroid.cpp" />
     <ClCompile Include="source\Entity.cpp" />
+    <ClCompile Include="source\Experimental.cpp" />
     <ClCompile Include="source\FrameTimer.cpp" />
     <ClCompile Include="source\Game.cpp" />
+    <ClCompile Include="source\GaussianBlur.cpp" />
+    <ClCompile Include="source\InputContext.cpp" />
+    <ClCompile Include="source\InputHandler.cpp" />
     <ClCompile Include="source\Main.cpp" />
     <ClCompile Include="source\Renderer.cpp" />
     <ClCompile Include="source\Ship.cpp" />

@@ -12,6 +12,7 @@ public:
 	~Renderer();
 
 	void Clear();
+	void ApplyBloom();
 	void Flip();
 
 	SDL_Texture* GetSpritesheet() const { return spritesheet; }
@@ -23,4 +24,10 @@ private:
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 	SDL_Texture* spritesheet;
+
+	SDL_Texture* postprocess;
+
+	int width;
+	int height;
+
 };
