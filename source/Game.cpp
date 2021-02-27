@@ -44,6 +44,8 @@ void Game::Update(float deltaTime)
 	playerShip->ProcessInput(deltaTime, input.GetBuffer());
 	playerShip->Update(deltaTime);
 
+
+
 	for (auto& asteroid : asteroids)
 	{
 		asteroid->Update(deltaTime);
@@ -54,14 +56,9 @@ void Game::Render()
 {
 	renderer.Clear();
 	
-	
 	static int frameCount = 0;
 	static int animTest = 0;
-	frameCount++;
-	if ((frameCount % 5) == 0) animTest++;
 
-	spriteAtlas.shipTrailSprite->Draw({ 300, 300 }, 0.0f, animTest % 4);
-	
 	playerShip->Draw();
 
 	for (auto& asteroid : asteroids)

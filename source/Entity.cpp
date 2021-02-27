@@ -27,6 +27,18 @@ void Entity::Displace(Vector2 movement)
 	}
 }
 
+void Entity::PlaceAt(Vector2 movement, float angleDeg)
+{
+	position = movement;
+	rotation = angleDeg;
+	if (!gameField->Contains(position))
+	{
+		// We're outside of the game world, wrap us to the other side!
+		position.x = Math::Repeat(position.x, gameField->right);
+		position.y = Math::Repeat(position.y, gameField->bottom);
+	}
+}
+
 void Entity::Draw() const
 {
 	mySprite->Draw(position, rotation);

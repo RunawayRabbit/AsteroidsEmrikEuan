@@ -14,7 +14,7 @@
 InputHandler::InputHandler(Game& ourGame) :
 	_ourGame(ourGame)
 {
-	AddContext("Default", InputContext(), true);
+	AddContext("Default", InputContext(true), true);
 }
 
 

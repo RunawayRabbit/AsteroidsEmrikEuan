@@ -4,7 +4,7 @@
 
 
 
-Ship::Ship(SpriteAtlas& spriteAtlas, const Rect* gameField, Vector2 initialPosition, float initialRotationDeg) :
+Ship::Ship(const SpriteAtlas& spriteAtlas, const Rect* gameField, Vector2 initialPosition, float initialRotationDeg) :
 	Entity(spriteAtlas.shipSprite, gameField, initialPosition, initialRotationDeg)
 {
 	float x = Math::RandomRange(-10.0f, 10.0f);

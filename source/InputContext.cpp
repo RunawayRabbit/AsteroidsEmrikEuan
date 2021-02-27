@@ -4,20 +4,22 @@
 
 #include "InputContext.h"
 
-InputContext::InputContext()
+InputContext::InputContext(bool fillWithDefaults)
 {
+	//@TODO: Input remapping.
+
 	//DEFAULT INPUTS
-	// @TODO: This defeats the purpose of the nice context system you made.
-	//   Try to get remapping support in before you ship!
-
-	AddToggle(SDLK_w, InputToggle::MoveForward);
-	AddToggle(SDLK_a, InputToggle::RotateLeft);
-	AddToggle(SDLK_d, InputToggle::RotateRight);
+	if(fillWithDefaults)
+	{
+		AddToggle(SDLK_w, InputToggle::MoveForward);
+		AddToggle(SDLK_a, InputToggle::RotateLeft);
+		AddToggle(SDLK_d, InputToggle::RotateRight);
 	
-	AddToggle(SDLK_q, InputToggle::StrafeLeft);
-	AddToggle(SDLK_e, InputToggle::StrafeRight);
+		AddToggle(SDLK_q, InputToggle::StrafeLeft);
+		AddToggle(SDLK_e, InputToggle::StrafeRight);
 
-	AddToggle(SDLK_SPACE, InputToggle::Shoot);
+		AddToggle(SDLK_SPACE, InputToggle::Shoot);
+	}
 }
 
 InputContext::~InputContext()

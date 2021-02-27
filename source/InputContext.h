@@ -9,7 +9,8 @@
 class InputContext
 {
 public:
-	InputContext();
+	InputContext() = delete;
+	InputContext(bool fillWithDefaults);
 	~InputContext();
 
 	InputOneShot ContainsOneShot(const SDL_Keycode key) const;

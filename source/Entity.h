@@ -20,13 +20,22 @@ public:
 
 	//static std::unique_ptr<Entity> Make(Entity::Type type, SpriteSet& spriteSet, Vector2 initialPosition, float initialRotationDeg);
 
-	void Draw() const;
+	virtual void Draw() const;
 	virtual void Update(float deltaTime) = 0;
 
 protected:
 	Entity(Sprite* sprite, const Rect* gameField, Vector2 initialPosition, float initialRotationDeg);
 
 	void Displace(Vector2 movement);
+	void PlaceAt(Vector2 position, float angleDeg);
+	inline Vector2 GetPos() const
+	{
+		return position;
+	}
+	inline float GetAngleDeg() const
+	{
+		return rotation;
+	}
 
 	float rotation;
 
