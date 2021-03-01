@@ -1,9 +1,11 @@
 #pragma once
 
-#include "Entity.h"
-#include "Ship.h"
-#include "SpriteAtlas.h"
-#include "Vector2.h"
+#include "..\ECS\Entity.h"
+#include "..\Math\Vector2.h"
+#include "..\Renderer\SpriteAtlas.h"
+#include "..\Math\Rect.h"
+
+class Ship;
 
 class ShipTrail : public Entity
 {

@@ -1,120 +1,198 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="ECS">
+      <UniqueIdentifier>{48c48a9f-5198-46c1-aaac-701beb0c51ee}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    <Filter Include="ECS\H">
+      <UniqueIdentifier>{83d078ec-ed68-46b3-a2ec-bd7258a1b17d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="ECS\CPP">
+      <UniqueIdentifier>{06f3e431-ac10-46b6-973f-61dc7224053e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{6f99e70a-58e4-46c6-81e9-98b1ac1b2245}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{39462bb5-f3ff-4e27-a9fd-715af43b6161}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer">
+      <UniqueIdentifier>{0674c90e-4143-4bc7-8444-b87f6a3054bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input\H">
+      <UniqueIdentifier>{8796ad06-1d89-41aa-ad06-5d47ffdcaad2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input\CPP">
+      <UniqueIdentifier>{414ec790-c914-4496-a9eb-0ebdedda74de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer\H">
+      <UniqueIdentifier>{bf5e4695-f204-4640-83b3-ae53170dbf7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer\CPP">
+      <UniqueIdentifier>{edfeae25-3d58-4c0d-8589-c0601feb80bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform">
+      <UniqueIdentifier>{c88ad936-f644-4a35-b4b6-115ae4a457be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform\H">
+      <UniqueIdentifier>{fed1168a-6fb7-49fb-a376-9c9eaf7def16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform\CPP">
+      <UniqueIdentifier>{74451656-2813-4211-9aa2-31420e762721}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics">
+      <UniqueIdentifier>{ce0f6f08-52ce-428a-b6b0-216a92d93a2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\CPP">
+      <UniqueIdentifier>{75f03e48-d4f8-415e-ae28-7835e1f32f5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\H">
+      <UniqueIdentifier>{02c5e835-8ee0-41b5-9ecc-4fb1084f0b20}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\FrameTimer.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="source\ECS\Entity.h">
+      <Filter>ECS\H</Filter>
     </ClInclude>
-    <ClInclude Include="source\Game.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="source\ECS\EntityManager.h">
+      <Filter>ECS\H</Filter>
     </ClInclude>
-    <ClInclude Include="source\Math.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="source\ECS\Transform.h">
+      <Filter>ECS\H</Filter>
     </ClInclude>
-    <ClInclude Include="source\Sprite.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="source\Input\InputBuffer.h">
+      <Filter>Input\H</Filter>
     </ClInclude>
-    <ClInclude Include="source\Vector2.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="source\Input\InputContext.h">
+      <Filter>Input\H</Filter>
     </ClInclude>
-    <ClInclude Include="source\Vector2Int.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="source\Input\InputDefinitions.h">
+      <Filter>Input\H</Filter>
     </ClInclude>
-    <ClInclude Include="source\Renderer.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="source\Input\InputHandler.h">
+      <Filter>Input\H</Filter>
     </ClInclude>
-    <ClInclude Include="source\Asteroid.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="source\Math\Math.h">
+      <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="source\Entity.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="source\Math\Rect.h">
+      <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="source\Ship.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="source\Math\Vector2.h">
+      <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="source\Rect.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="source\Math\Vector2Int.h">
+      <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="source\AnimatedSprite.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="source\Platform\FrameTimer.h">
+      <Filter>Platform\H</Filter>
     </ClInclude>
-    <ClInclude Include="source\SpriteAtlas.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="source\Platform\Game.h">
+      <Filter>Platform\H</Filter>
     </ClInclude>
-    <ClInclude Include="source\InputBuffer.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="source\Renderer\AnimatedSprite.h">
+      <Filter>Renderer\H</Filter>
     </ClInclude>
-    <ClInclude Include="source\Color.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="source\Renderer\Color.h">
+      <Filter>Renderer\H</Filter>
     </ClInclude>
-    <ClInclude Include="source\GaussianBlur.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="source\Renderer\GaussianBlur.h">
+      <Filter>Renderer\H</Filter>
     </ClInclude>
-    <ClInclude Include="source\InputContext.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="source\Renderer\Renderer.h">
+      <Filter>Renderer\H</Filter>
     </ClInclude>
-    <ClInclude Include="source\InputDefinitions.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="source\Renderer\Sprite.h">
+      <Filter>Renderer\H</Filter>
     </ClInclude>
-    <ClInclude Include="source\InputHandler.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="source\Renderer\SpriteAtlas.h">
+      <Filter>Renderer\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Math\Mat3x3.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ECS\TransformManager.h">
+      <Filter>ECS\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Renderer\RenderQueue.h">
+      <Filter>Renderer\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Physics\Physics.h">
+      <Filter>Physics\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Physics\MoveList.h">
+      <Filter>Physics\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ECS\ColliderManager.h">
+      <Filter>ECS\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ECS\Collider.h">
+      <Filter>ECS\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Physics\ResolvedCollisions.h">
+      <Filter>Physics\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ECS\AnimatedSpriteManager.h">
+      <Filter>ECS\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ECS\SpriteManager.h">
+      <Filter>ECS\H</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\FrameTimer.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="source\Input\InputContext.cpp">
+      <Filter>Input\CPP</Filter>
     </ClCompile>
-    <ClCompile Include="source\Game.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="source\Input\InputHandler.cpp">
+      <Filter>Input\CPP</Filter>
     </ClCompile>
-    <ClCompile Include="source\Main.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="source\Platform\FrameTimer.cpp">
+      <Filter>Platform\CPP</Filter>
     </ClCompile>
-    <ClCompile Include="source\Sprite.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="source\Platform\Game.cpp">
+      <Filter>Platform\CPP</Filter>
     </ClCompile>
-    <ClCompile Include="source\Renderer.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="source\Platform\Main.cpp">
+      <Filter>Platform\CPP</Filter>
     </ClCompile>
-    <ClCompile Include="source\Entity.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="source\Renderer\AnimatedSprite.cpp">
+      <Filter>Renderer\CPP</Filter>
     </ClCompile>
-    <ClCompile Include="source\Asteroid.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="source\Renderer\GaussianBlur.cpp">
+      <Filter>Renderer\CPP</Filter>
     </ClCompile>
-    <ClCompile Include="source\Ship.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="source\Renderer\Renderer.cpp">
+      <Filter>Renderer\CPP</Filter>
     </ClCompile>
-    <ClCompile Include="source\AnimatedSprite.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="source\Renderer\Sprite.cpp">
+      <Filter>Renderer\CPP</Filter>
     </ClCompile>
-    <ClCompile Include="source\SpriteAtlas.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="source\Renderer\SpriteAtlas.cpp">
+      <Filter>Renderer\CPP</Filter>
     </ClCompile>
-    <ClCompile Include="source\Experimental.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="source\ECS\EntityManager.cpp">
+      <Filter>ECS\CPP</Filter>
     </ClCompile>
-    <ClCompile Include="source\GaussianBlur.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="source\ECS\Transform.cpp">
+      <Filter>ECS\CPP</Filter>
     </ClCompile>
-    <ClCompile Include="source\InputContext.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="source\ECS\TransformManager.cpp">
+      <Filter>ECS\CPP</Filter>
     </ClCompile>
-    <ClCompile Include="source\InputHandler.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="source\Renderer\RenderQueue.cpp">
+      <Filter>Renderer\CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Physics\Physics.cpp">
+      <Filter>Physics\CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Physics\MoveList.cpp">
+      <Filter>Physics\CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ECS\ColliderManager.cpp">
+      <Filter>ECS\CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ECS\AnimatedSpriteManager.cpp">
+      <Filter>ECS\CPP</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

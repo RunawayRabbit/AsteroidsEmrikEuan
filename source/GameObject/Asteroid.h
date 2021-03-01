@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Entity.h"
-#include "Vector2.h"
+#include "..\ECS\Entity.h"
+#include "..\Math\Vector2.h"
+#include "..\Math\Rect.h"
 
 class Asteroid : public Entity
 {

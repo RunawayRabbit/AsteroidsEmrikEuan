@@ -1,15 +1,10 @@
-
-
 #include <SDL_events.h>
-
-// Used to catch out-of-range from std::unordered_map.
-#include <stdexcept> 
+#include <iostream>
 
 #include "InputHandler.h"
 #include "InputContext.h"
-#include "Game.h"
 
-#include <iostream>
+#include "..\Platform\Game.h"
 
 InputHandler::InputHandler(Game& ourGame) :
 	_ourGame(ourGame)

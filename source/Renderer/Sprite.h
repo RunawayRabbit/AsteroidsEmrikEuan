@@ -2,7 +2,7 @@
 
 #include <SDL_render.h>
 
-#include "Vector2.h"
+#include "../Math/Vector2.h"
 #include "Renderer.h"
 
 class Sprite

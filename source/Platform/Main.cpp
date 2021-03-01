@@ -4,6 +4,7 @@
 #include "Game.h"
 #include "FrameTimer.h"
 
+#include "..\Renderer\RenderQueue.h"
 
 int main(int argc, char* args[])
 {

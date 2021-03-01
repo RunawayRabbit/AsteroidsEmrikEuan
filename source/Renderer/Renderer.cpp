@@ -80,10 +80,23 @@ void Renderer::ExitWithSDLError(const std::string errorMessage) const
 	system("pause");
 }
 
-void Renderer::Clear()
+void Renderer::Render(const std::vector<RenderQueue::Element>& renderQueue)
 {
 	SDL_RenderClear(renderer);
+
+	for (auto& el : renderQueue)
+	{
+		SDL_RendererFlip flip = SDL_FLIP_NONE; // not yet supported
+		SDL_Point* pivot = nullptr; // not yet supported
+		SDL_RenderCopyEx(renderer, el.tex, &el.srcRect, &el.dstRect, el.angle, pivot, flip);
+	}
+
+	SDL_RenderPresent(renderer);
 }
+
+
+
+
 
 #if 0
 void Renderer::ApplyBloom()
@@ -116,7 +129,3 @@ void Renderer::ApplyBloom()
 }
 #endif
 
-void Renderer::Flip()
-{
-	SDL_RenderPresent(renderer);
-}

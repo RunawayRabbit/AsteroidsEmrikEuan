@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Entity.h"
-#include "Vector2.h"
+#include "..\ECS\Entity.h"
+#include "..\Math\Vector2.h"
 
-#include "InputBuffer.h"
+#include "..\Input\InputBuffer.h"
 
 class Ship : public Entity
 {
