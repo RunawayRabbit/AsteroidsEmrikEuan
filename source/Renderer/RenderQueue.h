@@ -30,7 +30,7 @@ public:
 		COUNT
 	};
 
-	void Enqueue(SDL_Texture* texture, const SDL_Rect& sourceRect, const SDL_Rect& targetRect, RenderQueue::Layer layer);
+	void Enqueue(SDL_Texture* texture, const SDL_Rect& sourceRect, const SDL_Rect& targetRect, const float rotation, const RenderQueue::Layer layer);
 
 	const std::vector<RenderQueue::Element>& GetRenderQueue() const;
 	void Clear();

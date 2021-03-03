@@ -9,7 +9,7 @@ RenderQueue::RenderQueue() :
 	renderQueue.reserve(64); // arbitrary, but a decent starting size for total number of rendered sprites?)
 }
 
-void RenderQueue::Enqueue(SDL_Texture* texture, const SDL_Rect& sourceRect, const SDL_Rect& targetRect, RenderQueue::Layer layer)
+void RenderQueue::Enqueue(SDL_Texture* texture, const SDL_Rect& sourceRect, const SDL_Rect& targetRect, const float rotation, const RenderQueue::Layer layer)
 {
 	//@TODO: Is it more efficient to just store the layer in Element and sort the vector
 	// when someone requests the renderQueue? Depends on how the list ends up being used
@@ -19,6 +19,7 @@ void RenderQueue::Enqueue(SDL_Texture* texture, const SDL_Rect& sourceRect, cons
 	el.tex = texture;
 	el.srcRect = sourceRect;
 	el.dstRect = targetRect;
+	el.angle = rotation;
 
 	renderQueue.push_back(el);
 

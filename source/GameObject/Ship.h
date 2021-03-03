@@ -8,7 +8,7 @@
 class Ship : public Entity
 {
 public:
-	Ship(const SpriteAtlas& spriteAtlas, const Rect* gameField, Vector2 initialPosition, float initialRotationDeg);
+	Ship(const SpriteAtlas& spriteAtlas, const AABB* gameField, Vector2 initialPosition, float initialRotationDeg);
 	Ship() = delete;
 
 	void ProcessInput(float deltaTime, const InputBuffer& inputBuffer);

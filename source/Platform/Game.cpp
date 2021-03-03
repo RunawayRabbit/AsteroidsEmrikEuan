@@ -2,36 +2,59 @@
 #include <SDL.h>
 #include <iostream> // for error messages
 
-
 #include "..\ECS\Entity.h"
 #include "..\ECS\Transform.h"
+
 #include "..\Physics\Physics.h"
 
 #include "Game.h"
+
+
+static Entity GLOBALtestEntity;
 
 
 
 Game::Game(std::string windowName, int width, int height) :
 	renderer(windowName, width, height),
 	input(InputHandler(*this)),
-	spriteAtlas(renderer),
-	isRunning(true),
 	gameField(0.0f, (float)height, 0.0f, (float)width),
-	xforms(512), //intial capacity. Can resize dynamically.
+	xforms(128), //intial capacity. Can resize dynamically.
+	sprites(renderer, xforms, AABB(0, height, 0, width), 128),
 	colliders(),
-	physics(colliders)
+	physics(colliders),
+	GCStep(0),
+	isRunning(true)
 {
-
-
-
-	// Instantiate Game Objects
-	/*
-	playerShip = std::make_unique<Ship>(Ship(spriteAtlas, &gameField, { 100.0f, 200.0f }, 0.0f));
-
-	for (size_t i = 0; i < 5; i++)
+#if 0
+	int testCountX = 14;
+	int testCountY = 11;
+	for (size_t x = 0; x <= testCountX; x++)
 	{
-		asteroids.push_back(std::make_unique<Asteroid>(Asteroid(spriteAtlas, &gameField, { 400.0f, 300.0f }, 0.0f)));
-	}*/
+		float xPos = (width / testCountX) * x;
+		for (size_t y = 0; y <= testCountY; y++)
+		{
+			auto testEntity = entities.Create();
+
+			Transform testTransform;
+			testTransform.pos.x = xPos;
+			testTransform.pos.y = (height / testCountY) * y;
+			testTransform.rot = 0;
+			xforms.Add(testEntity, testTransform);
+
+			sprites.Create(testEntity, SpriteID::ASTEROID, RenderQueue::Layer::ASTEROID);			
+		}
+	}
+#endif
+
+	GLOBALtestEntity = entities.Create();
+
+	Transform testTransform;
+	testTransform.pos.x = 0;
+	testTransform.pos.y = 0;
+	testTransform.rot = 0;
+	xforms.Add(GLOBALtestEntity, testTransform);
+	sprites.Create(GLOBALtestEntity, SpriteID::ASTEROID, RenderQueue::Layer::UI);
+
 }
 
 Game::~Game()
@@ -51,6 +74,9 @@ void Game::ProcessInput()
 
 void Game::Update(float deltaTime)
 {
+	// Animate the animated sprites
+	sprites.Animate(deltaTime);
+
 	/* FREEWRITE ON UPDATE
 	
 	We start by setting up something called a "MoveList". This is going to be a list of everything
@@ -72,6 +98,17 @@ void Game::Update(float deltaTime)
 	MoveList moveList;
 	moveList.Clear();
 
+	/// GAMEPLAY CODE GOES HERE.
+
+	auto inputBuffer = input.GetBuffer();
+
+	Transform transform;
+	transform.pos = Vector2{ (float)inputBuffer.mouseX, (float)inputBuffer.mouseY };
+
+	transform.rot = 0;
+	xforms.Set(GLOBALtestEntity, transform);
+
+
 	/*
 
 	Once MoveList has been created/cleared/whatever, we do our individual updates on gameplay-level
@@ -86,7 +123,7 @@ void Game::Update(float deltaTime)
 	
 	*/
 
-	auto previousFrameCollisions = physics.CollisionList();
+	auto previousFrameCollisions = physics.DirtyList();
 
 	/*
 	// Pass moveList in by reference so we can call Enqueue.
@@ -98,16 +135,14 @@ void Game::Update(float deltaTime)
 	}
 
 	*/
-	animSprites.Update(deltaTime);
-
-
-
 
 
 	physics.Simulate(moveList, deltaTime);
 	
 	// @TODO: We refresh the collision list here. We can cache it for next frame.
-	xforms.Update(physics.CollisionList());
+	//std::vector<Entity> dirtyList = xforms.Update(physics.DirtyList());
+
+	sprites.Update();
 
 	/*
 
@@ -120,6 +155,9 @@ void Game::Update(float deltaTime)
 	
 	*/
 
+	// GC
+
+	GarbageCollection();
 }
 
 void Game::Render()
@@ -142,7 +180,7 @@ void Game::Render()
 
 	*/
 
-	// Render all static backgrounds
+	// @TODO: Render all static backgrounds
 	//renderQueue.Enqueue()
 
 	sprites.Render(renderQueue);
@@ -156,4 +194,24 @@ void Game::Render()
 void Game::Quit()
 {
 	isRunning = false;
+}
+
+void Game::GarbageCollection()
+{
+	// @TODO: This can be better.
+
+	// Kind of a funky way of doing GC, will likely clean this up later.
+	// Each component that does GC takes turns, one per frame.
+
+	switch (++GCStep)
+	{
+	case 1:
+		xforms.GarbageCollect(entities);
+		break;
+	case 2:
+		sprites.GarbageCollect(entities);
+		break;
+	default:
+		GCStep = 0;
+	}
 }

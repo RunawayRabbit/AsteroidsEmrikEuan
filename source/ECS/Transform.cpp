@@ -1,6 +1,6 @@
 
 #include "Transform.h"
-
+/*
 void Transform::SetScale(float scale)
 {
 	//upVectorWithScale = upVectorWithScale.Normalized() * scale;
@@ -19,4 +19,4 @@ void Transform::Rotate(float radians)
 void Transform::SetRotation(float radians)
 {
 	//upVectorWithScale = V2::FromAngle(radians);
-}
+}*/

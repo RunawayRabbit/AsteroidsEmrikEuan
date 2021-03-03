@@ -6,7 +6,7 @@
 #include "Entity.h"
 #include "EntityManager.h"
 
-#include "..\Physics\ResolvedCollisions.h"
+#include "..\Physics\Move.h"
 
 class TransformManager
 {
@@ -20,7 +20,8 @@ public:
 	void Remove(const Entity entity);
 	void GarbageCollect(const EntityManager& entityManager);
 
-	void Update(const std::vector<ResolvedCollisions>);
+	void Update(const std::vector<Move>);
+	const std::vector<Entity> GetDirtyList() const;
 
 private:
 	size_t _size;
@@ -33,4 +34,6 @@ private:
 
 	void Allocate(int newCapacity);
 	bool Lookup(const Entity entity, size_t* index) const;
+
+	std::vector<Entity> dirtyList;
 };

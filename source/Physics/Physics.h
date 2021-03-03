@@ -5,7 +5,7 @@
 #include "..\ECS\ColliderManager.h"
 
 #include "MoveList.h"
-#include "ResolvedCollisions.h"
+#include "Move.h"
 
 class Physics
 {
@@ -13,7 +13,7 @@ public:
 	Physics(const ColliderManager& colliderManager);
 
 	void Simulate(MoveList& moveList, const float deltaTime);
-	const std::vector<ResolvedCollisions> CollisionList() const;
+	const std::vector<Move> DirtyList() const;
 
 private:
 	struct SweptCollider
@@ -26,10 +26,10 @@ private:
 	void ResetForNextFrame();
 	void SweepColliders(const MoveList& moveList, const float deltaTime);
 	void DetectCollisions();
-	void ResolveCollisions(MoveList& moveList);
+	void ResolveMoves();
 
 	const ColliderManager& colliderManager;
 
 	std::vector<SweptCollider> sweptColliders;
-	std::vector<ResolvedCollisions> collisions;
+	std::vector<Move> finalizedMoves;
 };

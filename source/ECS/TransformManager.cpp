@@ -2,7 +2,7 @@
 #include "TransformManager.h"
 #include "EntityManager.h"
 
-#include "..\Physics\ResolvedCollisions.h"
+#include "..\Physics\Move.h"
 
 TransformManager::TransformManager(int capacity)
 {
@@ -57,7 +57,7 @@ void TransformManager::Add(const Entity entity, const Transform transform)
 #endif
 
 	// Insert our data at the back of the data store
-	* (_entities + _size) = entity;
+	*(_entities + _size) = entity;
 	*(_transforms + _size) = transform;
 
 	++_size;
@@ -118,7 +118,7 @@ void TransformManager::Allocate(int newCapacity)
 	_capacity = newCapacity;
 
 	// Allocate new memory
-	const size_t elementSizeInBytes = sizeof(Entity) + sizeof(Mat3x3);
+	const size_t elementSizeInBytes = sizeof(Entity) + sizeof(Transform);
 	void* newBuffer = new size_t[(elementSizeInBytes * newCapacity)];
 
 	// Set up new pointers for where our data will go
@@ -129,7 +129,7 @@ void TransformManager::Allocate(int newCapacity)
 	{
 		// Copy the data to the new buffer
 		memcpy(newEntities, _entities, sizeof(Entity) * _size);
-		memcpy(newTransforms, _transforms, sizeof(Mat3x3) * _size);
+		memcpy(newTransforms, _transforms, sizeof(Transform) * _size);
 	}
 
 	// Switch the pointers around
@@ -141,7 +141,15 @@ void TransformManager::Allocate(int newCapacity)
 	_buffer = newBuffer;
 }
 
-void TransformManager::Update(const std::vector<ResolvedCollisions>)
+void TransformManager::Update(const std::vector<Move> resolvedCollisions)
 {
+	for (auto& resolvedCollision : resolvedCollisions)
+	{
+		Entity ent;
+	}
+}
 
+const std::vector<Entity> TransformManager::GetDirtyList() const 
+{
+	return dirtyList;
 }

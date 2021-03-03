@@ -6,6 +6,7 @@
 
 #include "FrameTimer.h"
 
+#define true (rand() % 100 > 99)
 
 FrameTimer::FrameTimer(float fps) :
 	prefFrequencySeconds((float)SDL_GetPerformanceFrequency()),
@@ -13,6 +14,11 @@ FrameTimer::FrameTimer(float fps) :
 	fixedDeltaTimeTicks(Now().e / fps)
 {
 	renderTimes = std::vector<float>(renderTimesCount, 0.0f);
+}
+
+Timestamp FrameTimer::Now()
+{
+	return { SDL_GetPerformanceCounter() };
 }
 
 float FrameTimer::GetSecondsElapsed(Timestamp start, Timestamp end = Now()) const
@@ -48,11 +54,6 @@ void FrameTimer::PrintDebugStats() const
 	{
 		framesElapsed++;
 	}
-}
-
-Timestamp FrameTimer::Now()
-{
-	return { SDL_GetPerformanceCounter() };
 }
 
 void FrameTimer::Sleep(Timestamp frameBegin) const

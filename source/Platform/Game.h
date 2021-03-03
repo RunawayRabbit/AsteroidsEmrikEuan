@@ -4,7 +4,6 @@
 #include <vector>
 
 #include "../Renderer/Renderer.h"
-#include "../Renderer/SpriteAtlas.h"
 #include "../Renderer/RenderQueue.h"
 
 #include "../ECS/EntityManager.h"
@@ -20,7 +19,7 @@
 
 #include "../Input/InputHandler.h"
 
-#include "../Math/Rect.h"
+#include "../Math/AABB.h"
 
 
 class Game
@@ -39,10 +38,11 @@ public:
 	void Render();
 	void Quit();
 
+	void GarbageCollection();
+
 private:
 	Renderer renderer;
 	RenderQueue renderQueue;
-	SpriteAtlas spriteAtlas; // @TODO: Move this to the renderer?
 
 	InputHandler input;
 
@@ -50,17 +50,15 @@ private:
 	EntityManager entities;
 	TransformManager xforms;
 	ColliderManager colliders;
-
-	// @TODO: Is this ECS business, Renderer business or an entirely new thing?
-	AnimatedSpriteManager animSprites;
 	SpriteManager sprites;
 
 	Physics physics;
-	const Rect gameField;
+	const AABB gameField;
 
 	//std::unique_ptr<Ship> playerShip;
 	//std::vector<std::unique_ptr<Asteroid>> asteroids;
 
+	int GCStep;
 
 	bool isRunning;
 };

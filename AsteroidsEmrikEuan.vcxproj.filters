@@ -49,6 +49,12 @@
     <Filter Include="Physics\H">
       <UniqueIdentifier>{02c5e835-8ee0-41b5-9ecc-4fb1084f0b20}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Math\CPP">
+      <UniqueIdentifier>{0aebb1de-58b5-4af6-9dfc-3afa63cc9a89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math\H">
+      <UniqueIdentifier>{cbb48a0f-bf9a-4d7f-a34d-8f303765a48b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\ECS\Entity.h">
@@ -72,26 +78,11 @@
     <ClInclude Include="source\Input\InputHandler.h">
       <Filter>Input\H</Filter>
     </ClInclude>
-    <ClInclude Include="source\Math\Math.h">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Math\Rect.h">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Math\Vector2.h">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Math\Vector2Int.h">
-      <Filter>Math</Filter>
-    </ClInclude>
     <ClInclude Include="source\Platform\FrameTimer.h">
       <Filter>Platform\H</Filter>
     </ClInclude>
     <ClInclude Include="source\Platform\Game.h">
       <Filter>Platform\H</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Renderer\AnimatedSprite.h">
-      <Filter>Renderer\H</Filter>
     </ClInclude>
     <ClInclude Include="source\Renderer\Color.h">
       <Filter>Renderer\H</Filter>
@@ -102,14 +93,8 @@
     <ClInclude Include="source\Renderer\Renderer.h">
       <Filter>Renderer\H</Filter>
     </ClInclude>
-    <ClInclude Include="source\Renderer\Sprite.h">
-      <Filter>Renderer\H</Filter>
-    </ClInclude>
     <ClInclude Include="source\Renderer\SpriteAtlas.h">
       <Filter>Renderer\H</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Math\Mat3x3.h">
-      <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="source\ECS\TransformManager.h">
       <Filter>ECS\H</Filter>
@@ -129,14 +114,41 @@
     <ClInclude Include="source\ECS\Collider.h">
       <Filter>ECS\H</Filter>
     </ClInclude>
-    <ClInclude Include="source\Physics\ResolvedCollisions.h">
-      <Filter>Physics\H</Filter>
-    </ClInclude>
     <ClInclude Include="source\ECS\AnimatedSpriteManager.h">
       <Filter>ECS\H</Filter>
     </ClInclude>
     <ClInclude Include="source\ECS\SpriteManager.h">
       <Filter>ECS\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ECS\Sprite.h">
+      <Filter>ECS\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Physics\Move.h">
+      <Filter>Physics\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ECS\SpriteID.h">
+      <Filter>ECS\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Math\Vector2Int.h">
+      <Filter>Math\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Math\Mat3x3.h">
+      <Filter>Math\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Math\Math.h">
+      <Filter>Math\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Math\AABB.h">
+      <Filter>Math\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Math\OBB.h">
+      <Filter>Math\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Math\Sphere.h">
+      <Filter>Math\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Math\Vector2.h">
+      <Filter>Math\H</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -155,16 +167,10 @@
     <ClCompile Include="source\Platform\Main.cpp">
       <Filter>Platform\CPP</Filter>
     </ClCompile>
-    <ClCompile Include="source\Renderer\AnimatedSprite.cpp">
-      <Filter>Renderer\CPP</Filter>
-    </ClCompile>
     <ClCompile Include="source\Renderer\GaussianBlur.cpp">
       <Filter>Renderer\CPP</Filter>
     </ClCompile>
     <ClCompile Include="source\Renderer\Renderer.cpp">
-      <Filter>Renderer\CPP</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Renderer\Sprite.cpp">
       <Filter>Renderer\CPP</Filter>
     </ClCompile>
     <ClCompile Include="source\Renderer\SpriteAtlas.cpp">
@@ -193,6 +199,15 @@
     </ClCompile>
     <ClCompile Include="source\ECS\AnimatedSpriteManager.cpp">
       <Filter>ECS\CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ECS\SpriteManager.cpp">
+      <Filter>ECS\CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Math\AABB.cpp">
+      <Filter>Math\CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Math\OBB.cpp">
+      <Filter>Math\CPP</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

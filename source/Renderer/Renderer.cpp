@@ -1,10 +1,7 @@
 #pragma once
 
 #include <SDL.h>
-#include <SDL_image.h> // PNG imports
 #include <iostream> // for error reporting
-
-#include "Color.h" // for bloom
 
 #include "Renderer.h"
 
@@ -27,52 +24,18 @@ Renderer::Renderer(std::string windowName, int width, int height) :
 
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
-
-	// Perform ALL Image loading Here!
-	if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
-	{
-		ExitWithSDLError("Error initializing PNG extensions");
-	}
-	spritesheet = LoadSpritemap("resources/asteroids-arcade.png");
-
-	IMG_Quit(); // Shut down the image loading stuff, we don't need it anymore.
-
 	// @TODO: How exactly do we use this as a render target?
+	/*
 	postprocess = SDL_CreateTexture(renderer, SDL_GetWindowPixelFormat(window),
 		SDL_TEXTUREACCESS_STREAMING, width, height);
-	SDL_SetTextureBlendMode(postprocess, SDL_BLENDMODE_ADD);
+	SDL_SetTextureBlendMode(postprocess, SDL_BLENDMODE_ADD); */
 
 }
 Renderer::~Renderer()
 {
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
-	SDL_DestroyTexture(spritesheet);
-	SDL_DestroyTexture(postprocess);
 }
-
-SDL_Texture* Renderer::LoadSpritemap(const std::string path) const
-{
-	SDL_Surface* surf = IMG_Load(path.c_str());
-
-	if (!surf)
-	{
-		ExitWithSDLError("Failed to load " + path + ".\n");
-	}
-
-	SDL_Texture* tex = SDL_CreateTextureFromSurface(renderer, surf);
-	if (!tex)
-	{
-		SDL_FreeSurface(surf);
-		SDL_DestroyTexture(tex);
-		ExitWithSDLError("Failed to convert " + path + " to a texture.\n");
-	}
-
-	SDL_FreeSurface(surf);
-
-	return tex;
-}
-
 
 void Renderer::ExitWithSDLError(const std::string errorMessage) const
 {

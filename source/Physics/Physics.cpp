@@ -8,11 +8,6 @@ Physics::Physics(const ColliderManager& colliderManager) :
 
 }
 
-void Physics::ResetForNextFrame()
-{
-
-}
-
 void Physics::Simulate(MoveList &moveList, const float deltaTime)
 {
 	// At this point we initialize a "ResolvedCollisions" list. We'll get to that.
@@ -44,8 +39,13 @@ void Physics::Simulate(MoveList &moveList, const float deltaTime)
 		DetectCollisions();
 
 		// Resolve all detected collisions, generate a revised moveList.
-		ResolveCollisions(moveList);
+		ResolveMoves();
 	}
+}
+
+void Physics::ResetForNextFrame()
+{
+
 }
 
 void Physics::SweepColliders(const MoveList& moveList, const float deltaTime)
@@ -55,15 +55,18 @@ void Physics::SweepColliders(const MoveList& moveList, const float deltaTime)
 
 void Physics::DetectCollisions()
 {
+	// First, test against resolved move list
+
+	// Then, test against against the live colliders
 	const std::vector<Collider> colliders = colliderManager.GetColliders();
 }
 
-void Physics::ResolveCollisions(MoveList& moveList)
+void Physics::ResolveMoves()
 {
 
 }
 
-const std::vector<ResolvedCollisions> Physics::CollisionList() const
+const std::vector<Move> Physics::DirtyList() const
 {
-	return collisions;
+	return finalizedMoves;
 }

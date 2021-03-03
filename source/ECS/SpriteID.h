@@ -1,0 +1,18 @@
+#pragma once
+
+enum class SpriteID
+{
+	NONE = 0,
+
+	// ANIMATED
+	SHIP_TRAIL,
+	EXPLOSION = SHIP_TRAIL + 4,
+
+	_END_ANIMATED = EXPLOSION + 4,
+	// STATIC
+	SHIP,
+	ASTEROID,
+	SHITTY_LOGO,
+
+	COUNT
+};

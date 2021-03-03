@@ -4,6 +4,13 @@
 #include <algorithm> // for clamp
 #include <random> // for mersenne twister
 
+#include "Vector2.h"
+
+#include "AABB.h"
+#include "OBB.h"
+#include "Sphere.h"
+
+
 namespace Math
 {
 	static constexpr float TAU = 6.28318530717958647692f;
@@ -72,4 +79,13 @@ namespace Math
 	{
 		return std::clamp(t - floor(t / length) * length, 0.0f, length);
 	}
+
+
+	// Primitive overlap tests
+
+	static bool AreOverlapping(const Sphere& sphere, const OBB& box)
+	{
+
+	}
+
 }

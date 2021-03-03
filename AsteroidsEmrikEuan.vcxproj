@@ -24,6 +24,8 @@
     <ClInclude Include="source\ECS\ColliderManager.h" />
     <ClInclude Include="source\ECS\Entity.h" />
     <ClInclude Include="source\ECS\EntityManager.h" />
+    <ClInclude Include="source\ECS\Sprite.h" />
+    <ClInclude Include="source\ECS\SpriteID.h" />
     <ClInclude Include="source\ECS\SpriteManager.h" />
     <ClInclude Include="source\ECS\Transform.h" />
     <ClInclude Include="source\ECS\TransformManager.h" />
@@ -33,40 +35,41 @@
     <ClInclude Include="source\Input\InputHandler.h" />
     <ClInclude Include="source\Math\Mat3x3.h" />
     <ClInclude Include="source\Math\Math.h" />
-    <ClInclude Include="source\Math\Rect.h" />
+    <ClInclude Include="source\Math\AABB.h" />
+    <ClInclude Include="source\Math\OBB.h" />
+    <ClInclude Include="source\Math\Sphere.h" />
     <ClInclude Include="source\Math\Vector2.h" />
     <ClInclude Include="source\Math\Vector2Int.h" />
     <ClInclude Include="source\Physics\MoveList.h" />
     <ClInclude Include="source\Physics\Physics.h" />
-    <ClInclude Include="source\Physics\ResolvedCollisions.h" />
+    <ClInclude Include="source\Physics\Move.h" />
     <ClInclude Include="source\Platform\FrameTimer.h" />
     <ClInclude Include="source\Platform\Game.h" />
-    <ClInclude Include="source\Renderer\AnimatedSprite.h" />
     <ClInclude Include="source\Renderer\Color.h" />
     <ClInclude Include="source\Renderer\GaussianBlur.h" />
     <ClInclude Include="source\Renderer\Renderer.h" />
     <ClInclude Include="source\Renderer\RenderQueue.h" />
-    <ClInclude Include="source\Renderer\Sprite.h" />
     <ClInclude Include="source\Renderer\SpriteAtlas.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\ECS\AnimatedSpriteManager.cpp" />
     <ClCompile Include="source\ECS\ColliderManager.cpp" />
     <ClCompile Include="source\ECS\EntityManager.cpp" />
+    <ClCompile Include="source\ECS\SpriteManager.cpp" />
     <ClCompile Include="source\ECS\Transform.cpp" />
     <ClCompile Include="source\ECS\TransformManager.cpp" />
     <ClCompile Include="source\Input\InputContext.cpp" />
     <ClCompile Include="source\Input\InputHandler.cpp" />
+    <ClCompile Include="source\Math\AABB.cpp" />
+    <ClCompile Include="source\Math\OBB.cpp" />
     <ClCompile Include="source\Physics\MoveList.cpp" />
     <ClCompile Include="source\Physics\Physics.cpp" />
     <ClCompile Include="source\Platform\FrameTimer.cpp" />
     <ClCompile Include="source\Platform\Game.cpp" />
     <ClCompile Include="source\Platform\Main.cpp" />
-    <ClCompile Include="source\Renderer\AnimatedSprite.cpp" />
     <ClCompile Include="source\Renderer\GaussianBlur.cpp" />
     <ClCompile Include="source\Renderer\Renderer.cpp" />
     <ClCompile Include="source\Renderer\RenderQueue.cpp" />
-    <ClCompile Include="source\Renderer\Sprite.cpp" />
     <ClCompile Include="source\Renderer\SpriteAtlas.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -75,6 +78,7 @@
     <ProjectGuid>{151a59c4-02dd-484c-946b-fa027d2b6a7c}</ProjectGuid>
     <RootNamespace>AsteroidsEmrikEuan</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Asteroids</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

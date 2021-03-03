@@ -1,17 +1,33 @@
 #pragma once
 
-#include "Sprite.h"
-#include "AnimatedSprite.h"
+#include "..\ECS\Sprite.h"
+#include "..\Renderer\Renderer.h"
+#include "..\ECS\SpriteID.h"
 
 class SpriteAtlas
 {
 public:
-	SpriteAtlas(Renderer &renderer);
+	SpriteAtlas(Renderer& renderer);
 	SpriteAtlas() = delete;
-	~SpriteAtlas();
 
-	Sprite* asteroidSprite;
-	Sprite* shipSprite;
-	AnimatedSprite* shipTrailSprite;
+	inline const Sprite* Get(SpriteID id) const
+	{
+		return &spriteData[(int)id];
+	}
+
+	static inline bool isAnimated(const SpriteID& id)
+	{
+		return (int)id < (int)SpriteID::_END_ANIMATED;
+	}
+
+private:
+	void CreateAnimatedSprites();
+	void CreateRegularSprites();
+	void CreateSprite(SpriteID id, int texIndex, int width, int height, int x, int y, int animationFrame = 0);
+
+	void LoadPNGs(SDL_Renderer* renderer);
+	SDL_Texture* PNGToTexture(SDL_Renderer* renderer, const std::string path) const;
+
+	std::vector<SDL_Texture*> loadedImages;
+	std::vector<Sprite> spriteData;
 };
-

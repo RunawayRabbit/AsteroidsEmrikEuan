@@ -71,7 +71,7 @@ public:
 
 };
 
-inline float Dot(Vector2 a, Vector2 b)
+inline float Dot(const Vector2& a, const Vector2& b)
 {
 	return a.x * b.x
 		+ a.y * b.y;
