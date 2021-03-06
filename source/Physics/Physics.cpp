@@ -98,13 +98,14 @@ void Physics::DetectCollisions(Entity testA, Entity testB, float deltaTime)
 
 	CollisionTests::OBBToCircle(shipA, circleB);
 
-	/*
+	
 	float timeOfCollision;
 	if (CollisionTests::SweptCircleToCircle(circleA, Vector2::zero(), circleB, Vector2{ 20.0f, 0.0f }, deltaTime, &timeOfCollision))
 	{
 		//This works apparently.
+		std::cout << timeOfCollision << std::endl;
 	}
-	*/
+	
 
 }
 

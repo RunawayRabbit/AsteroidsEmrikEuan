@@ -9,52 +9,71 @@
 
 namespace CollisionTests
 {
-	// Returns true if we will collide this frame.
-	bool SweptCircleToCircle(const Circle& A, const Vector2& velA,
-		const Circle& B, const Vector2& velB, const float& deltaTime,
-		float* timeUntilCollision)
-	{
-		const Vector2 startPositionDelta = B.center - A.center;	//vector from A0 to B0
-		const float combinedRadius = A.radius + B.radius;
-		const float combinedRadiusSq = combinedRadius * combinedRadius;
 
-		if (Dot(startPositionDelta, startPositionDelta) <= combinedRadiusSq)
+	bool SweptCircleToCircle(const Vector2& centerA, const Vector2& velA,
+		const Vector2& centerB, const Vector2& velB, const float& combinedRadiiSq,
+		const float& deltaTime,	float* timeUntilCollision)
+	{
+		const Vector2 startPositionDelta = centerB - centerA;
+
+		const float constantTerm = Dot(startPositionDelta, startPositionDelta) - combinedRadiiSq;
+		if (constantTerm < 0.0f)
 		{
 			// Circles are currently intersecting.
-			// @TODO: Not sure what to do in this case, as it shouldn't
-			// ever happen?
-			std::cout << "ERROR: Called CircleVsCircle on two currently overlapping circles!\n";
 
 			*timeUntilCollision = 0;
 			return true;
 		}
 
-		//const Vector2 velA = A1 - A.center;	//vector from A0 to A1
-		//const Vector2 velB = B1 - B.center;	//vector from B0 to B1
 		const Vector2 relativeVelocity = (velB - velA) * deltaTime;	// this is in units per frame.
-
-
-		const float a = Dot(relativeVelocity, relativeVelocity); // t*t
-		const float b = 2 * Dot(relativeVelocity, startPositionDelta); // t
-		const float c = Dot(startPositionDelta, startPositionDelta) - combinedRadiusSq; // constant
-
-
-		float root1, root2;
-		if (Math::QuadraticFormula(a, b, c, root1, root2))
+		const float squaredTerm = Dot(relativeVelocity, relativeVelocity); // t*t
+		if (squaredTerm < 0.0001f)
 		{
-			*timeUntilCollision = std::min(root1, root2);
-			if (*timeUntilCollision > 0.0f &&
-				*timeUntilCollision < 1.0f)
-			{
-				*timeUntilCollision *= deltaTime;
-				return true;
-			}
+			// Circles are relatively stationary
+			return false;
 		}
-		return false;
+
+		const float scalarTerm = 2 * Dot(relativeVelocity, startPositionDelta); // t
+		if (scalarTerm >= 0.0f)
+		{
+			// Circles are moving away from each other, all roots will be negative.
+			return false;
+		}
+
+		const float determinant = (scalarTerm * scalarTerm) - squaredTerm * constantTerm;
+		if (determinant < 0.0f)
+		{
+			// All roots are complex.
+			return false;
+		}
+
+		// We have our collision!
+
+		*timeUntilCollision = (-scalarTerm - sqrt(determinant)) / squaredTerm;
+		if (*timeUntilCollision < 1.0f)
+			return true;
+		else
+			return false;
 	}
 
+	// Adapted from https://www.gamasutra.com/view/feature/131790/simple_intersection_tests_for_games.php?page=2
+	// Returns true if we will collide this frame and fills timeUntilCollision with the fraction of deltaTime at
+	// which the collision will take place. (t.ex: timeUntilCollision == 0.5f means we will collide in exactly
+	// half a frame.)
+	bool SweptCircleToCircle(const Circle& A, const Vector2& velA,
+		const Circle& B, const Vector2& velB, const float& deltaTime,
+		float* timeUntilCollision)
+	{
+		const float combinedRadius = A.radius + B.radius;
+		const float combinedRadiusSq = combinedRadius * combinedRadius;
+
+		return SweptCircleToCircle(A.center, velA, B.center, velB, combinedRadiusSq, deltaTime, timeUntilCollision);
+	}
+
+
+
 	// This test is *very simple* because our specific usecase does not call for
-	// a swept test, and I don't want to have to implement full GJK and minkowski stuff.
+	// a swept test, and I don't want to have to implement full GJK/minkowski stuff.
 	bool OBBToCircle(const OBB& OBB, const Circle& circle)
 	{
 		return OBB.DistanceBetweenSq(circle.center) < circle.radius * circle.radius;
