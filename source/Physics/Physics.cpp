@@ -7,10 +7,17 @@
 #include "ColliderType.h"
 #include "CollisionTests.h"
 
+
+
 Physics::Physics(TransformManager& transformManager, const AABB& screenAABB) :
 	transformManager(transformManager),
 	screenAABB(screenAABB)
 {}
+
+void Physics::RegisterPlayerShip(const Entity& playerShip)
+{
+	this->playerShip = playerShip;
+}
 
 void Physics::Reset()
 {
@@ -32,7 +39,6 @@ void Physics::Enqueue(const Entity& entity, const Vector2& velocity, const float
 
 void Physics::Simulate(Entity testA, Entity testB, const float deltaTime)
 {
-
 	// At this point we initialize a "ResolvedCollisions" list. We'll get to that.
 	Begin();
 
@@ -57,7 +63,7 @@ void Physics::Simulate(Entity testA, Entity testB, const float deltaTime)
 	{
 
 		// Test swept colliders vs each other, and against all static colliders
-		DetectCollisions(testA, testB, deltaTime);
+		DetectCollisions(deltaTime);
 
 		// Resolve all detected collisions, generate a revised moveList.
 		ResolveMoves(deltaTime);
@@ -75,8 +81,52 @@ void Physics::SweepColliders(const float deltaTime)
 }
 
 
-void Physics::DetectCollisions(Entity testA, Entity testB, float deltaTime)
+void Physics::DetectCollisions(float deltaTime)
 {
+#if 1
+	auto firstLarge = moveList.begin();
+	auto firstMedium = moveList.end();
+
+	Transform playerTrans;
+	transformManager.Get(playerShip, &playerTrans);
+	OBB playerOBB(playerTrans.pos, ColliderRadius::Ship, playerTrans.rot);
+
+	for (auto largeAsteroid = firstLarge;
+		largeAsteroid < firstMedium;
+		++largeAsteroid)
+	{
+		Circle asteroid(largeAsteroid->transform.pos, ColliderRadius::Large);
+		if (CollisionTests::OBBToCircle(playerOBB, asteroid))
+		{
+			std::cout << "Player Be Ded." << std::endl;
+		}
+	}
+
+
+
+	for (auto asteroidA = firstLarge;
+		asteroidA < firstMedium - 1;
+		++asteroidA)
+	{
+		// Test all Large vs all other Large
+		for (auto asteroidB = asteroidA + 1;
+			asteroidB < firstMedium;
+			++asteroidB)
+		{
+			constexpr float largeVsLargeSqRadius = (largeAsteroidRadius + largeAsteroidRadius) *
+				(largeAsteroidRadius + largeAsteroidRadius);
+
+			float timeOfCollision;
+			if (CollisionTests::SweptCircleToCircle(asteroidA->transform.pos, asteroidA->Velocity,
+				asteroidB->transform.pos, asteroidB->Velocity, largeVsLargeSqRadius, deltaTime, &timeOfCollision))
+			{
+				//std::cout << "Collision between " << asteroidA->id.ToString() << " and " << asteroidB->id.ToString() << "!\n";
+			}
+		}
+	}
+
+
+#else
 	Transform transA;
 	transformManager.Get(testA, &transA);
 
@@ -105,7 +155,7 @@ void Physics::DetectCollisions(Entity testA, Entity testB, float deltaTime)
 		//This works apparently.
 		std::cout << timeOfCollision << std::endl;
 	}
-	
+#endif
 
 }
 

@@ -30,19 +30,14 @@ Game::Game(std::string windowName, int width, int height) :
 	GCStep(0),
 	isRunning(true)
 {
-#if 0
-	GLOBALtestEntity = entities.Create();
+#if 1
+	GLOBALtestEntity = create.Ship(Vector2::zero(), 0);
 
-	Transform testTransform;
-	testTransform.pos.x = 0;
-	testTransform.pos.y = 0;
-	testTransform.rot = 0;
-	xforms.Add(GLOBALtestEntity, testTransform);
-	sprites.Create(GLOBALtestEntity, SpriteID::SHIP, RenderQueue::Layer::DEFAULT);
+	physics.RegisterPlayerShip(GLOBALtestEntity);
 
 	std::vector<Vector2> asteroidPositions;
 
-	for (auto i = 0; i < 100; i++)
+	for (auto i = 0; i < 10; i++)
 	{
 		bool isValidPosition = false;
 		int attempts = 0;
@@ -83,11 +78,13 @@ Game::Game(std::string windowName, int width, int height) :
 			++attempts;
 		}
 	}
-#endif
+#else
 
 
 	GLOBALtestEntity2 = create.Asteroid(Vector2{ (float)width / 2, (float)height / 2 }, 0, Vector2::zero(), 0);
 	GLOBALtestEntity = create.Ship(Vector2::zero(), 0);
+
+#endif
 
 }
 

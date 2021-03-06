@@ -16,7 +16,7 @@ enum class ColliderType
 namespace ColliderRadius
 {
 	//@TODO: Fix these numbers
-	constexpr static float Ship = 24;
+	constexpr static float Ship = 24 / 2;
 
 	constexpr static float Bullet = 63 / 2;
 

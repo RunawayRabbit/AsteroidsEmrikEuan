@@ -21,6 +21,8 @@ public:
 
 	void Reset();
 
+	void RegisterPlayerShip(const Entity& playerShip);
+
 	void Enqueue(const Entity& entity, const Vector2& velocity, const float& angularVelocity);
 
 	void Simulate(Entity testA, Entity testB, const float deltaTime);
@@ -34,14 +36,15 @@ private:
 
 	void Begin();
 	void SweepColliders(const float deltaTime);
-	void DetectCollisions(Entity testA, Entity testB, float deltaTime);
+	void DetectCollisions(float deltaTime);
 	void ResolveMoves(const float deltaTime);
 
+	const AABB screenAABB;
+	Entity playerShip;
 	std::vector<Move> finalizedMoves;
 
 	TransformManager& transformManager;
 
-	const AABB screenAABB;
 	// Move List Stuff
 
 	struct Entry

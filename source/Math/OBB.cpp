@@ -11,20 +11,24 @@ OBB::OBB(const SDL_Rect& rect, const float& rotation)
 	this->extents.y = (float)rect.h / 2.0f;
 
 }
-/*
-OBB::OBB(const Vector2& center, const Vector2& ScaledXBasis, const Vector2& scaledYBasis)
-{
-	this->center = center;
-	this->basisX = ScaledXBasis;
-	this->basisY = scaledYBasis;
-}
 
 OBB::OBB(const Vector2& center, const Vector2& extents, const float& rotation)
 {
 	this->center = center;
-	this->basisX = Vector2{ 1.0f, 0.0f }.Rotate(rotation) * (extents.x);
-	this->basisY = Vector2{ 0.0f, 1.0f }.Rotate(rotation) * (extents.y);
-}*/
+	this->basisX = Vector2{ 1.0f, 0.0f }.Rotate(rotation);
+	this->basisY = Vector2{ 0.0f, 1.0f }.Rotate(rotation);
+	this->extents.x = extents.x;
+	this->extents.y = extents.y;
+}
+
+OBB::OBB(const Vector2& center, const float& extents, const float& rotation)
+{
+	this->center = center;
+	this->basisX = Vector2{ 1.0f, 0.0f }.Rotate(rotation);
+	this->basisY = Vector2{ 0.0f, 1.0f }.Rotate(rotation);
+	this->extents.x = extents;
+	this->extents.y = extents;
+}
 
 
 AABB OBB::Bounds() const

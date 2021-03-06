@@ -15,6 +15,7 @@ public:
 	OBB(const SDL_Rect& rect, const float& rotation);
 	OBB(const Vector2& center, const Vector2& ScaledXBasis, const Vector2& scaledYBasis);
 	OBB(const Vector2& center, const Vector2& extents, const float& rotation);
+	OBB(const Vector2& center, const float& extents, const float& rotation);
 	OBB() = delete;
 
 	float DistanceBetween(const Vector2& point) const;
