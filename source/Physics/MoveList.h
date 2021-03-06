@@ -5,12 +5,13 @@
 #include "..\Math\Vector2.h"
 
 #include "..\ECS\Entity.h"
-#include "..\ECS\Transform.h"
+#include "..\ECS\TransformManager.h"
 
 class MoveList
 {
 public:
-	MoveList();
+	MoveList(const TransformManager& transformManager);
+	MoveList() = delete;
 	void Clear();
 
 	size_t Size() const;
@@ -26,4 +27,5 @@ private:
 	};
 
 	std::vector<Entry> data;
+	const TransformManager& transformManager;
 };

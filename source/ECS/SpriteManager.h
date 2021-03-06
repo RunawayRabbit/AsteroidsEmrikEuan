@@ -43,7 +43,7 @@ private:
 	class SpriteCategory
 	{
 	public:
-		SpriteCategory(const TransformManager& transManager);
+		SpriteCategory(const TransformManager& transManager, const int capacity);
 		SpriteCategory() = delete;
 
 		void AllocateMain(const int newCapacity);

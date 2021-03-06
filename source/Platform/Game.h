@@ -8,14 +8,13 @@
 
 #include "../ECS/EntityManager.h"
 #include "../ECS/TransformManager.h"
-#include "../ECS/ColliderManager.h"
 #include "../ECS/AnimatedSpriteManager.h"
 #include "../ECS/SpriteManager.h"
+#include "../ECS/AsteroidManager.h"
+
+#include "../GameObject/Create.h"
 
 #include "../Physics/Physics.h"
-
-#include "../GameObject/Asteroid.h"
-#include "../GameObject/Ship.h"
 
 #include "../Input/InputHandler.h"
 
@@ -46,17 +45,20 @@ private:
 
 	InputHandler input;
 
+	// GameObject Creator
+	Create create;
+
 	// ECS Systems
 	EntityManager entities;
 	TransformManager xforms;
-	ColliderManager colliders;
 	SpriteManager sprites;
+
+	AsteroidManager asteroids;
 
 	Physics physics;
 	const AABB gameField;
 
 	//std::unique_ptr<Ship> playerShip;
-	//std::vector<std::unique_ptr<Asteroid>> asteroids;
 
 	int GCStep;
 

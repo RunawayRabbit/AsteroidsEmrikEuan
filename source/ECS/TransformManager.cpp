@@ -6,13 +6,13 @@
 
 TransformManager::TransformManager(int capacity)
 {
-	_size = 0;
+	size = 0;
 	Allocate(capacity);
 }
 
 TransformManager::~TransformManager()
 {
-	free(_buffer);
+	free(buffer);
 }
 
 bool TransformManager::Get(const Entity entity, Transform* transform) const
@@ -20,7 +20,18 @@ bool TransformManager::Get(const Entity entity, Transform* transform) const
 	size_t index;
 	if (Lookup(entity, &index))
 	{
-		*transform = *(_transforms + index);
+		*transform = *(transforms + index);
+		return true;
+	}
+	return false;
+}
+
+bool TransformManager::GetPtr(const Entity entity, Transform** transform)
+{
+	size_t index;
+	if (Lookup(entity, &index))
+	{
+		*transform = (transforms + index);
 		return true;
 	}
 	return false;
@@ -31,7 +42,7 @@ bool TransformManager::Set(const Entity entity, const Transform transform)
 	size_t index;
 	if (Lookup(entity, &index))
 	{
-		*(_transforms + index) = transform;
+		*(transforms + index) = transform;
 		return true;
 	}
 	return false;
@@ -39,10 +50,10 @@ bool TransformManager::Set(const Entity entity, const Transform transform)
 
 void TransformManager::Add(const Entity entity, const Transform transform)
 {
-	if (_size == _capacity)
+	if (size == capacity)
 	{
 		// We're about to overrun our buffer, we gotta scale.
-		Allocate((size_t)(_size * (size_t)2));
+		Allocate((size_t)(size * (size_t)2));
 	}
 
 #if DEBUG_STUFF
@@ -57,10 +68,10 @@ void TransformManager::Add(const Entity entity, const Transform transform)
 #endif
 
 	// Insert our data at the back of the data store
-	*(_entities + _size) = entity;
-	*(_transforms + _size) = transform;
+	*(entities + size) = entity;
+	*(transforms + size) = transform;
 
-	++_size;
+	++size;
 }
 
 void TransformManager::Remove(const Entity entity)
@@ -69,13 +80,13 @@ void TransformManager::Remove(const Entity entity)
 	if (Lookup(entity, &index))
 	{
 		// swap our entity to the back
-		Entity* lastActiveEntity = _entities + _size - 1;
-		Transform* lastActiveTransform = _transforms + _size - 1;
+		Entity* lastActiveEntity = entities + size - 1;
+		Transform* lastActiveTransform = transforms + size - 1;
 
-		*(_entities + index) = *(lastActiveEntity);
-		*(_transforms + index) = *(lastActiveTransform);
+		*(entities + index) = *(lastActiveEntity);
+		*(transforms + index) = *(lastActiveTransform);
 
-		--_size;
+		--size;
 	}
 }
 
@@ -83,8 +94,8 @@ void TransformManager::GarbageCollect(const EntityManager& entityManager)
 {
 	// @TODO: Looping over every transform is inefficient. How do you do this better?
 
-	Entity* entityIndex = _entities;
-	for (size_t i = 0; i < _size; ++i, ++entityIndex)
+	Entity* entityIndex = entities;
+	for (size_t i = 0; i < size; ++i, ++entityIndex)
 	{
 		if (!entityManager.Exists(*entityIndex))
 		{
@@ -95,9 +106,9 @@ void TransformManager::GarbageCollect(const EntityManager& entityManager)
 
 bool TransformManager::Lookup(const Entity entity, size_t* index) const
 {
-	Entity* entityIndex = _entities;
+	Entity* entityIndex = entities;
 	size_t i = 0;
-	for (; i < _capacity; ++i, ++entityIndex)
+	for (; i < capacity; ++i, ++entityIndex)
 	{
 		if (*entityIndex == Entity::null())
 		{
@@ -115,7 +126,7 @@ bool TransformManager::Lookup(const Entity entity, size_t* index) const
 
 void TransformManager::Allocate(int newCapacity)
 {
-	_capacity = newCapacity;
+	capacity = newCapacity;
 
 	// Allocate new memory
 	const size_t elementSizeInBytes = sizeof(Entity) + sizeof(Transform);
@@ -125,28 +136,25 @@ void TransformManager::Allocate(int newCapacity)
 	Entity* newEntities = (Entity*)newBuffer;
 	Transform* newTransforms = (Transform*)(newEntities + newCapacity);
 
-	if (_size > 0)
+	if (size > 0)
 	{
 		// Copy the data to the new buffer
-		memcpy(newEntities, _entities, sizeof(Entity) * _size);
-		memcpy(newTransforms, _transforms, sizeof(Transform) * _size);
+		memcpy(newEntities, entities, sizeof(Entity) * size);
+		memcpy(newTransforms, transforms, sizeof(Transform) * size);
 	}
 
 	// Switch the pointers around
-	_entities = newEntities;
-	_transforms = newTransforms;
+	entities = newEntities;
+	transforms = newTransforms;
 
 	// Switch the buffers and free the old memory
-	delete _buffer;
-	_buffer = newBuffer;
+	delete buffer;
+	buffer = newBuffer;
 }
 
 void TransformManager::Update(const std::vector<Move> resolvedCollisions)
 {
-	for (auto& resolvedCollision : resolvedCollisions)
-	{
-		Entity ent;
-	}
+	// STUB
 }
 
 const std::vector<Entity> TransformManager::GetDirtyList() const 

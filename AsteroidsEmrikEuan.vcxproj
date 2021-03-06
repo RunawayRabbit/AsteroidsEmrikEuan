@@ -20,8 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\ECS\AnimatedSpriteManager.h" />
-    <ClInclude Include="source\ECS\Collider.h" />
-    <ClInclude Include="source\ECS\ColliderManager.h" />
+    <ClInclude Include="source\ECS\AsteroidManager.h" />
+    <ClInclude Include="source\ECS\COLLIDER_WIP.h" />
     <ClInclude Include="source\ECS\Entity.h" />
     <ClInclude Include="source\ECS\EntityManager.h" />
     <ClInclude Include="source\ECS\Sprite.h" />
@@ -29,6 +29,7 @@
     <ClInclude Include="source\ECS\SpriteManager.h" />
     <ClInclude Include="source\ECS\Transform.h" />
     <ClInclude Include="source\ECS\TransformManager.h" />
+    <ClInclude Include="source\GameObject\Create.h" />
     <ClInclude Include="source\Input\InputBuffer.h" />
     <ClInclude Include="source\Input\InputContext.h" />
     <ClInclude Include="source\Input\InputDefinitions.h" />
@@ -37,9 +38,11 @@
     <ClInclude Include="source\Math\Math.h" />
     <ClInclude Include="source\Math\AABB.h" />
     <ClInclude Include="source\Math\OBB.h" />
-    <ClInclude Include="source\Math\Sphere.h" />
+    <ClInclude Include="source\Math\Circle.h" />
     <ClInclude Include="source\Math\Vector2.h" />
     <ClInclude Include="source\Math\Vector2Int.h" />
+    <ClInclude Include="source\Physics\CollisionTests.h" />
+    <ClInclude Include="source\Physics\ColliderType.h" />
     <ClInclude Include="source\Physics\MoveList.h" />
     <ClInclude Include="source\Physics\Physics.h" />
     <ClInclude Include="source\Physics\Move.h" />
@@ -53,11 +56,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\ECS\AnimatedSpriteManager.cpp" />
-    <ClCompile Include="source\ECS\ColliderManager.cpp" />
+    <ClCompile Include="source\ECS\AsteroidManager.cpp" />
     <ClCompile Include="source\ECS\EntityManager.cpp" />
     <ClCompile Include="source\ECS\SpriteManager.cpp" />
     <ClCompile Include="source\ECS\Transform.cpp" />
     <ClCompile Include="source\ECS\TransformManager.cpp" />
+    <ClCompile Include="source\GameObject\Create.cpp" />
     <ClCompile Include="source\Input\InputContext.cpp" />
     <ClCompile Include="source\Input\InputHandler.cpp" />
     <ClCompile Include="source\Math\AABB.cpp" />

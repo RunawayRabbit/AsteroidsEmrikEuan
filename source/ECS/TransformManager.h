@@ -15,6 +15,8 @@ public:
 	~TransformManager();
 
 	bool Get(const Entity entity, Transform* transform) const;
+	bool GetPtr(const Entity entity, Transform** transform);
+
 	bool Set(const Entity entity, const Transform transform);
 	void Add(const Entity entity, const Transform transform);
 	void Remove(const Entity entity);
@@ -24,13 +26,13 @@ public:
 	const std::vector<Entity> GetDirtyList() const;
 
 private:
-	size_t _size;
-	size_t _capacity;
+	size_t size;
+	size_t capacity;
 
-	Entity* _entities;
-	Transform* _transforms;
+	Entity* entities;
+	Transform* transforms;
 
-	void* _buffer; // Raw pointer we got back from malloc, where all our shit is
+	void* buffer; // Raw pointer we got back from malloc, where all our shit is
 
 	void Allocate(int newCapacity);
 	bool Lookup(const Entity entity, size_t* index) const;

@@ -2,8 +2,12 @@
 #include <SDL.h>
 #include <iostream> // for error messages
 
-#include "..\ECS\Entity.h"
-#include "..\ECS\Transform.h"
+#include <functional>
+
+#include "..\GameObject\Create.h"
+
+#include "..\Math\Math.h"
+#include "..\Math\Circle.h"
 
 #include "..\Physics\Physics.h"
 
@@ -11,41 +15,22 @@
 
 
 static Entity GLOBALtestEntity;
-
+static Entity GLOBALtestEntity2;
 
 
 Game::Game(std::string windowName, int width, int height) :
 	renderer(windowName, width, height),
 	input(InputHandler(*this)),
 	gameField(0.0f, (float)height, 0.0f, (float)width),
-	xforms(128), //intial capacity. Can resize dynamically.
+	xforms(2), //intial capacity. Can resize dynamically.
 	sprites(renderer, xforms, AABB(0, height, 0, width), 128),
-	colliders(),
-	physics(colliders),
+	asteroids(entities, 2),
+	create(entities, xforms, sprites, asteroids),
+	physics(xforms, AABB(0, height, 0, width)),
 	GCStep(0),
 	isRunning(true)
 {
 #if 0
-	int testCountX = 14;
-	int testCountY = 11;
-	for (size_t x = 0; x <= testCountX; x++)
-	{
-		float xPos = (width / testCountX) * x;
-		for (size_t y = 0; y <= testCountY; y++)
-		{
-			auto testEntity = entities.Create();
-
-			Transform testTransform;
-			testTransform.pos.x = xPos;
-			testTransform.pos.y = (height / testCountY) * y;
-			testTransform.rot = 0;
-			xforms.Add(testEntity, testTransform);
-
-			sprites.Create(testEntity, SpriteID::ASTEROID, RenderQueue::Layer::ASTEROID);			
-		}
-	}
-#endif
-
 	GLOBALtestEntity = entities.Create();
 
 	Transform testTransform;
@@ -53,7 +38,56 @@ Game::Game(std::string windowName, int width, int height) :
 	testTransform.pos.y = 0;
 	testTransform.rot = 0;
 	xforms.Add(GLOBALtestEntity, testTransform);
-	sprites.Create(GLOBALtestEntity, SpriteID::ASTEROID, RenderQueue::Layer::UI);
+	sprites.Create(GLOBALtestEntity, SpriteID::SHIP, RenderQueue::Layer::DEFAULT);
+
+	std::vector<Vector2> asteroidPositions;
+
+	for (auto i = 0; i < 100; i++)
+	{
+		bool isValidPosition = false;
+		int attempts = 0;
+		while (!isValidPosition)
+		{
+			if (attempts > 32)
+			{
+				// Yea I know. It's temporary, ok?
+				return;
+			}
+			constexpr float asteroidRadius = 29;
+			Vector2 startPos = Vector2{ Math::RandomRange(asteroidRadius, width - asteroidRadius),
+				Math::RandomRange(asteroidRadius, height - asteroidRadius) };
+
+			isValidPosition = true;
+
+			Circle newAsteroid(startPos, asteroidRadius);
+			for (auto& existingAsteroid : asteroidPositions)
+			{
+				Circle existing(existingAsteroid, asteroidRadius);
+				if (existing.Overlaps(newAsteroid))
+				{
+					isValidPosition = false;
+					break;
+				}				
+			}
+
+			if (isValidPosition)
+			{
+				float startRot = rand() % 360;
+				Vector2 startVel = Vector2{ Math::RandomRange(-10, 10), Math::RandomRange(-10, 10) };
+				float rotVel = Math::RandomRange(-15, 15);
+
+				asteroidPositions.push_back(startPos);
+
+				create.Asteroid(startPos, startRot, startVel, rotVel);
+			}
+			++attempts;
+		}
+	}
+#endif
+
+
+	GLOBALtestEntity2 = create.Asteroid(Vector2{ (float)width / 2, (float)height / 2 }, 0, Vector2::zero(), 0);
+	GLOBALtestEntity = create.Ship(Vector2::zero(), 0);
 
 }
 
@@ -94,14 +128,14 @@ void Game::Update(float deltaTime)
 	We know the position of the first moving element by taking ColliderManagersize - MoveList.size.
 	*/
 
-
-	MoveList moveList;
-	moveList.Clear();
+	physics.Reset();
 
 	/// GAMEPLAY CODE GOES HERE.
 
 	auto inputBuffer = input.GetBuffer();
 
+	asteroids.Update(physics, deltaTime);
+		
 	Transform transform;
 	transform.pos = Vector2{ (float)inputBuffer.mouseX, (float)inputBuffer.mouseY };
 
@@ -136,13 +170,10 @@ void Game::Update(float deltaTime)
 
 	*/
 
-
-	physics.Simulate(moveList, deltaTime);
+	physics.Simulate(GLOBALtestEntity, GLOBALtestEntity2, deltaTime);
 	
 	// @TODO: We refresh the collision list here. We can cache it for next frame.
 	//std::vector<Entity> dirtyList = xforms.Update(physics.DirtyList());
-
-	sprites.Update();
 
 	/*
 
@@ -183,8 +214,8 @@ void Game::Render()
 	// @TODO: Render all static backgrounds
 	//renderQueue.Enqueue()
 
+	sprites.Update();
 	sprites.Render(renderQueue);
-	//UIManager.Render();
 
 
 	// Pass the render queue to the renderer

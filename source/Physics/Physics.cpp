@@ -1,17 +1,40 @@
 
 #include "Physics.h"
-#include "..\ECS\ColliderManager.h"
 
-Physics::Physics(const ColliderManager& colliderManager) :
-	colliderManager(colliderManager)
+#include "..\Math\Math.h"
+#include "..\Math\OBB.h"
+
+#include "ColliderType.h"
+#include "CollisionTests.h"
+
+Physics::Physics(TransformManager& transformManager, const AABB& screenAABB) :
+	transformManager(transformManager),
+	screenAABB(screenAABB)
+{}
+
+void Physics::Reset()
 {
-
+	moveList.clear();
 }
 
-void Physics::Simulate(MoveList &moveList, const float deltaTime)
+void Physics::Enqueue(const Entity& entity, const Vector2& velocity, const float& angularVelocity)
 {
+	// @TODO: Rearrange this data to make more sense to the collision detector.
+
+	Entry entry;
+	entry.id = entity;
+	entry.Velocity = velocity;
+	entry.angularVelocity = angularVelocity;
+	transformManager.Get(entity, &entry.transform);
+
+	moveList.push_back(entry);
+}
+
+void Physics::Simulate(Entity testA, Entity testB, const float deltaTime)
+{
+
 	// At this point we initialize a "ResolvedCollisions" list. We'll get to that.
-	ResetForNextFrame();
+	Begin();
 
 	/*
 	Next comes PhysicsSweep. This takes the MoveList and deltaTime and constructs a swept volume
@@ -29,41 +52,76 @@ void Physics::Simulate(MoveList &moveList, const float deltaTime)
 	*/
 
 	for (auto i = 0;
-		(i < MAX_ITERATIONS) && (moveList.Size() > 0);
+		(i < MAX_ITERATIONS) && (moveList.size() > 0);
 		++i)
 	{
-		// Generate swept colliders for use in detection phase
-		SweepColliders(moveList, deltaTime);
 
 		// Test swept colliders vs each other, and against all static colliders
-		DetectCollisions();
+		DetectCollisions(testA, testB, deltaTime);
 
 		// Resolve all detected collisions, generate a revised moveList.
-		ResolveMoves();
+		ResolveMoves(deltaTime);
 	}
 }
 
-void Physics::ResetForNextFrame()
+void Physics::Begin()
 {
 
 }
 
-void Physics::SweepColliders(const MoveList& moveList, const float deltaTime)
+void Physics::SweepColliders(const float deltaTime)
 {
 
 }
 
-void Physics::DetectCollisions()
-{
-	// First, test against resolved move list
 
-	// Then, test against against the live colliders
-	const std::vector<Collider> colliders = colliderManager.GetColliders();
+void Physics::DetectCollisions(Entity testA, Entity testB, float deltaTime)
+{
+	Transform transA;
+	transformManager.Get(testA, &transA);
+
+	Transform transB;
+	transformManager.Get(testB, &transB);
+
+	Circle circleA(transA.pos, ColliderRadius::Large);
+	Circle circleB(transB.pos, ColliderRadius::Large);
+
+	SDL_Rect testShip;
+	testShip.x = transA.pos.x - ColliderRadius::Ship / 2.0f;
+	testShip.y = transA.pos.y - ColliderRadius::Ship / 2.0f;
+	testShip.w = ColliderRadius::Ship;
+	testShip.h = ColliderRadius::Ship;
+
+	OBB shipA(testShip, transA.rot);
+	//std::cout << shipA.center.x << ", " << shipA.center.y << "\n";
+
+
+	CollisionTests::OBBToCircle(shipA, circleB);
+
+	/*
+	float timeOfCollision;
+	if (CollisionTests::SweptCircleToCircle(circleA, Vector2::zero(), circleB, Vector2{ 20.0f, 0.0f }, deltaTime, &timeOfCollision))
+	{
+		//This works apparently.
+	}
+	*/
+
 }
 
-void Physics::ResolveMoves()
-{
 
+void Physics::ResolveMoves(const float deltaTime)
+{
+	for (auto& entry : moveList)
+	{
+		Transform* trans;
+		transformManager.GetPtr(entry.id, &trans);
+		trans->pos.x =
+			Math::Repeat(trans->pos.x + (entry.Velocity.x * deltaTime), screenAABB.right);
+		trans->pos.y =
+			Math::Repeat(trans->pos.y + (entry.Velocity.y * deltaTime), screenAABB.bottom);
+
+		trans->rot = Math::Repeat(trans->rot + (entry.angularVelocity * deltaTime), 360.0f);
+	}
 }
 
 const std::vector<Move> Physics::DirtyList() const

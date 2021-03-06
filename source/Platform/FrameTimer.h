@@ -21,13 +21,17 @@ public:
 	
 	void Sleep(Timestamp frameBegin) const;
 	void UpdateEstimatedRenderTime(Timestamp renderBegin);
+	void UpdateEstimatedUpdateTime(Timestamp updateBegin);
 
 	void PrintDebugStats() const;
 
 private:
-	static constexpr int renderTimesCount = 10;
+	static constexpr int timerCount = 10;
 	std::vector<float> renderTimes;
 	int nextRenderTimeIndex;
+
+	std::vector<float> updateTimes;
+	int nextUpdateTimeIndex;
 
 	const float prefFrequencySeconds;
 	const float fixedDeltaTime;
@@ -35,4 +39,5 @@ private:
 
 	float GetSecondsElapsed(Timestamp start, Timestamp end) const;
 	float EstimatedRenderTime() const;
+	float EstimatedUpdateTime() const;
 };

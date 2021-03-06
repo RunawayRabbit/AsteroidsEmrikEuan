@@ -11,15 +11,12 @@
 
 
 SpriteManager::SpriteManager(Renderer& renderer, const TransformManager& transManager, const AABB screenAABB, const int capacity) :
-	repeating(transManager),
-	nonRepeating(transManager),
+	repeating(transManager, capacity),
+	nonRepeating(transManager, capacity),
 	spriteAtlas(renderer),
 	transManager(transManager),
 	screenAABB(screenAABB)
-{
-	repeating.AllocateMain(capacity);
-	nonRepeating.AllocateMain(capacity);
-}
+{}
 
 void SpriteManager::Animate(const float& deltaTime)
 {
@@ -100,8 +97,14 @@ void SpriteManager::GarbageCollect(const EntityManager& entityManager)
 // PULL THIS INTO IT'S OWN CPP AT THIS POINT
 // SPRITE CATEGORY
 
-SpriteManager::SpriteCategory::SpriteCategory(const TransformManager& transManager) :
-	transManager(transManager){}
+#pragma warning(push)
+//#pragma warning(disable: 4705)
+SpriteManager::SpriteCategory::SpriteCategory(const TransformManager& transManager, const int capacity) :
+	transManager(transManager)
+{
+	AllocateMain(capacity);
+}
+#pragma warning(pop)
 
 
 void SpriteManager::SpriteCategory::AllocateMain(const int newCapacity)
@@ -304,7 +307,6 @@ void SpriteManager::SpriteCategory::Update()
 		Transform transform;
 		if (transManager.Get(*entity, &transform))
 		{
-
 			spriteTrans->rotation = transform.rot;
 			spriteTrans->position.x = transform.pos.x - spriteTrans->position.w / 2;
 			spriteTrans->position.y = transform.pos.y - spriteTrans->position.h / 2;

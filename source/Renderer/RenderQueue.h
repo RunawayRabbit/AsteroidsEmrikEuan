@@ -22,8 +22,7 @@ public:
 	{
 		BACKGROUND,
 		PARALLAX,
-		ASTEROID,
-		SHIP,
+		DEFAULT,
 		PARTICLE,
 		UI,
 

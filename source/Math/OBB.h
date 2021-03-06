@@ -31,4 +31,5 @@ public:
 private:
 	Vector2 basisX;
 	Vector2 basisY;
+	Vector2 extents;
 };

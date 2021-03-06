@@ -13,7 +13,8 @@ FrameTimer::FrameTimer(float fps) :
 	fixedDeltaTime(1000.0f / fps),
 	fixedDeltaTimeTicks(Now().e / fps)
 {
-	renderTimes = std::vector<float>(renderTimesCount, 0.0f);
+	renderTimes = std::vector<float>(timerCount, 0.0f);
+	updateTimes = std::vector<float>(timerCount, 0.0f);
 }
 
 Timestamp FrameTimer::Now()
@@ -32,6 +33,11 @@ float FrameTimer::EstimatedRenderTime() const
 	return 1000.0f * (std::accumulate(renderTimes.begin(), renderTimes.end(), 0.0f) / renderTimes.size());
 }
 
+float FrameTimer::EstimatedUpdateTime() const
+{
+	return 1000.0f * (std::accumulate(updateTimes.begin(), updateTimes.end(), 0.0f) / updateTimes.size());
+}
+
 void FrameTimer::PrintDebugStats() const
 {
 	static Timestamp lastPrint = Now();
@@ -40,11 +46,17 @@ void FrameTimer::PrintDebugStats() const
 	if(GetSecondsElapsed(lastPrint) > 1.0f)
 	{
 		Timestamp now = Now();
-		std::string averageRenderTimePerFrame = 
+
+		std::string averageUpdateTimePerFrame =
+			std::to_string(EstimatedUpdateTime());
+
+		std::string averageRenderTimePerFrame =
 			std::to_string(EstimatedRenderTime());
 
 		std::cout << "Average Framerate: " << framesElapsed
-			<< ".   Average Render Time: "
+			<< ".   Average Update Time: "
+			<< averageUpdateTimePerFrame << " ms."
+		<< "   Average Render Time: "
 			<< averageRenderTimePerFrame << " ms.\n";
 		
 		lastPrint = now;
@@ -81,4 +93,12 @@ void FrameTimer::UpdateEstimatedRenderTime(Timestamp renderBegin)
 	nextRenderTimeIndex %= renderTimes.size();
 
 	renderTimes.at(nextRenderTimeIndex) = GetSecondsElapsed(renderBegin);
+}
+
+void FrameTimer::UpdateEstimatedUpdateTime(Timestamp updateBegin)
+{
+	nextUpdateTimeIndex += 1;
+	nextUpdateTimeIndex %= updateTimes.size();
+
+	updateTimes.at(nextUpdateTimeIndex) = GetSecondsElapsed(updateBegin);
 }

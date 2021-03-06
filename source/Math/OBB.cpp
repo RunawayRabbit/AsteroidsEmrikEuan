@@ -5,10 +5,13 @@
 OBB::OBB(const SDL_Rect& rect, const float& rotation)
 {
 	this->center = Vector2{ (float)rect.x + (rect.w / 2.0f), (float)rect.y + (rect.h / 2.0f) };
-	this->basisX = Vector2{ 1.0f, 0.0f }.Rotate(rotation) * ((float)rect.w / 2.0f);
-	this->basisY = Vector2{ 0.0f, 1.0f }.Rotate(rotation) * ((float)rect.h / 2.0f);
-}
+	this->basisX = Vector2{ 1.0f, 0.0f }.Rotate(rotation);
+	this->basisY = Vector2{ 0.0f, 1.0f }.Rotate(rotation);
+	this->extents.x = (float)rect.w / 2.0f;
+	this->extents.y = (float)rect.h / 2.0f;
 
+}
+/*
 OBB::OBB(const Vector2& center, const Vector2& ScaledXBasis, const Vector2& scaledYBasis)
 {
 	this->center = center;
@@ -21,7 +24,7 @@ OBB::OBB(const Vector2& center, const Vector2& extents, const float& rotation)
 	this->center = center;
 	this->basisX = Vector2{ 1.0f, 0.0f }.Rotate(rotation) * (extents.x);
 	this->basisY = Vector2{ 0.0f, 1.0f }.Rotate(rotation) * (extents.y);
-}
+}*/
 
 
 AABB OBB::Bounds() const
@@ -47,18 +50,18 @@ Vector2 OBB::ClosestPointTo(const Vector2& point) const
 	float localY = Dot(distToCenter, this->basisY);
 
 	// Clamp to the range of -extents to extents
-	if (localX < -1.0f)
-		localX = -1.0f;
-	if (localX > 1.0f)
-		localX = 1.0f;
+	if (localX < -extents.x)
+		localX = -extents.x;
+	if (localX > extents.x)
+		localX = extents.x;
 
-	if (localY < -1.0f)
-		localY = -1.0f;
-	if (localY > 1.0f)
-		localY = 1.0f;
+	if (localY < -extents.y)
+		localY = -extents.y;
+	if (localY > extents.y)
+		localY = extents.y;
 
 	// Offset by our clamped ranges along X and Y
-	return distToCenter + (this->basisX * localX) + (this->basisY * localY);
+	return this->center + (this->basisX * localX) + (this->basisY * localY);
 }
 
 float OBB::DistanceBetweenSq(const Vector2& point) const
@@ -74,10 +77,12 @@ float OBB::DistanceBetween(const Vector2& point) const
 
 std::array<Vector2, 4> OBB::GetCorners() const
 {
+	Vector2 basisXExtents = basisX * extents.x;
+	Vector2 basisYExtents = basisY * extents.y;
 	return {
-		(center - basisX - basisY),
-		(center - basisX + basisY),
-		(center + basisX - basisY),
-		(center + basisX + basisY),
+		(center - basisXExtents - basisYExtents),
+		(center - basisXExtents + basisYExtents),
+		(center + basisXExtents - basisYExtents),
+		(center + basisXExtents + basisYExtents),
 	};
 }

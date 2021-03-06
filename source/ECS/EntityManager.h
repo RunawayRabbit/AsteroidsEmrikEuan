@@ -18,13 +18,13 @@ public:
 
 	void DEBUGPrintAllEntities()
 	{
-		for (Entity entity : _entities)
+		for (Entity entity : entities)
 		{
 			std::cout << entity.id << " ";
 		}
 	}
 
 private:
-	Entity _nextEntity;
-	std::unordered_set<Entity> _entities;
+	Entity nextEntity;
+	std::unordered_set<Entity> entities;
 };

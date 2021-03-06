@@ -1,10 +1,14 @@
 #include <SDL.h>
 #include <iostream>
 
+//#include <vld.h>
+
 #include "Game.h"
 #include "FrameTimer.h"
 
 #include "..\Renderer\RenderQueue.h"
+
+
 
 int main(int argc, char* args[])
 {
@@ -21,13 +25,14 @@ int main(int argc, char* args[])
 
 	while (game.IsRunning())
 	{
-		Timestamp frameBegin = timer.Now();
+		Timestamp UpdateBegin = timer.Now();
 
 		game.ProcessInput();
 		game.Update(frameTime);
+		timer.UpdateEstimatedUpdateTime(UpdateBegin);
 
 		// lock framerate
-		timer.Sleep(frameBegin);
+		timer.Sleep(UpdateBegin);
 
 		Timestamp renderBegin = timer.Now();
 		game.Render();

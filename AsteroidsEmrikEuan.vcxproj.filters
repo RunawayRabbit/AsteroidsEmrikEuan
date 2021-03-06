@@ -55,6 +55,9 @@
     <Filter Include="Math\H">
       <UniqueIdentifier>{cbb48a0f-bf9a-4d7f-a34d-8f303765a48b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject">
+      <UniqueIdentifier>{69994b14-f991-45e7-b2b3-9043b7c24921}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\ECS\Entity.h">
@@ -108,12 +111,6 @@
     <ClInclude Include="source\Physics\MoveList.h">
       <Filter>Physics\H</Filter>
     </ClInclude>
-    <ClInclude Include="source\ECS\ColliderManager.h">
-      <Filter>ECS\H</Filter>
-    </ClInclude>
-    <ClInclude Include="source\ECS\Collider.h">
-      <Filter>ECS\H</Filter>
-    </ClInclude>
     <ClInclude Include="source\ECS\AnimatedSpriteManager.h">
       <Filter>ECS\H</Filter>
     </ClInclude>
@@ -144,11 +141,26 @@
     <ClInclude Include="source\Math\OBB.h">
       <Filter>Math\H</Filter>
     </ClInclude>
-    <ClInclude Include="source\Math\Sphere.h">
-      <Filter>Math\H</Filter>
-    </ClInclude>
     <ClInclude Include="source\Math\Vector2.h">
       <Filter>Math\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ECS\AsteroidManager.h">
+      <Filter>ECS\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\GameObject\Create.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Math\Circle.h">
+      <Filter>Math\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ECS\COLLIDER_WIP.h">
+      <Filter>ECS\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Physics\ColliderType.h">
+      <Filter>Physics\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Physics\CollisionTests.h">
+      <Filter>Physics\H</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -194,9 +206,6 @@
     <ClCompile Include="source\Physics\MoveList.cpp">
       <Filter>Physics\CPP</Filter>
     </ClCompile>
-    <ClCompile Include="source\ECS\ColliderManager.cpp">
-      <Filter>ECS\CPP</Filter>
-    </ClCompile>
     <ClCompile Include="source\ECS\AnimatedSpriteManager.cpp">
       <Filter>ECS\CPP</Filter>
     </ClCompile>
@@ -208,6 +217,12 @@
     </ClCompile>
     <ClCompile Include="source\Math\OBB.cpp">
       <Filter>Math\CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ECS\AsteroidManager.cpp">
+      <Filter>ECS\CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="source\GameObject\Create.cpp">
+      <Filter>GameObject</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
