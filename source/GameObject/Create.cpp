@@ -22,7 +22,7 @@ Entity Create::Asteroid(const Vector2& position, const float& rotation,
 	trans.pos = position;
 	trans.rot = rotation;
 	transManager.Add(entity, trans);
-	spriteManager.Create(entity, SpriteID::ASTEROID, RenderQueue::Layer::DEFAULT);
+	spriteManager.Create(entity, SpriteID::LARGE_ASTEROID, RenderQueue::Layer::DEFAULT);
 	asteroidManager.Add(entity, velocity, rotVelocity);
 
 	return entity;

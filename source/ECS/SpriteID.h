@@ -6,13 +6,67 @@ enum class SpriteID
 
 	// ANIMATED
 	SHIP_TRAIL,
-	EXPLOSION = SHIP_TRAIL + 4,
+	SHIP_TRAIL_1,
+	SHIP_TRAIL_2,
+	SHIP_TRAIL_3,
 
-	_END_ANIMATED = EXPLOSION + 4,
+	EXPLOSION,
+	EXPLOSION_1,
+	EXPLOSION_2,
+	EXPLOSION_3,
+
+	MUZZLE_FLASH,
+	BULLET,
+	BULLET_1,
+
+	_END_ANIMATED,
+
 	// STATIC
+
 	SHIP,
-	ASTEROID,
+
+	LARGE_ASTEROID,
+	
+	MEDIUM_ASTEROID_1,
+	MEDIUM_ASTEROID_2,
+	MEDIUM_ASTEROID_3,
+	MEDIUM_ASTEROID_4,
+
+	SMOL_ASTEROID_1,
+	SMOL_ASTEROID_2,
+	SMOL_ASTEROID_3,
+	SMOL_ASTEROID_4,
+	SMOL_ASTEROID_5,
+	SMOL_ASTEROID_6,
+	SMOL_ASTEROID_7,
+	SMOL_ASTEROID_8,
+	SMOL_ASTEROID_9,
+	SMOL_ASTEROID_10,
+	SMOL_ASTEROID_11,
+	SMOL_ASTEROID_12,
+	SMOL_ASTEROID_13,
+	SMOL_ASTEROID_14,
+	SMOL_ASTEROID_15,
+	SMOL_ASTEROID_16,
+
 	SHITTY_LOGO,
 
 	COUNT
 };
+
+namespace SpriteAnimationData
+{
+	constexpr SpriteID nextFrameIndex[] = {
+		SpriteID::NONE, // null animation
+		SpriteID::SHIP_TRAIL_1, SpriteID::SHIP_TRAIL_2, SpriteID::SHIP_TRAIL_3, SpriteID::SHIP_TRAIL, // ship trail
+		SpriteID::EXPLOSION_1, SpriteID::EXPLOSION_2, SpriteID::EXPLOSION_3, SpriteID::EXPLOSION, // explosion
+		SpriteID::BULLET, SpriteID::BULLET_1, SpriteID::BULLET, // bullet
+	};
+
+	constexpr float frameTime[] = {
+	0, // zero animation
+	0.15,0.1,0.2,0.1, // ship trail
+	0.1, 0.25, 0.3, 0.4, // explosion
+	0.2, 0.25,0.50, // bullet
+	};
+}

@@ -10,10 +10,6 @@
 
 #include "ColliderType.h"
 
-constexpr float largeAsteroidRadius = 27; // ?
-constexpr float mediumAsteroidRadius = 12; // ?
-constexpr float smallAsteroidRadius = 6;
-
 class Physics
 {
 public:

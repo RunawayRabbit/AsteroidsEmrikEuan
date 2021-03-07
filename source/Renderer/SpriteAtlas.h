@@ -10,9 +10,9 @@ public:
 	SpriteAtlas(Renderer& renderer);
 	SpriteAtlas() = delete;
 
-	inline const Sprite* Get(SpriteID id) const
+	inline const Sprite Get(SpriteID id) const
 	{
-		return &spriteData[(int)id];
+		return spriteData[(int)id];
 	}
 
 	static inline bool isAnimated(const SpriteID& id)
@@ -23,7 +23,7 @@ public:
 private:
 	void CreateAnimatedSprites();
 	void CreateRegularSprites();
-	void CreateSprite(SpriteID id, int texIndex, int width, int height, int x, int y, int animationFrame = 0);
+	void CreateSprite(SpriteID id, int texIndex, int width, int height, int x, int y);
 
 	void LoadPNGs(SDL_Renderer* renderer);
 	SDL_Texture* PNGToTexture(SDL_Renderer* renderer, const std::string path) const;

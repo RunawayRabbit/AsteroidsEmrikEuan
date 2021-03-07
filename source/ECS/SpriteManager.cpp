@@ -10,25 +10,13 @@
 #include "..\Math\OBB.h"
 
 
-SpriteManager::SpriteManager(Renderer& renderer, const TransformManager& transManager, const AABB screenAABB, const int capacity) :
-	repeating(transManager, capacity),
-	nonRepeating(transManager, capacity),
-	spriteAtlas(renderer),
+SpriteManager::SpriteManager(Renderer& renderer, const TransformManager& transManager, const EntityManager& entityManager, const AABB screenAABB, const int capacity) :
+	spriteAtlas(renderer), 
+	repeating(transManager, entityManager, capacity),
+	nonRepeating(transManager, entityManager, capacity),
 	transManager(transManager),
 	screenAABB(screenAABB)
 {}
-
-void SpriteManager::Animate(const float& deltaTime)
-{
-	// Trust that our shit is in SORTED order at this point with
-	// animated sprites at the front.
-
-	// Loop over sprite instances until we get to the first non-animated one
-
-
-	// AnimationStates have to be tracked separately in a different array, looks like.
-	// OFF TO SPRITECATEGORY WE GO...
-}
 
 void SpriteManager::Render(RenderQueue& renderQueue) const
 {
@@ -45,17 +33,17 @@ void SpriteManager::Create(const Entity entity, const SpriteID spriteID, const R
 	Transform trans;
 	transManager.Get(entity, &trans);
 
-	const Sprite* sprite = spriteAtlas.Get(spriteID);
+	const Sprite sprite = spriteAtlas.Get(spriteID);
 
 	SpriteTransform spriteTransform;
 
 	spriteTransform.id = spriteID;
 
 	SDL_Rect transPosition;
-	transPosition.x = ((int)trans.pos.x - sprite->source.w / 2);
-	transPosition.y = ((int)trans.pos.y - sprite->source.h / 2);
-	transPosition.w = sprite->source.w;
-	transPosition.h = sprite->source.h;
+	transPosition.x = ((int)trans.pos.x - sprite.source.w / 2);
+	transPosition.y = ((int)trans.pos.y - sprite.source.h / 2);
+	transPosition.w = sprite.source.w;
+	transPosition.h = sprite.source.h;
 	spriteTransform.position = transPosition;
 	spriteTransform.rotation = trans.rot;
 	spriteTransform.layer = layer;
@@ -63,51 +51,37 @@ void SpriteManager::Create(const Entity entity, const SpriteID spriteID, const R
 	// Pipe the call to the correct function.
 	if (shouldRepeatAtEdges)
 	{
-		if (SpriteAtlas::isAnimated(spriteID))
-			repeating.CreateAnimated(entity, spriteID, spriteTransform);
-		else
-			repeating.CreateRegular(entity, spriteID, spriteTransform);
+		repeating.Create(entity, spriteID, spriteTransform);
 	}
 	else
 	{
-		if (SpriteAtlas::isAnimated(spriteID))
-			nonRepeating.CreateAnimated(entity, spriteID, spriteTransform);
-		else
-			nonRepeating.CreateRegular(entity, spriteID, spriteTransform);
+		nonRepeating.Create(entity, spriteID, spriteTransform);
 	}
 }
 
-void SpriteManager::Update()
+void SpriteManager::Update(const float deltaTime)
 {
-	repeating.Update();
-	nonRepeating.Update();
-}
-
-
-void SpriteManager::GarbageCollect(const EntityManager& entityManager)
-{
-	// @STUB
+	repeating.Update(spriteAtlas, deltaTime);
+	nonRepeating.Update(spriteAtlas, deltaTime);
 }
 
 
 
 
 
-
-// PULL THIS INTO IT'S OWN CPP AT THIS POINT
 // SPRITE CATEGORY
 
 #pragma warning(push)
-//#pragma warning(disable: 4705)
-SpriteManager::SpriteCategory::SpriteCategory(const TransformManager& transManager, const int capacity) :
-	transManager(transManager)
+SpriteManager::SpriteCategory::SpriteCategory(const TransformManager& transManager, const EntityManager& entityManager, const int capacity) :
+	transManager(transManager),
+	entityManager(entityManager)
 {
-	AllocateMain(capacity);
+	Allocate(capacity);
 }
 #pragma warning(pop)
 
 
-void SpriteManager::SpriteCategory::AllocateMain(const int newCapacity)
+void SpriteManager::SpriteCategory::Allocate(const int newCapacity)
 {
 	capacity = newCapacity;
 
@@ -140,9 +114,9 @@ void SpriteManager::SpriteCategory::Render(RenderQueue& renderQueue, const Sprit
 	for (auto i = 0; i < size; i++)
 	{
 		const SpriteTransform* transform = transforms + i;
-		const Sprite* sprite = spriteAtlas.Get(transform->id);
+		const Sprite sprite = spriteAtlas.Get(transform->id);
 
-		renderQueue.Enqueue(sprite->texture, sprite->source, transform->position, transform->rotation, transform->layer);
+		renderQueue.Enqueue(sprite.texture, sprite.source, transform->position, transform->rotation, transform->layer);
 	}
 }
 
@@ -178,7 +152,7 @@ void SpriteManager::SpriteCategory::RenderLooped(RenderQueue& renderQueue, const
 	for (auto i = 0; i < size; i++)
 	{
 		const SpriteTransform* transform = transforms + i;
-		const Sprite* sprite = spriteAtlas.Get(transform->id);
+		const Sprite sprite = spriteAtlas.Get(transform->id);
 		OBB spriteOBB = OBB(transform->position, transform->rotation);
 
 		if (!screenAABB.FullyContains(spriteOBB))
@@ -199,58 +173,58 @@ void SpriteManager::SpriteCategory::RenderLooped(RenderQueue& renderQueue, const
 			if (spriteAABB.top < screenAABB.top)
 			{
 				// Case A - B - C
-				DrawAtBottom(renderQueue, sprite, transform, screenAABB);
+				DrawAtBottom(renderQueue, &sprite, transform, screenAABB);
 
 				if (spriteAABB.left < screenAABB.left)
 				{
 					// Case A
-					DrawAtRight(renderQueue, sprite, transform, screenAABB);
+					DrawAtRight(renderQueue, &sprite, transform, screenAABB);
 
 					// DrawAtBottomRight
 					SDL_Rect newPos = transform->position;
 					newPos.y += screenAABB.bottom;
 					newPos.x += screenAABB.right;
-					renderQueue.Enqueue(sprite->texture, sprite->source, newPos, transform->rotation, transform->layer);
+					renderQueue.Enqueue(sprite.texture, sprite.source, newPos, transform->rotation, transform->layer);
 				}				
 				else if (spriteAABB.right > screenAABB.right)
 				{
 					// Case C
-					DrawAtLeft(renderQueue, sprite, transform, screenAABB);
+					DrawAtLeft(renderQueue, &sprite, transform, screenAABB);
 					
 					// DrawAtBottomLeft
 					SDL_Rect newPos = transform->position;
 					newPos.y += screenAABB.bottom;
 					newPos.x -= screenAABB.right;
-					renderQueue.Enqueue(sprite->texture, sprite->source, newPos, transform->rotation, transform->layer);
+					renderQueue.Enqueue(sprite.texture, sprite.source, newPos, transform->rotation, transform->layer);
 				}
 			}
 			else if (spriteAABB.bottom > screenAABB.bottom)
 			{
 				// Case F - G - H
-				DrawAtTop(renderQueue, sprite, transform, screenAABB);
+				DrawAtTop(renderQueue, &sprite, transform, screenAABB);
 				if (spriteAABB.left < screenAABB.left)
 				{
 					// Case F
-					DrawAtRight(renderQueue, sprite, transform, screenAABB);
+					DrawAtRight(renderQueue, &sprite, transform, screenAABB);
 
 					// DrawAtTopRight
 
 					SDL_Rect newPos = transform->position;
 					newPos.y -= screenAABB.bottom;
 					newPos.x += screenAABB.right;
-					renderQueue.Enqueue(sprite->texture, sprite->source, newPos, transform->rotation, transform->layer);
+					renderQueue.Enqueue(sprite.texture, sprite.source, newPos, transform->rotation, transform->layer);
 				}
 				else if (spriteAABB.right > screenAABB.right)
 				{
 					// Case H
-					DrawAtLeft(renderQueue, sprite, transform, screenAABB);
+					DrawAtLeft(renderQueue, &sprite, transform, screenAABB);
 
 					// DrawAtTopLeft
 
 					SDL_Rect newPos = transform->position;
 					newPos.y -= screenAABB.bottom;
 					newPos.x -= screenAABB.right;
-					renderQueue.Enqueue(sprite->texture, sprite->source, newPos, transform->rotation, transform->layer);
+					renderQueue.Enqueue(sprite.texture, sprite.source, newPos, transform->rotation, transform->layer);
 
 				}
 			}
@@ -260,53 +234,71 @@ void SpriteManager::SpriteCategory::RenderLooped(RenderQueue& renderQueue, const
 				if (spriteAABB.left < screenAABB.left)
 				{
 					// Case D
-					DrawAtRight(renderQueue, sprite, transform, screenAABB);
+					DrawAtRight(renderQueue, &sprite, transform, screenAABB);
 				}
 				else if (spriteAABB.right > screenAABB.right)
 				{
 					// Case E
-					DrawAtLeft(renderQueue, sprite, transform, screenAABB);
+					DrawAtLeft(renderQueue, &sprite, transform, screenAABB);
 				}
 			}
 		}
 
 		// Render at the original position
-		renderQueue.Enqueue(sprite->texture, sprite->source, transform->position, transform->rotation, transform->layer);
+		renderQueue.Enqueue(sprite.texture, sprite.source, transform->position, transform->rotation, transform->layer);
 	}
 }
 
 
-void SpriteManager::SpriteCategory::CreateRegular(const Entity entity, const SpriteID spriteID, const SpriteTransform trans)
+void SpriteManager::SpriteCategory::Create(const Entity entity, const SpriteID spriteID, const SpriteTransform trans)
 {
 	if (size == capacity)
 	{
 		// We're about to overrun our buffer, we gotta scale.
-		AllocateMain((size_t)(size * (size_t)2));
+		Allocate((size_t)(size * 2));
 	}
 	
 	// Insert our data at the back of the data store
 	*(entities + size) = entity;
 	*(transforms + size) = trans;
 
+	if (SpriteAtlas::isAnimated(spriteID))
+	{
+		// @TODO: This isn't the most efficient algorithm but I'm assuming the compiler will fix it..?
+		std::swap(*(entities + size), *(entities + currentFrameTimes.size()));
+		std::swap(*(transforms + size), *(transforms + currentFrameTimes.size()));
+
+		currentFrameTimes.push_back(SpriteAnimationData::frameTime[(int)spriteID]);
+	}
+
 	++size;
 }
 
-void SpriteManager::SpriteCategory::CreateAnimated(const Entity entity, const SpriteID spriteID, const SpriteTransform trans)
-{
-	// @STUB
-}
-
-void SpriteManager::SpriteCategory::Update()
+void SpriteManager::SpriteCategory::Update(const SpriteAtlas& spriteAtlas, const float deltaTime)
 {
 	int i = 0;
 	while(i < size)
 	{
 		Entity* entity = (entities + i);
 		SpriteTransform* spriteTrans = (transforms + i);
-		
+
 		Transform transform;
-		if (transManager.Get(*entity, &transform))
+		if (entityManager.Exists(*entity) && transManager.Get(*entity, &transform))
 		{
+			if (SpriteAtlas::isAnimated(spriteTrans->id))
+			{
+				currentFrameTimes[i] -= deltaTime;
+				if (currentFrameTimes[i] < 0.0f)
+				{
+					spriteTrans->id = SpriteAnimationData::nextFrameIndex[(int)spriteTrans->id];
+					currentFrameTimes[i] += SpriteAnimationData::frameTime[(int)spriteTrans->id];
+
+					const Sprite newSprite = spriteAtlas.Get(spriteTrans->id);
+					spriteTrans->position.w = newSprite.source.w;
+					spriteTrans->position.h = newSprite.source.h;
+				}
+			}
+
 			spriteTrans->rotation = transform.rot;
 			spriteTrans->position.x = transform.pos.x - spriteTrans->position.w / 2;
 			spriteTrans->position.y = transform.pos.y - spriteTrans->position.h / 2;
@@ -315,13 +307,31 @@ void SpriteManager::SpriteCategory::Update()
 		}
 		else
 		{
-			// Transform appears to have been deleted.
+			// Entity or Transform appears to have been deleted.
 			// Do the swap to remove it from the list.
-			Entity* lastActiveEntity = entities + size - 1;
-			SpriteTransform* lastActiveTransform = transforms + size - 1;
 
-			*(entities + i) = *(lastActiveEntity);
-			*(transforms + i) = *(lastActiveTransform);
+			Entity* lastEntity = entities + size - 1;
+			SpriteTransform* lastTransform = transforms + size - 1;
+
+			int swapTarget = i;
+
+			if (SpriteAtlas::isAnimated(spriteTrans->id))
+			{
+				// Maintain sorted order for animated sprites
+				swapTarget = currentFrameTimes.size() - 1;
+
+				Entity* lastAnimatedEntity = entities + swapTarget;
+				SpriteTransform* lastAnimatedTransform = transforms + swapTarget;
+
+				*(entities + i) = *(lastAnimatedEntity);
+				*(transforms + i) = *(lastAnimatedTransform);
+
+				currentFrameTimes[i] = currentFrameTimes.back();
+				currentFrameTimes.pop_back();
+			}
+
+			*(entities + swapTarget) = *(lastEntity);
+			*(transforms + swapTarget) = *(lastTransform);
 
 			--size;
 		}

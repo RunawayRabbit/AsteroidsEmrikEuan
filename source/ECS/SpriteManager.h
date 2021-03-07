@@ -25,17 +25,14 @@ struct SpriteTransform
 class SpriteManager
 {
 public:
-	SpriteManager(Renderer& renderer, const TransformManager& transManager, const AABB screenAABB, const int capacity);
+	SpriteManager(Renderer& renderer, const TransformManager& transManager, const EntityManager& entityManager, const AABB screenAABB, const int capacity);
 	SpriteManager() = delete;
 
 	void Create(const Entity entity, const SpriteID spriteID, const RenderQueue::Layer layer, const bool shouldRepeatAtEdges = true);
-	void GarbageCollect(const EntityManager& entityManager);
-
-	void Animate(const float& deltaTime);
 
 	void Render(RenderQueue& renderQueue) const;
 
-	void Update();
+	void Update(const float deltaTime);
 
 private:
 	const TransformManager& transManager;
@@ -43,16 +40,14 @@ private:
 	class SpriteCategory
 	{
 	public:
-		SpriteCategory(const TransformManager& transManager, const int capacity);
+		SpriteCategory(const TransformManager& transManager, const EntityManager& entityManager, const int capacity);
 		SpriteCategory() = delete;
 
-		void AllocateMain(const int newCapacity);
-		void AllocateAnimData(const int newCapacity);
+		void Allocate(const int newCapacity);
 		
-		void CreateRegular(const Entity entity, const SpriteID spriteID, const SpriteTransform trans);
-		void CreateAnimated(const Entity entity, const SpriteID spriteID, const SpriteTransform trans);
+		void Create(const Entity entity, const SpriteID spriteID, const SpriteTransform trans);
 
-		void Update();
+		void Update(const SpriteAtlas& spriteAtlas, const float deltaTime);
 
 		void Render(RenderQueue& renderQueue, const SpriteAtlas& spriteAtlas) const;
 		void RenderLooped(RenderQueue& renderQueue, const SpriteAtlas& spriteAtlas, const AABB& screenAABB) const;
@@ -65,13 +60,17 @@ private:
 
 	private:
 		const TransformManager& transManager;
+		const EntityManager& entityManager;
 
 		int size = 0;
+		int animatedSize = 0;
 		int capacity;
 
 		void* buffer;
 		Entity* entities;
 		SpriteTransform* transforms;
+
+		std::vector<float> currentFrameTimes;
 	};
 
 	AABB screenAABB;

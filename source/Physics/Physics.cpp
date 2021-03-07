@@ -75,17 +75,15 @@ void Physics::Begin()
 
 }
 
-void Physics::SweepColliders(const float deltaTime)
-{
-
-}
-
-
 void Physics::DetectCollisions(float deltaTime)
 {
-#if 1
+
 	auto firstLarge = moveList.begin();
 	auto firstMedium = moveList.end();
+	auto firstSmall = moveList.end(); // @TODO: Yea..
+	auto endOfAsteroids = moveList.end();
+
+#pragma region ShipToAsteroid
 
 	Transform playerTrans;
 	transformManager.Get(playerShip, &playerTrans);
@@ -102,8 +100,31 @@ void Physics::DetectCollisions(float deltaTime)
 		}
 	}
 
+	for (auto mediumAsteroid = firstMedium;
+		mediumAsteroid < firstSmall;
+		++mediumAsteroid)
+	{
+		Circle asteroid(mediumAsteroid->transform.pos, ColliderRadius::Medium);
+		if (CollisionTests::OBBToCircle(playerOBB, asteroid))
+		{
+			std::cout << "Player Be Ded." << std::endl;
+		}
+	}
 
+	for (auto smallAsteroid = firstSmall;
+		smallAsteroid < endOfAsteroids;
+		++smallAsteroid)
+	{
+		Circle asteroid(smallAsteroid->transform.pos, ColliderRadius::Small);
+		if (CollisionTests::OBBToCircle(playerOBB, asteroid))
+		{
+			std::cout << "Player Be Ded." << std::endl;
+		}
+	}
 
+#pragma endregion
+
+#pragma region LargeVsAll
 	for (auto asteroidA = firstLarge;
 		asteroidA < firstMedium - 1;
 		++asteroidA)
@@ -113,8 +134,8 @@ void Physics::DetectCollisions(float deltaTime)
 			asteroidB < firstMedium;
 			++asteroidB)
 		{
-			constexpr float largeVsLargeSqRadius = (largeAsteroidRadius + largeAsteroidRadius) *
-				(largeAsteroidRadius + largeAsteroidRadius);
+			constexpr float largeVsLargeSqRadius = (ColliderRadius::Large + ColliderRadius::Large) *
+				(ColliderRadius::Large + ColliderRadius::Large);
 
 			float timeOfCollision;
 			if (CollisionTests::SweptCircleToCircle(asteroidA->transform.pos, asteroidA->Velocity,
@@ -123,40 +144,105 @@ void Physics::DetectCollisions(float deltaTime)
 				//std::cout << "Collision between " << asteroidA->id.ToString() << " and " << asteroidB->id.ToString() << "!\n";
 			}
 		}
+
+		// Test all Large vs all Medium
+		for (auto asteroidB = firstMedium;
+			asteroidB < firstSmall;
+			++asteroidB)
+		{
+			constexpr float largeVsMediumSqRadius = (ColliderRadius::Large + ColliderRadius::Medium) *
+				(ColliderRadius::Large + ColliderRadius::Medium);
+
+			float timeOfCollision;
+			if (CollisionTests::SweptCircleToCircle(asteroidA->transform.pos, asteroidA->Velocity,
+				asteroidB->transform.pos, asteroidB->Velocity, largeVsMediumSqRadius, deltaTime, &timeOfCollision))
+			{
+				//std::cout << "Collision between " << asteroidA->id.ToString() << " and " << asteroidB->id.ToString() << "!\n";
+			}
+		}
+
+		// Test all Large vs all Small
+		for (auto asteroidB = firstSmall;
+			asteroidB < endOfAsteroids;
+			++asteroidB)
+		{
+			constexpr float largeVsSmallSqRadius = (ColliderRadius::Large + ColliderRadius::Small) *
+				(ColliderRadius::Large + ColliderRadius::Small);
+
+			float timeOfCollision;
+			if (CollisionTests::SweptCircleToCircle(asteroidA->transform.pos, asteroidA->Velocity,
+				asteroidB->transform.pos, asteroidB->Velocity, largeVsSmallSqRadius, deltaTime, &timeOfCollision))
+			{
+				//std::cout << "Collision between " << asteroidA->id.ToString() << " and " << asteroidB->id.ToString() << "!\n";
+			}
+		}
 	}
 
+#pragma endregion
 
-#else
-	Transform transA;
-	transformManager.Get(testA, &transA);
-
-	Transform transB;
-	transformManager.Get(testB, &transB);
-
-	Circle circleA(transA.pos, ColliderRadius::Large);
-	Circle circleB(transB.pos, ColliderRadius::Large);
-
-	SDL_Rect testShip;
-	testShip.x = transA.pos.x - ColliderRadius::Ship / 2.0f;
-	testShip.y = transA.pos.y - ColliderRadius::Ship / 2.0f;
-	testShip.w = ColliderRadius::Ship;
-	testShip.h = ColliderRadius::Ship;
-
-	OBB shipA(testShip, transA.rot);
-	//std::cout << shipA.center.x << ", " << shipA.center.y << "\n";
-
-
-	CollisionTests::OBBToCircle(shipA, circleB);
-
-	
-	float timeOfCollision;
-	if (CollisionTests::SweptCircleToCircle(circleA, Vector2::zero(), circleB, Vector2{ 20.0f, 0.0f }, deltaTime, &timeOfCollision))
+#pragma region Medium_vs_All
+	for (auto asteroidA = firstMedium;
+		asteroidA < firstSmall - 1;
+		++asteroidA)
 	{
-		//This works apparently.
-		std::cout << timeOfCollision << std::endl;
-	}
-#endif
 
+		// Test all Medium vs all other Medium
+		for (auto asteroidB = asteroidA + 1;
+			asteroidB < firstSmall;
+			++asteroidB)
+		{
+			constexpr float  mediumVsMediumSqRadius = (ColliderRadius::Medium + ColliderRadius::Medium) *
+				(ColliderRadius::Medium + ColliderRadius::Medium);
+
+			float timeOfCollision;
+			if (CollisionTests::SweptCircleToCircle(asteroidA->transform.pos, asteroidA->Velocity,
+				asteroidB->transform.pos, asteroidB->Velocity, mediumVsMediumSqRadius, deltaTime, &timeOfCollision))
+			{
+				//std::cout << "Collision between " << asteroidA->id.ToString() << " and " << asteroidB->id.ToString() << "!\n";
+			}
+		}
+
+		// Test all Medium vs all Small
+		for (auto asteroidB = firstSmall;
+			asteroidB < endOfAsteroids;
+			++asteroidB)
+		{
+			constexpr float  mediumVsSmallSqRadius = (ColliderRadius::Medium + ColliderRadius::Small) *
+				(ColliderRadius::Medium + ColliderRadius::Small);
+
+			float timeOfCollision;
+			if (CollisionTests::SweptCircleToCircle(asteroidA->transform.pos, asteroidA->Velocity,
+				asteroidB->transform.pos, asteroidB->Velocity, mediumVsSmallSqRadius, deltaTime, &timeOfCollision))
+			{
+				//std::cout << "Collision between " << asteroidA->id.ToString() << " and " << asteroidB->id.ToString() << "!\n";
+			}
+		}
+	}
+#pragma endregion
+
+#pragma region Small_vs_Small
+	for (auto asteroidA = firstSmall;
+		asteroidA < endOfAsteroids - 1;
+		++asteroidA)
+	{
+
+		// Test all Small vs all other Small
+		for (auto asteroidB = asteroidA + 1;
+			asteroidB < endOfAsteroids;
+			++asteroidB)
+		{
+			constexpr float smallVsSmallSqRadius = (ColliderRadius::Small + ColliderRadius::Small) *
+				(ColliderRadius::Small + ColliderRadius::Small);
+
+			float timeOfCollision;
+			if (CollisionTests::SweptCircleToCircle(asteroidA->transform.pos, asteroidA->Velocity,
+				asteroidB->transform.pos, asteroidB->Velocity, smallVsSmallSqRadius, deltaTime, &timeOfCollision))
+			{
+				//std::cout << "Collision between " << asteroidA->id.ToString() << " and " << asteroidB->id.ToString() << "!\n";
+			}
+		}
+	}
+#pragma endregion
 }
 
 

@@ -23,7 +23,7 @@ Game::Game(std::string windowName, int width, int height) :
 	input(InputHandler(*this)),
 	gameField(0.0f, (float)height, 0.0f, (float)width),
 	xforms(2), //intial capacity. Can resize dynamically.
-	sprites(renderer, xforms, AABB(0, height, 0, width), 128),
+	sprites(renderer, xforms, entities, AABB(0, height, 0, width), 128),
 	asteroids(entities, 2),
 	create(entities, xforms, sprites, asteroids),
 	physics(xforms, AABB(0, height, 0, width)),
@@ -37,7 +37,7 @@ Game::Game(std::string windowName, int width, int height) :
 
 	std::vector<Vector2> asteroidPositions;
 
-	for (auto i = 0; i < 10; i++)
+	for (auto i = 0; i < 100; i++)
 	{
 		bool isValidPosition = false;
 		int attempts = 0;
@@ -73,7 +73,20 @@ Game::Game(std::string windowName, int width, int height) :
 
 				asteroidPositions.push_back(startPos);
 
-				create.Asteroid(startPos, startRot, startVel, rotVel);
+				Entity entity = entities.Create();
+
+				Transform trans;
+				trans.pos = startPos;
+				trans.rot = startRot;
+				xforms.Add(entity, trans);
+
+				int first = (int)SpriteID::SHIP_TRAIL;
+				int onePastLast = (int)SpriteID::_END_ANIMATED;
+
+				SpriteID spriteID = (SpriteID)(first + (i % (onePastLast - first)));
+				
+				sprites.Create(entity, spriteID, RenderQueue::Layer::DEFAULT);
+				asteroids.Add(entity, startVel, rotVel);
 			}
 			++attempts;
 		}
@@ -105,8 +118,6 @@ void Game::ProcessInput()
 
 void Game::Update(float deltaTime)
 {
-	// Animate the animated sprites
-	sprites.Animate(deltaTime);
 
 	/* FREEWRITE ON UPDATE
 	
@@ -183,6 +194,8 @@ void Game::Update(float deltaTime)
 	
 	*/
 
+	sprites.Update(deltaTime);
+
 	// GC
 
 	GarbageCollection();
@@ -211,7 +224,7 @@ void Game::Render()
 	// @TODO: Render all static backgrounds
 	//renderQueue.Enqueue()
 
-	sprites.Update();
+
 	sprites.Render(renderQueue);
 
 
@@ -236,9 +249,7 @@ void Game::GarbageCollection()
 	case 1:
 		xforms.GarbageCollect(entities);
 		break;
-	case 2:
-		sprites.GarbageCollect(entities);
-		break;
+
 	default:
 		GCStep = 0;
 	}
