@@ -11,11 +11,10 @@ public:
 
 	struct Element
 	{
-		SDL_Texture* tex; // 64
-		SDL_Rect srcRect; // 128
-		SDL_Rect dstRect; // 128
+		SDL_Texture* tex;
+		SDL_Rect srcRect;
+		SDL_Rect dstRect;
 		float angle;
-		// total 320 bits
 	};
 
 	enum class Layer

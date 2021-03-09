@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\ECS\AnimatedSpriteManager.h" />
-    <ClInclude Include="source\ECS\AsteroidManager.h" />
+    <ClInclude Include="source\ECS\RigidbodyManager.h" />
     <ClInclude Include="source\ECS\COLLIDER_WIP.h" />
     <ClInclude Include="source\ECS\Entity.h" />
     <ClInclude Include="source\ECS\EntityManager.h" />
@@ -43,9 +43,7 @@
     <ClInclude Include="source\Math\Vector2Int.h" />
     <ClInclude Include="source\Physics\CollisionTests.h" />
     <ClInclude Include="source\Physics\ColliderType.h" />
-    <ClInclude Include="source\Physics\MoveList.h" />
     <ClInclude Include="source\Physics\Physics.h" />
-    <ClInclude Include="source\Physics\Move.h" />
     <ClInclude Include="source\Platform\FrameTimer.h" />
     <ClInclude Include="source\Platform\Game.h" />
     <ClInclude Include="source\Renderer\Color.h" />
@@ -56,7 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\ECS\AnimatedSpriteManager.cpp" />
-    <ClCompile Include="source\ECS\AsteroidManager.cpp" />
+    <ClCompile Include="source\ECS\RigidbodyManager.cpp" />
     <ClCompile Include="source\ECS\EntityManager.cpp" />
     <ClCompile Include="source\ECS\SpriteManager.cpp" />
     <ClCompile Include="source\ECS\Transform.cpp" />
@@ -66,7 +64,6 @@
     <ClCompile Include="source\Input\InputHandler.cpp" />
     <ClCompile Include="source\Math\AABB.cpp" />
     <ClCompile Include="source\Math\OBB.cpp" />
-    <ClCompile Include="source\Physics\MoveList.cpp" />
     <ClCompile Include="source\Physics\Physics.cpp" />
     <ClCompile Include="source\Platform\FrameTimer.cpp" />
     <ClCompile Include="source\Platform\Game.cpp" />

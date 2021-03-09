@@ -1,55 +1,72 @@
 #pragma once
 
 #include <vector>
-#include <functional>
-
-#include "MoveList.h"
-#include "Move.h"
+#include <set>
+#include <map>
 
 #include "..\Math\AABB.h"
-
 #include "ColliderType.h"
+
+#include "..\ECS\Entity.h"
+#include "..\ECS\Transform.h"
+
+class TransformManager;
+class RigidbodyManager;
+struct Rigidbody;
 
 class Physics
 {
 public:
-	Physics(TransformManager& transformManager, const AABB& screenAABB);
-
-	void Reset();
+	Physics(TransformManager& transformManager, RigidbodyManager& rigidbodyManager, const AABB& screenAABB);
 
 	void RegisterPlayerShip(const Entity& playerShip);
-
-	void Enqueue(const Entity& entity, const Vector2& velocity, const float& angularVelocity);
-
-	void Simulate(Entity testA, Entity testB, const float deltaTime);
-	const std::vector<Move> DirtyList() const;
-
-
+	void Enqueue(const Entity& entity);
+	void Simulate(const float& deltaTime);
 
 private:
 
-	static constexpr int MAX_ITERATIONS = 3;
+	struct ResolvedListEntry
+	{
+		Entity entity;
+		Vector2 position;
+		float rotation;
+		Vector2 velocity;
+		float angularVelocity;
+	};
 
-	void Begin();
-	void SweepColliders(const float deltaTime);
-	void DetectCollisions(float deltaTime);
-	void ResolveMoves(const float deltaTime);
+	struct CollisionListEntry
+	{
+		Entity A;
+		Entity B;
+		float massA;
+		float massB;
+		float timeOfCollision;
+
+		bool operator<(const CollisionListEntry& other) const
+		{
+			return (this->timeOfCollision < other.timeOfCollision);
+		}
+	};
+
+	void DetectInitialCollisions(const float deltaTime);
+	void DetectSecondaryCollisions();
+	void ResolveUpdatedMovement(const float deltaTime);
+	void ResolveMove(const float deltaTime, CollisionListEntry collision);
+	void FinalizeMoves(const float deltaTime);
+	void End();
+
+	static constexpr int MaxSolverIterations = 3;
+	static constexpr float AsteroidMasses[]{ 16.0f, 4.0f, 1.0f };
+
+	TransformManager& transformManager;
+	RigidbodyManager& rigidbodyManager;
 
 	const AABB screenAABB;
 	Entity playerShip;
-	std::vector<Move> finalizedMoves;
 
-	TransformManager& transformManager;
+	std::vector<Rigidbody> moveList;
 
-	// Move List Stuff
-
-	struct Entry
-	{
-		Entity id;
-		Vector2 Velocity;
-		float angularVelocity;
-		Transform transform; // initialize this by copying from the entityID in the xform manager
-	};
-
-	std::vector<Entry> moveList;
+	std::vector<CollisionListEntry> collisionList;
+	std::multimap<float, ResolvedListEntry> resolvedList;
+	std::set<Entity> dirtyList;
 };

@@ -108,9 +108,6 @@
     <ClInclude Include="source\Physics\Physics.h">
       <Filter>Physics\H</Filter>
     </ClInclude>
-    <ClInclude Include="source\Physics\MoveList.h">
-      <Filter>Physics\H</Filter>
-    </ClInclude>
     <ClInclude Include="source\ECS\AnimatedSpriteManager.h">
       <Filter>ECS\H</Filter>
     </ClInclude>
@@ -119,9 +116,6 @@
     </ClInclude>
     <ClInclude Include="source\ECS\Sprite.h">
       <Filter>ECS\H</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Physics\Move.h">
-      <Filter>Physics\H</Filter>
     </ClInclude>
     <ClInclude Include="source\ECS\SpriteID.h">
       <Filter>ECS\H</Filter>
@@ -144,9 +138,6 @@
     <ClInclude Include="source\Math\Vector2.h">
       <Filter>Math\H</Filter>
     </ClInclude>
-    <ClInclude Include="source\ECS\AsteroidManager.h">
-      <Filter>ECS\H</Filter>
-    </ClInclude>
     <ClInclude Include="source\GameObject\Create.h">
       <Filter>GameObject</Filter>
     </ClInclude>
@@ -161,6 +152,9 @@
     </ClInclude>
     <ClInclude Include="source\Physics\CollisionTests.h">
       <Filter>Physics\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ECS\RigidbodyManager.h">
+      <Filter>ECS\H</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -203,9 +197,6 @@
     <ClCompile Include="source\Physics\Physics.cpp">
       <Filter>Physics\CPP</Filter>
     </ClCompile>
-    <ClCompile Include="source\Physics\MoveList.cpp">
-      <Filter>Physics\CPP</Filter>
-    </ClCompile>
     <ClCompile Include="source\ECS\AnimatedSpriteManager.cpp">
       <Filter>ECS\CPP</Filter>
     </ClCompile>
@@ -218,11 +209,11 @@
     <ClCompile Include="source\Math\OBB.cpp">
       <Filter>Math\CPP</Filter>
     </ClCompile>
-    <ClCompile Include="source\ECS\AsteroidManager.cpp">
-      <Filter>ECS\CPP</Filter>
-    </ClCompile>
     <ClCompile Include="source\GameObject\Create.cpp">
       <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ECS\RigidbodyManager.cpp">
+      <Filter>ECS\CPP</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

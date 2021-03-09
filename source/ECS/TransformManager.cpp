@@ -2,7 +2,11 @@
 #include "TransformManager.h"
 #include "EntityManager.h"
 
-#include "..\Physics\Move.h"
+
+/* @TODO:
+	Becoming more and more clear that a lookup table for transforms would
+	offer a huge performance benefit for the physics system.
+*/
 
 TransformManager::TransformManager(int capacity)
 {
@@ -53,7 +57,7 @@ void TransformManager::Add(const Entity entity, const Transform transform)
 	if (size == capacity)
 	{
 		// We're about to overrun our buffer, we gotta scale.
-		Allocate((size_t)(size * (size_t)2));
+		Allocate((size * 2));
 	}
 
 #if DEBUG_STUFF
@@ -150,14 +154,4 @@ void TransformManager::Allocate(int newCapacity)
 	// Switch the buffers and free the old memory
 	delete buffer;
 	buffer = newBuffer;
-}
-
-void TransformManager::Update(const std::vector<Move> resolvedCollisions)
-{
-	// STUB
-}
-
-const std::vector<Entity> TransformManager::GetDirtyList() const 
-{
-	return dirtyList;
 }

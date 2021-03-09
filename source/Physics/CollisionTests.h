@@ -10,9 +10,13 @@
 namespace CollisionTests
 {
 
+	// Adapted from https://www.gamasutra.com/view/feature/131790/simple_intersection_tests_for_games.php?page=2
+	// Returns true if we will collide this frame and fills timeUntilCollision with the fraction of deltaTime at
+	// which the collision will take place. (t.ex: timeUntilCollision == 0.5f means we will collide in exactly
+	// half a frame.)
 	bool SweptCircleToCircle(const Vector2& centerA, const Vector2& velA,
-		const Vector2& centerB, const Vector2& velB, const float& combinedRadiiSq,
-		const float& deltaTime,	float* timeUntilCollision)
+		const Vector2& centerB, const Vector2& velB, const float& radiusA,
+		const float& combinedRadiiSq, const float& deltaTime, float& timeUntilCollision)
 	{
 		const Vector2 startPositionDelta = centerB - centerA;
 
@@ -20,14 +24,16 @@ namespace CollisionTests
 		if (constantTerm < 0.0f)
 		{
 			// Circles are currently intersecting.
-
-			*timeUntilCollision = 0;
-			return true;
+			// @TODO:
+			// It's not the *best* solution, but for now, let's just allow them to intersect
+			// and float off until they clear each other.
+			timeUntilCollision = 0;
+			return false;
 		}
 
 		const Vector2 relativeVelocity = (velB - velA) * deltaTime;	// this is in units per frame.
 		const float squaredTerm = Dot(relativeVelocity, relativeVelocity); // t*t
-		if (squaredTerm < 0.0001f)
+		if (squaredTerm < 0.00001f)
 		{
 			// Circles are relatively stationary
 			return false;
@@ -49,27 +55,12 @@ namespace CollisionTests
 
 		// We have our collision!
 
-		*timeUntilCollision = (-scalarTerm - sqrt(determinant)) / squaredTerm;
-		if (*timeUntilCollision < 1.0f)
+		timeUntilCollision = (-scalarTerm - sqrt(determinant)) / squaredTerm;
+		if (timeUntilCollision < 1.0f)
 			return true;
 		else
 			return false;
 	}
-
-	// Adapted from https://www.gamasutra.com/view/feature/131790/simple_intersection_tests_for_games.php?page=2
-	// Returns true if we will collide this frame and fills timeUntilCollision with the fraction of deltaTime at
-	// which the collision will take place. (t.ex: timeUntilCollision == 0.5f means we will collide in exactly
-	// half a frame.)
-	bool SweptCircleToCircle(const Circle& A, const Vector2& velA,
-		const Circle& B, const Vector2& velB, const float& deltaTime,
-		float* timeUntilCollision)
-	{
-		const float combinedRadius = A.radius + B.radius;
-		const float combinedRadiusSq = combinedRadius * combinedRadius;
-
-		return SweptCircleToCircle(A.center, velA, B.center, velB, combinedRadiusSq, deltaTime, timeUntilCollision);
-	}
-
 
 
 	// This test is *very simple* because our specific usecase does not call for

@@ -1,17 +1,17 @@
 
 #include "Create.h"
 
-#include "..\ECS\AsteroidManager.h"
+#include "..\ECS\RigidbodyManager.h"
 #include "..\ECS\TransformManager.h"
 #include "..\ECS\SpriteManager.h"
 #include "..\ECS\EntityManager.h"
 
 Create::Create(EntityManager& entities, TransformManager& transforms,
-	SpriteManager& sprites, AsteroidManager& asteroids) :
+	SpriteManager& sprites, RigidbodyManager& rigidbodies) :
 	entityManager(entities),
 	transManager(transforms),
 	spriteManager(sprites),
-	asteroidManager(asteroids) {}
+	rigidbodyManager(rigidbodies) {}
 
 Entity Create::Asteroid(const Vector2& position, const float& rotation,
 	const Vector2& velocity, const float& rotVelocity)
@@ -23,7 +23,7 @@ Entity Create::Asteroid(const Vector2& position, const float& rotation,
 	trans.rot = rotation;
 	transManager.Add(entity, trans);
 	spriteManager.Create(entity, SpriteID::LARGE_ASTEROID, RenderQueue::Layer::DEFAULT);
-	asteroidManager.Add(entity, velocity, rotVelocity);
+	rigidbodyManager.Add(entity, ColliderType::LARGE_ASTEROID, velocity, rotVelocity);
 
 	return entity;
 }

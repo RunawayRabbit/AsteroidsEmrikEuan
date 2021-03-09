@@ -6,8 +6,6 @@
 #include "Entity.h"
 #include "EntityManager.h"
 
-#include "..\Physics\Move.h"
-
 class TransformManager
 {
 public:
@@ -22,12 +20,9 @@ public:
 	void Remove(const Entity entity);
 	void GarbageCollect(const EntityManager& entityManager);
 
-	void Update(const std::vector<Move>);
-	const std::vector<Entity> GetDirtyList() const;
-
 private:
-	size_t size;
-	size_t capacity;
+	int size;
+	int capacity;
 
 	Entity* entities;
 	Transform* transforms;

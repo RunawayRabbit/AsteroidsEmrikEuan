@@ -123,27 +123,27 @@ void SpriteManager::SpriteCategory::Render(RenderQueue& renderQueue, const Sprit
 void SpriteManager::SpriteCategory::DrawAtTop(RenderQueue &renderQueue, const Sprite* sprite, const SpriteTransform* transform, const AABB& screenAABB) const
 {
 	SDL_Rect newPos = transform->position;
-	newPos.y -= screenAABB.bottom;
+	newPos.y -= (int)floor(screenAABB.bottom);
 	renderQueue.Enqueue(sprite->texture, sprite->source, newPos, transform->rotation, transform->layer);
 
 }
 void SpriteManager::SpriteCategory::DrawAtBottom(RenderQueue& renderQueue, const Sprite* sprite, const SpriteTransform* transform, const AABB& screenAABB) const
 {
 	SDL_Rect newPos = transform->position;
-	newPos.y += screenAABB.bottom;
+	newPos.y += (int)floor(screenAABB.bottom);
 	renderQueue.Enqueue(sprite->texture, sprite->source, newPos, transform->rotation, transform->layer);
 }
 
 void SpriteManager::SpriteCategory::DrawAtLeft(RenderQueue& renderQueue, const Sprite* sprite, const SpriteTransform* transform, const AABB& screenAABB) const
 {
 	SDL_Rect newPos = transform->position;
-	newPos.x -= screenAABB.right;
+	newPos.x -= (int)floor(screenAABB.right);
 	renderQueue.Enqueue(sprite->texture, sprite->source, newPos, transform->rotation, transform->layer);
 }
 void SpriteManager::SpriteCategory::DrawAtRight(RenderQueue& renderQueue, const Sprite* sprite, const SpriteTransform* transform, const AABB& screenAABB) const
 {
 	SDL_Rect newPos = transform->position;
-	newPos.x += screenAABB.right;
+	newPos.x += (int)floor(screenAABB.right);
 	renderQueue.Enqueue(sprite->texture, sprite->source, newPos, transform->rotation, transform->layer);
 }
 
@@ -182,8 +182,8 @@ void SpriteManager::SpriteCategory::RenderLooped(RenderQueue& renderQueue, const
 
 					// DrawAtBottomRight
 					SDL_Rect newPos = transform->position;
-					newPos.y += screenAABB.bottom;
-					newPos.x += screenAABB.right;
+					newPos.y += (int)floor(screenAABB.bottom);
+					newPos.x += (int)floor(screenAABB.right);
 					renderQueue.Enqueue(sprite.texture, sprite.source, newPos, transform->rotation, transform->layer);
 				}				
 				else if (spriteAABB.right > screenAABB.right)
@@ -193,8 +193,8 @@ void SpriteManager::SpriteCategory::RenderLooped(RenderQueue& renderQueue, const
 					
 					// DrawAtBottomLeft
 					SDL_Rect newPos = transform->position;
-					newPos.y += screenAABB.bottom;
-					newPos.x -= screenAABB.right;
+					newPos.y += (int)floor(screenAABB.bottom);
+					newPos.x -= (int)floor(screenAABB.right);
 					renderQueue.Enqueue(sprite.texture, sprite.source, newPos, transform->rotation, transform->layer);
 				}
 			}
@@ -210,8 +210,8 @@ void SpriteManager::SpriteCategory::RenderLooped(RenderQueue& renderQueue, const
 					// DrawAtTopRight
 
 					SDL_Rect newPos = transform->position;
-					newPos.y -= screenAABB.bottom;
-					newPos.x += screenAABB.right;
+					newPos.y -= (int)floor(screenAABB.bottom);
+					newPos.x += (int)floor(screenAABB.right);
 					renderQueue.Enqueue(sprite.texture, sprite.source, newPos, transform->rotation, transform->layer);
 				}
 				else if (spriteAABB.right > screenAABB.right)
@@ -222,8 +222,8 @@ void SpriteManager::SpriteCategory::RenderLooped(RenderQueue& renderQueue, const
 					// DrawAtTopLeft
 
 					SDL_Rect newPos = transform->position;
-					newPos.y -= screenAABB.bottom;
-					newPos.x -= screenAABB.right;
+					newPos.y -= (int)floor(screenAABB.bottom);
+					newPos.x -= (int)floor(screenAABB.right);
 					renderQueue.Enqueue(sprite.texture, sprite.source, newPos, transform->rotation, transform->layer);
 
 				}
@@ -300,8 +300,8 @@ void SpriteManager::SpriteCategory::Update(const SpriteAtlas& spriteAtlas, const
 			}
 
 			spriteTrans->rotation = transform.rot;
-			spriteTrans->position.x = transform.pos.x - spriteTrans->position.w / 2;
-			spriteTrans->position.y = transform.pos.y - spriteTrans->position.h / 2;
+			spriteTrans->position.x = (int)floor(transform.pos.x - (float)spriteTrans->position.w / 2.0f);
+			spriteTrans->position.y = (int)floor(transform.pos.y - (float)spriteTrans->position.h / 2.0f);
 
 			++i;
 		}
@@ -313,7 +313,7 @@ void SpriteManager::SpriteCategory::Update(const SpriteAtlas& spriteAtlas, const
 			Entity* lastEntity = entities + size - 1;
 			SpriteTransform* lastTransform = transforms + size - 1;
 
-			int swapTarget = i;
+			size_t swapTarget = i;
 
 			if (SpriteAtlas::isAnimated(spriteTrans->id))
 			{

@@ -10,7 +10,7 @@
 #include "../ECS/TransformManager.h"
 #include "../ECS/AnimatedSpriteManager.h"
 #include "../ECS/SpriteManager.h"
-#include "../ECS/AsteroidManager.h"
+#include "../ECS/RigidbodyManager.h"
 
 #include "../GameObject/Create.h"
 
@@ -53,7 +53,7 @@ private:
 	TransformManager xforms;
 	SpriteManager sprites;
 
-	AsteroidManager asteroids;
+	RigidbodyManager rigidbodies;
 
 	Physics physics;
 	const AABB gameField;

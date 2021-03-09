@@ -8,8 +8,6 @@
 
 #include "..\Renderer\RenderQueue.h"
 
-
-
 int main(int argc, char* args[])
 {
 	// Game Setup

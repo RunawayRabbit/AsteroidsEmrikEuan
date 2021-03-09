@@ -77,22 +77,4 @@ namespace Math
 	{
 		return std::clamp(t - floor(t / length) * length, 0.0f, length);
 	}
-
-	static bool QuadraticFormula(const float a, const float b, const float c,
-		float& root1, float& root2)
-	{
-		const float q = b * b - 4 * a * c;
-		
-		// roots are complex, so i just walk right on out of there
-		if (q < 0) 
-			return false;
-
-		const float sqrtq = sqrt(q);
-		const float d = 1.0f / (2.0f * a);
-
-		root1 = (-b + sqrtq) * d;
-		root2 = (-b - sqrtq) * d;
-
-		return true;
-	}
 }

@@ -15,7 +15,6 @@
 
 
 static Entity GLOBALtestEntity;
-static Entity GLOBALtestEntity2;
 
 
 Game::Game(std::string windowName, int width, int height) :
@@ -23,10 +22,10 @@ Game::Game(std::string windowName, int width, int height) :
 	input(InputHandler(*this)),
 	gameField(0.0f, (float)height, 0.0f, (float)width),
 	xforms(2), //intial capacity. Can resize dynamically.
-	sprites(renderer, xforms, entities, AABB(0, height, 0, width), 128),
-	asteroids(entities, 2),
-	create(entities, xforms, sprites, asteroids),
-	physics(xforms, AABB(0, height, 0, width)),
+	sprites(renderer, xforms, entities, AABB(0, (float)height, 0, (float)width), 128),
+	rigidbodies(entities, 2),
+	create(entities, xforms, sprites, rigidbodies),
+	physics(xforms, rigidbodies, AABB(0, (float)height, 0, (float)width)),
 	GCStep(0),
 	isRunning(true)
 {
@@ -37,7 +36,7 @@ Game::Game(std::string windowName, int width, int height) :
 
 	std::vector<Vector2> asteroidPositions;
 
-	for (auto i = 0; i < 100; i++)
+	for (auto i = 0; i < 64; i++)
 	{
 		bool isValidPosition = false;
 		int attempts = 0;
@@ -57,7 +56,7 @@ Game::Game(std::string windowName, int width, int height) :
 			Circle newAsteroid(startPos, asteroidRadius);
 			for (auto& existingAsteroid : asteroidPositions)
 			{
-				Circle existing(existingAsteroid, asteroidRadius);
+				Circle existing(existingAsteroid, asteroidRadius + 5.0f);
 				if (existing.Overlaps(newAsteroid))
 				{
 					isValidPosition = false;
@@ -68,8 +67,8 @@ Game::Game(std::string windowName, int width, int height) :
 			if (isValidPosition)
 			{
 				float startRot = rand() % 360;
-				Vector2 startVel = Vector2{ Math::RandomRange(-10, 10), Math::RandomRange(-10, 10) };
-				float rotVel = Math::RandomRange(-15, 15);
+				Vector2 startVel = Vector2{ Math::RandomRange(-40, 40), Math::RandomRange(-40, 40) };
+				float rotVel = Math::RandomRange(-45, 45);
 
 				asteroidPositions.push_back(startPos);
 
@@ -80,13 +79,8 @@ Game::Game(std::string windowName, int width, int height) :
 				trans.rot = startRot;
 				xforms.Add(entity, trans);
 
-				int first = (int)SpriteID::SHIP_TRAIL;
-				int onePastLast = (int)SpriteID::_END_ANIMATED;
-
-				SpriteID spriteID = (SpriteID)(first + (i % (onePastLast - first)));
-				
-				sprites.Create(entity, spriteID, RenderQueue::Layer::DEFAULT);
-				asteroids.Add(entity, startVel, rotVel);
+				sprites.Create(entity, SpriteID::LARGE_ASTEROID, RenderQueue::Layer::DEFAULT);
+				rigidbodies.Add(entity, ColliderType::LARGE_ASTEROID, startVel, rotVel);
 			}
 			++attempts;
 		}
@@ -94,8 +88,22 @@ Game::Game(std::string windowName, int width, int height) :
 #else
 
 
-	GLOBALtestEntity2 = create.Asteroid(Vector2{ (float)width / 2, (float)height / 2 }, 0, Vector2::zero(), 0);
+	create.Asteroid(Vector2{ (float)width - 340, (float)(height / 4) - 15 }, 0, {-30.0f, 0.0f}, 0);
+
+
+	//Entity entity = entities.Create();
+
+	//Transform trans;
+	//trans.pos = {width-340.0f, height*0.6f};
+	//trans.rot = 0;
+	//xforms.Add(entity, trans);
+	//sprites.Create(entity, SpriteID::MEDIUM_ASTEROID_1, RenderQueue::Layer::DEFAULT);
+	//rigidbodies.Add(entity, ColliderType::MEDIUM_ASTEROID, Vector2::zero(), 0);
+
+	create.Asteroid(Vector2{ (float)0 + 340, (float)(height / 4) + 15 }, 0, { 30.0f, 0.0f }, 0);
+
 	GLOBALtestEntity = create.Ship(Vector2::zero(), 0);
+	physics.RegisterPlayerShip(GLOBALtestEntity);
 
 #endif
 
@@ -136,13 +144,11 @@ void Game::Update(float deltaTime)
 	We know the position of the first moving element by taking ColliderManagersize - MoveList.size.
 	*/
 
-	physics.Reset();
-
 	/// GAMEPLAY CODE GOES HERE.
 
 	auto inputBuffer = input.GetBuffer();
 
-	asteroids.Update(physics, deltaTime);
+	rigidbodies.Update(physics, deltaTime);
 		
 	Transform transform;
 	transform.pos = Vector2{ (float)inputBuffer.mouseX, (float)inputBuffer.mouseY };
@@ -162,23 +168,19 @@ void Game::Update(float deltaTime)
 	
 	// @TODO: Seems more and more intelligent to have Collider and Transform share sorting order,
 		or perhaps even be rolled together into a ColliderTransform for processing at least?
-	
-	*/
 
-	auto previousFrameCollisions = physics.DirtyList();
 
-	/*
 	// Pass moveList in by reference so we can call Enqueue.
 	player.Update(moveList, previousFrameCollisions, deltaTime);
 	
-	for (Asteroid& asteroid : asteroids)
+	for (Asteroid& asteroid : rigidbodies)
 	{
 		asteroid.Update(moveList, previousFrameCollisions, deltaTime);
 	}
 
 	*/
 
-	physics.Simulate(GLOBALtestEntity, GLOBALtestEntity2, deltaTime);
+	physics.Simulate(deltaTime);
 	
 	// @TODO: We refresh the collision list here. We can cache it for next frame.
 	//std::vector<Entity> dirtyList = xforms.Update(physics.DirtyList());
@@ -205,21 +207,6 @@ void Game::Render()
 {
 	// Prepare the render queue for the renderer
 	renderQueue.Clear();
-
-	/*
-	
-	Step 1, AnimatedSprites need to select the correct frame and adjust their
-	entry in the SpriteManager to reflect this change. AnimatedSprites should
-	be sorted to the front of SpriteManager to make this smoother.
-	*/
-
-
-	/*
-	Step 1.5, Static elements such as the background should just go ahead and
-	push themselvse onto the renderQueue now. No reason to wait, and we would
-	prefer to have them sorted lower.
-
-	*/
 
 	// @TODO: Render all static backgrounds
 	//renderQueue.Enqueue()

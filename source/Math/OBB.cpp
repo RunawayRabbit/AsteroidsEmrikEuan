@@ -9,7 +9,6 @@ OBB::OBB(const SDL_Rect& rect, const float& rotation)
 	this->basisY = Vector2{ 0.0f, 1.0f }.Rotate(rotation);
 	this->extents.x = (float)rect.w / 2.0f;
 	this->extents.y = (float)rect.h / 2.0f;
-
 }
 
 OBB::OBB(const Vector2& center, const Vector2& extents, const float& rotation)

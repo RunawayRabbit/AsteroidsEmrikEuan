@@ -4,7 +4,7 @@
 #include <string>
 #include <xhash>
 
-struct Entity
+class Entity
 {
 public:
 	inline bool operator==(const Entity& other) const
@@ -33,6 +33,11 @@ public:
 	const std::string ToString() const
 	{
 		return std::to_string(id);
+	}
+
+	bool operator<(const Entity& other) const
+	{
+		return (this->id < other.id);
 	}
 
 

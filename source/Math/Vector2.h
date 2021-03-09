@@ -1,6 +1,7 @@
 #pragma once
 
 #include <math.h>
+#include <ostream>
 
 class Vector2
 {
@@ -66,6 +67,7 @@ public:
 		return -*this;
 	}
 
+	inline Vector2 normalized();
 
 	inline static Vector2 zero() { return { 0.0f, 0.0f }; }
 
@@ -77,3 +79,13 @@ inline float Dot(const Vector2& a, const Vector2& b)
 		+ a.y * b.y;
 }
 
+inline Vector2 Vector2::normalized()
+{
+	return *this * (1.0f / sqrt(Dot(*this, *this)));
+}
+
+inline std::ostream& operator<< (std::ostream& out, const Vector2& v)
+{
+	out << '(' << v.x << ',' << v.y << ')';
+	return out;
+}

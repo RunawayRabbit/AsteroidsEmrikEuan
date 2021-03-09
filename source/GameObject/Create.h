@@ -3,7 +3,7 @@
 class Entity;
 class EntityManager;
 class TransformManager;
-class AsteroidManager;
+class RigidbodyManager;
 class SpriteManager;
 
 class Vector2;
@@ -12,7 +12,7 @@ class Create
 {
 public:
 	Create(EntityManager& entities, TransformManager& transforms,
-		SpriteManager& sprites, AsteroidManager& asteroids);
+		SpriteManager& sprites, RigidbodyManager& rigidbodies);
 
 	Entity Asteroid(const Vector2& position, const float& rotation,
 		const Vector2& velocity, const float& rotVelocity);
@@ -23,6 +23,6 @@ private:
 
 	EntityManager& entityManager;
 	TransformManager& transManager;
-	AsteroidManager& asteroidManager;
+	RigidbodyManager& rigidbodyManager;
 	SpriteManager& spriteManager;
 };

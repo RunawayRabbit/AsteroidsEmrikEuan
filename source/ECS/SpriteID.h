@@ -64,9 +64,9 @@ namespace SpriteAnimationData
 	};
 
 	constexpr float frameTime[] = {
-	0, // zero animation
-	0.15,0.1,0.2,0.1, // ship trail
-	0.1, 0.25, 0.3, 0.4, // explosion
-	0.2, 0.25,0.50, // bullet
+	0.0f, // zero animation
+	0.15f, 0.1f, 0.2f, 0.1f, // ship trail
+	0.1f, 0.25f, 0.3f, 0.4f, // explosion
+	0.2f, 0.25f, 0.50f, // bullet
 	};
 }
