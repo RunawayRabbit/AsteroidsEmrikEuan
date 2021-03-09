@@ -22,5 +22,5 @@ namespace ColliderRadius
 
 	constexpr static float Large = 62.31f / 2.0f;
 	constexpr static float Medium = 28.32f / 2.0f;
-	constexpr static float Small = 10.43f / 2.0f;
+	constexpr static float Small = 8.43f / 2.0f;
 }

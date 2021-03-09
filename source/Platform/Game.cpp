@@ -36,18 +36,18 @@ Game::Game(std::string windowName, int width, int height) :
 
 	std::vector<Vector2> asteroidPositions;
 
-	for (auto i = 0; i < 64; i++)
+	for (auto i = 0; i < 256; i++)
 	{
 		bool isValidPosition = false;
 		int attempts = 0;
 		while (!isValidPosition)
 		{
-			if (attempts > 32)
+			if (attempts > 1024)
 			{
 				// Yea I know. It's temporary, ok?
 				return;
 			}
-			constexpr float asteroidRadius = 29;
+			constexpr float asteroidRadius = 15;
 			Vector2 startPos = Vector2{ Math::RandomRange(asteroidRadius, width - asteroidRadius),
 				Math::RandomRange(asteroidRadius, height - asteroidRadius) };
 
@@ -56,7 +56,7 @@ Game::Game(std::string windowName, int width, int height) :
 			Circle newAsteroid(startPos, asteroidRadius);
 			for (auto& existingAsteroid : asteroidPositions)
 			{
-				Circle existing(existingAsteroid, asteroidRadius + 5.0f);
+				Circle existing(existingAsteroid, asteroidRadius);
 				if (existing.Overlaps(newAsteroid))
 				{
 					isValidPosition = false;
@@ -71,20 +71,18 @@ Game::Game(std::string windowName, int width, int height) :
 				float rotVel = Math::RandomRange(-45, 45);
 
 				asteroidPositions.push_back(startPos);
+				
+				Create::AsteroidType asteroidType = Create::AsteroidType::RANDOM_SMALL;
+				if (i < 12) asteroidType = Create::AsteroidType::LARGE;
+				else if (i < 75) asteroidType = Create::AsteroidType::RANDOM_MEDIUM;
 
-				Entity entity = entities.Create();
-
-				Transform trans;
-				trans.pos = startPos;
-				trans.rot = startRot;
-				xforms.Add(entity, trans);
-
-				sprites.Create(entity, SpriteID::LARGE_ASTEROID, RenderQueue::Layer::DEFAULT);
-				rigidbodies.Add(entity, ColliderType::LARGE_ASTEROID, startVel, rotVel);
+				Entity entity = create.Asteroid(startPos, startRot, startVel, rotVel, asteroidType);
+				std::cout << "Creating entity number " << asteroidPositions.size() << ".\n";
 			}
 			++attempts;
 		}
 	}
+
 #else
 
 

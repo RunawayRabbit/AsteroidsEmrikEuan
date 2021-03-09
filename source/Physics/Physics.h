@@ -64,6 +64,8 @@ private:
 	const AABB screenAABB;
 	Entity playerShip;
 
+	std::array<int, 3> colliderCounts;
+
 	std::vector<Rigidbody> moveList;
 
 	std::vector<CollisionListEntry> collisionList;

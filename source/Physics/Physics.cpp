@@ -25,8 +25,23 @@ void Physics::Enqueue(const Entity& entity)
 	Rigidbody* rb;
 	if (rigidbodyManager.GetPtr(entity, &rb))
 	{
-		// I really don't like doing this.
 		moveList.push_back(*rb);
+		switch (rb->colliderType)
+		{
+		case ColliderType::BULLET:
+			//@TODO: Here's where we'd do the bullet thing.
+			break;
+
+		case ColliderType::LARGE_ASTEROID:
+			colliderCounts[0]++;
+			break;
+		case ColliderType::MEDIUM_ASTEROID:
+			colliderCounts[1]++;
+			break;
+		case ColliderType::SMOL_ASTEROID:
+			colliderCounts[2]++;
+			break;
+		}
 	}
 }
 
@@ -74,6 +89,10 @@ void Physics::End()
 	collisionList.clear();
 	resolvedList.clear();
 	dirtyList.clear();
+
+	colliderCounts[0] = 0;
+	colliderCounts[1] = 0;
+	colliderCounts[2] = 0;
 }
 
 void Physics::DetectInitialCollisions(const float deltaTime)
@@ -81,8 +100,8 @@ void Physics::DetectInitialCollisions(const float deltaTime)
 	std::sort(moveList.begin(), moveList.end());
 
 	auto firstLarge = moveList.begin();
-	auto firstMedium = moveList.end();
-	auto firstSmall = moveList.end(); // @TODO: Yea..
+	auto firstMedium = firstLarge + colliderCounts[0];
+	auto firstSmall = firstMedium + colliderCounts[1];
 	auto endOfAsteroids = moveList.end();
 
 #pragma region ShipToAsteroid
@@ -136,166 +155,216 @@ void Physics::DetectInitialCollisions(const float deltaTime)
 #pragma endregion
 
 #pragma region LargeVsAll
-	for (auto asteroidA = firstLarge;
-		asteroidA < firstMedium - 1;
-		++asteroidA)
+
+	if (colliderCounts[0] > 0)
 	{
-		Transform* asteroidATrans;
-		transformManager.GetPtr(asteroidA->entity, &asteroidATrans);
 
-		// Test all Large vs all other Large
-		for (auto asteroidB = asteroidA + 1;
-			asteroidB < firstMedium;
-			++asteroidB)
+
+		for (auto asteroidA = firstLarge;
+			asteroidA < firstMedium - 1;
+			++asteroidA)
 		{
-			constexpr float largeVsLargeSqRadius = (ColliderRadius::Large + ColliderRadius::Large) *
-				(ColliderRadius::Large + ColliderRadius::Large);
+			Transform* asteroidATrans;
+			transformManager.GetPtr(asteroidA->entity, &asteroidATrans);
 
-			Transform* asteroidBTrans;
-			transformManager.GetPtr(asteroidB->entity, &asteroidBTrans);
-
-			float timeOfCollision;
-			if (CollisionTests::SweptCircleToCircle(
-				asteroidATrans->pos, asteroidA->velocity,
-				asteroidBTrans->pos, asteroidB->velocity,
-				ColliderRadius::Large, largeVsLargeSqRadius, deltaTime, timeOfCollision))
+			// Test all Large vs all other Large
+			for (auto asteroidB = asteroidA + 1;
+				asteroidB < firstMedium;
+				++asteroidB)
 			{
-				CollisionListEntry col;
-				col.A = asteroidA->entity;
-				col.massA = AsteroidMasses[0];
+				constexpr float largeVsLargeSqRadius = (ColliderRadius::Large + ColliderRadius::Large) *
+					(ColliderRadius::Large + ColliderRadius::Large);
 
-				col.B = asteroidB->entity;
-				col.massB = AsteroidMasses[0];
+				Transform* asteroidBTrans;
+				transformManager.GetPtr(asteroidB->entity, &asteroidBTrans);
 
-				col.timeOfCollision = timeOfCollision;
-				collisionList.push_back(col);
-				//std::cout << "Collision between " << asteroidA->id.ToString() << " and " << asteroidB->id.ToString() << "!\n";
+				float timeOfCollision;
+				if (CollisionTests::SweptCircleToCircle(
+					asteroidATrans->pos, asteroidA->velocity,
+					asteroidBTrans->pos, asteroidB->velocity,
+					ColliderRadius::Large, largeVsLargeSqRadius, deltaTime, timeOfCollision))
+				{
+					CollisionListEntry col;
+					col.A = asteroidA->entity;
+					col.massA = AsteroidMasses[0];
+
+					col.B = asteroidB->entity;
+					col.massB = AsteroidMasses[0];
+
+					col.timeOfCollision = timeOfCollision;
+					collisionList.push_back(col);
+				}
 			}
-		}
 
-		// Test all Large vs all Medium
-		for (auto asteroidB = firstMedium;
-			asteroidB < firstSmall;
-			++asteroidB)
-		{
-			constexpr float largeVsMediumSqRadius = (ColliderRadius::Large + ColliderRadius::Medium) *
-				(ColliderRadius::Large + ColliderRadius::Medium);
-
-			Transform* asteroidBTrans;
-			transformManager.GetPtr(asteroidB->entity, &asteroidBTrans);
-
-			float timeOfCollision;
-			if (CollisionTests::SweptCircleToCircle(
-				asteroidATrans->pos, asteroidA->velocity,
-				asteroidBTrans->pos, asteroidB->velocity,
-				ColliderRadius::Large, largeVsMediumSqRadius, deltaTime, timeOfCollision))
+			// Test all Large vs all Medium
+			for (auto asteroidB = firstMedium;
+				asteroidB < firstSmall;
+				++asteroidB)
 			{
-				//std::cout << "Collision between " << asteroidA->id.ToString() << " and " << asteroidB->id.ToString() << "!\n";
+				constexpr float largeVsMediumSqRadius = (ColliderRadius::Large + ColliderRadius::Medium) *
+					(ColliderRadius::Large + ColliderRadius::Medium);
+
+				Transform* asteroidBTrans;
+				transformManager.GetPtr(asteroidB->entity, &asteroidBTrans);
+
+				float timeOfCollision;
+				if (CollisionTests::SweptCircleToCircle(
+					asteroidATrans->pos, asteroidA->velocity,
+					asteroidBTrans->pos, asteroidB->velocity,
+					ColliderRadius::Large, largeVsMediumSqRadius, deltaTime, timeOfCollision))
+				{
+					CollisionListEntry col;
+					col.A = asteroidA->entity;
+					col.massA = AsteroidMasses[0];
+
+					col.B = asteroidB->entity;
+					col.massB = AsteroidMasses[1];
+
+					col.timeOfCollision = timeOfCollision;
+					collisionList.push_back(col);
+				}
 			}
-		}
 
-		// Test all Large vs all Small
-		for (auto asteroidB = firstSmall;
-			asteroidB < endOfAsteroids;
-			++asteroidB)
-		{
-			constexpr float largeVsSmallSqRadius = (ColliderRadius::Large + ColliderRadius::Small) *
-				(ColliderRadius::Large + ColliderRadius::Small);
-
-			Transform* asteroidBTrans;
-			transformManager.GetPtr(asteroidB->entity, &asteroidBTrans);
-
-			float timeOfCollision;
-			if (CollisionTests::SweptCircleToCircle(
-				asteroidATrans->pos, asteroidA->velocity,
-				asteroidBTrans->pos, asteroidB->velocity, 
-				ColliderRadius::Large, largeVsSmallSqRadius, deltaTime, timeOfCollision))
+			// Test all Large vs all Small
+			for (auto asteroidB = firstSmall;
+				asteroidB < endOfAsteroids;
+				++asteroidB)
 			{
-				//std::cout << "Collision between " << asteroidA->id.ToString() << " and " << asteroidB->id.ToString() << "!\n";
+				constexpr float largeVsSmallSqRadius = (ColliderRadius::Large + ColliderRadius::Small) *
+					(ColliderRadius::Large + ColliderRadius::Small);
+
+				Transform* asteroidBTrans;
+				transformManager.GetPtr(asteroidB->entity, &asteroidBTrans);
+
+				float timeOfCollision;
+				if (CollisionTests::SweptCircleToCircle(
+					asteroidATrans->pos, asteroidA->velocity,
+					asteroidBTrans->pos, asteroidB->velocity,
+					ColliderRadius::Large, largeVsSmallSqRadius, deltaTime, timeOfCollision))
+				{
+					CollisionListEntry col;
+					col.A = asteroidA->entity;
+					col.massA = AsteroidMasses[0];
+
+					col.B = asteroidB->entity;
+					col.massB = AsteroidMasses[2];
+
+					col.timeOfCollision = timeOfCollision;
+					collisionList.push_back(col);
+				}
 			}
 		}
 	}
-
 #pragma endregion
 
 #pragma region Medium_vs_All
-	for (auto asteroidA = firstMedium;
-		asteroidA < firstSmall - 1;
-		++asteroidA)
+	if (colliderCounts[1] > 0)
 	{
-		Transform* asteroidATrans;
-		transformManager.GetPtr(asteroidA->entity, &asteroidATrans);
-
-		// Test all Medium vs all other Medium
-		for (auto asteroidB = asteroidA + 1;
-			asteroidB < firstSmall;
-			++asteroidB)
+		for (auto asteroidA = firstMedium;
+			asteroidA < firstSmall - 1;
+			++asteroidA)
 		{
-			constexpr float  mediumVsMediumSqRadius = (ColliderRadius::Medium + ColliderRadius::Medium) *
-				(ColliderRadius::Medium + ColliderRadius::Medium);
+			Transform* asteroidATrans;
+			transformManager.GetPtr(asteroidA->entity, &asteroidATrans);
 
-			Transform* asteroidBTrans;
-			transformManager.GetPtr(asteroidB->entity, &asteroidBTrans);
-
-			float timeOfCollision;
-			if (CollisionTests::SweptCircleToCircle(
-				asteroidATrans->pos, asteroidA->velocity,
-				asteroidBTrans->pos, asteroidB->velocity,
-				ColliderRadius::Medium, mediumVsMediumSqRadius, deltaTime, timeOfCollision))
+			// Test all Medium vs all other Medium
+			for (auto asteroidB = asteroidA + 1;
+				asteroidB < firstSmall;
+				++asteroidB)
 			{
-				//std::cout << "Collision between " << asteroidA->id.ToString() << " and " << asteroidB->id.ToString() << "!\n";
+				constexpr float  mediumVsMediumSqRadius = (ColliderRadius::Medium + ColliderRadius::Medium) *
+					(ColliderRadius::Medium + ColliderRadius::Medium);
+
+				Transform* asteroidBTrans;
+				transformManager.GetPtr(asteroidB->entity, &asteroidBTrans);
+
+				float timeOfCollision;
+				if (CollisionTests::SweptCircleToCircle(
+					asteroidATrans->pos, asteroidA->velocity,
+					asteroidBTrans->pos, asteroidB->velocity,
+					ColliderRadius::Medium, mediumVsMediumSqRadius, deltaTime, timeOfCollision))
+				{
+					CollisionListEntry col;
+					col.A = asteroidA->entity;
+					col.massA = AsteroidMasses[1];
+
+					col.B = asteroidB->entity;
+					col.massB = AsteroidMasses[1];
+
+					col.timeOfCollision = timeOfCollision;
+					collisionList.push_back(col);
+				}
 			}
-		}
 
-		// Test all Medium vs all Small
-		for (auto asteroidB = firstSmall;
-			asteroidB < endOfAsteroids;
-			++asteroidB)
-		{
-			constexpr float  mediumVsSmallSqRadius = (ColliderRadius::Medium + ColliderRadius::Small) *
-				(ColliderRadius::Medium + ColliderRadius::Small);
-
-			Transform* asteroidBTrans;
-			transformManager.GetPtr(asteroidB->entity, &asteroidBTrans);
-
-			float timeOfCollision;
-			if (CollisionTests::SweptCircleToCircle(
-				asteroidATrans->pos, asteroidA->velocity,
-				asteroidBTrans->pos, asteroidB->velocity,
-				ColliderRadius::Medium, mediumVsSmallSqRadius, deltaTime, timeOfCollision))
+			// Test all Medium vs all Small
+			for (auto asteroidB = firstSmall;
+				asteroidB < endOfAsteroids;
+				++asteroidB)
 			{
-				//std::cout << "Collision between " << asteroidA->id.ToString() << " and " << asteroidB->id.ToString() << "!\n";
+				constexpr float  mediumVsSmallSqRadius = (ColliderRadius::Medium + ColliderRadius::Small) *
+					(ColliderRadius::Medium + ColliderRadius::Small);
+
+				Transform* asteroidBTrans;
+				transformManager.GetPtr(asteroidB->entity, &asteroidBTrans);
+
+				float timeOfCollision;
+				if (CollisionTests::SweptCircleToCircle(
+					asteroidATrans->pos, asteroidA->velocity,
+					asteroidBTrans->pos, asteroidB->velocity,
+					ColliderRadius::Medium, mediumVsSmallSqRadius, deltaTime, timeOfCollision))
+				{
+					CollisionListEntry col;
+					col.A = asteroidA->entity;
+					col.massA = AsteroidMasses[1];
+
+					col.B = asteroidB->entity;
+					col.massB = AsteroidMasses[2];
+
+					col.timeOfCollision = timeOfCollision;
+					collisionList.push_back(col);
+				}
 			}
 		}
 	}
 #pragma endregion
 
 #pragma region Small_vs_Small
-	for (auto asteroidA = firstSmall;
-		asteroidA < endOfAsteroids - 1;
-		++asteroidA)
+	if (colliderCounts[2] > 0)
 	{
-		Transform* asteroidATrans;
-		transformManager.GetPtr(asteroidA->entity, &asteroidATrans);
-
-		// Test all Small vs all other Small
-		for (auto asteroidB = asteroidA + 1;
-			asteroidB < endOfAsteroids;
-			++asteroidB)
+		for (auto asteroidA = firstSmall;
+			asteroidA < endOfAsteroids - 1;
+			++asteroidA)
 		{
-			constexpr float smallVsSmallSqRadius = (ColliderRadius::Small + ColliderRadius::Small) *
-				(ColliderRadius::Small + ColliderRadius::Small);
+			Transform* asteroidATrans;
+			transformManager.GetPtr(asteroidA->entity, &asteroidATrans);
 
-			Transform* asteroidBTrans;
-			transformManager.GetPtr(asteroidB->entity, &asteroidBTrans);
-
-			float timeOfCollision;
-			if (CollisionTests::SweptCircleToCircle(
-				asteroidATrans->pos, asteroidA->velocity,
-				asteroidBTrans->pos, asteroidB->velocity,
-				ColliderRadius::Small, smallVsSmallSqRadius, deltaTime, timeOfCollision))
+			// Test all Small vs all other Small
+			for (auto asteroidB = asteroidA + 1;
+				asteroidB < endOfAsteroids;
+				++asteroidB)
 			{
-				//std::cout << "Collision between " << asteroidA->id.ToString() << " and " << asteroidB->id.ToString() << "!\n";
+				constexpr float smallVsSmallSqRadius = (ColliderRadius::Small + ColliderRadius::Small) *
+					(ColliderRadius::Small + ColliderRadius::Small);
+
+				Transform* asteroidBTrans;
+				transformManager.GetPtr(asteroidB->entity, &asteroidBTrans);
+
+				float timeOfCollision;
+				if (CollisionTests::SweptCircleToCircle(
+					asteroidATrans->pos, asteroidA->velocity,
+					asteroidBTrans->pos, asteroidB->velocity,
+					ColliderRadius::Small, smallVsSmallSqRadius, deltaTime, timeOfCollision))
+				{
+					CollisionListEntry col;
+					col.A = asteroidA->entity;
+					col.massA = AsteroidMasses[2];
+
+					col.B = asteroidB->entity;
+					col.massB = AsteroidMasses[2];
+
+					col.timeOfCollision = timeOfCollision;
+					collisionList.push_back(col);
+				}
 			}
 		}
 	}
