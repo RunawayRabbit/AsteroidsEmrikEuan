@@ -70,7 +70,7 @@ std::array<Entity, 4> Create::SplitAsteroid(const Entity& asteroid, const float&
 	}
 
 	Transform* parentTransform;
-	if (!transManager.GetPtr(asteroid, &parentTransform))
+	if (!transManager.GetMutable(asteroid, parentTransform))
 	{
 		return retVal;
 	}
@@ -190,7 +190,7 @@ Entity Create::Ship(const Vector2& position, const float& rotation, const Vector
 Entity Create::ShipThruster(const Entity& ship, const Vector2& thrusterOffset, const float& thrusterRotation, SpriteID spriteID) const
 {
 	Transform parentTrans;
-	if (!transManager.Get(ship, &parentTrans))
+	if (!transManager.Get(ship, parentTrans))
 	{
 		return Entity::null();
 	}

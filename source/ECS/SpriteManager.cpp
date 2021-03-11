@@ -31,7 +31,7 @@ void SpriteManager::Create(const Entity entity, const SpriteID spriteID, const R
 	
 	// Get the date we need to work with.
 	Transform trans;
-	transManager.Get(entity, &trans);
+	transManager.Get(entity, trans);
 
 	const Sprite sprite = spriteAtlas.Get(spriteID);
 
@@ -283,7 +283,7 @@ void SpriteManager::SpriteCategory::Update(const SpriteAtlas& spriteAtlas, const
 		SpriteTransform* spriteTrans = (transforms + i);
 
 		Transform transform;
-		if (entityManager.Exists(*entity) && transManager.Get(*entity, &transform))
+		if (entityManager.Exists(*entity) && transManager.Get(*entity, transform))
 		{
 			if (SpriteAtlas::isAnimated(spriteTrans->id))
 			{

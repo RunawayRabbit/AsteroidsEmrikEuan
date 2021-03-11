@@ -57,7 +57,7 @@ void Player::Update(InputBuffer& input, const float& deltaTime)
 	// Get the rb and the transform from the respective managers
 	Rigidbody* rigid;
 	Transform transform;
-	if (!rigidbodyManager.GetPtr(entity, &rigid) || !transformManager.Get(entity, &transform))
+	if (!rigidbodyManager.GetPtr(entity, &rigid) || !transformManager.Get(entity, transform))
 	{
 		// If we end up here, a serious bug has occured.
 		__assume(false);
@@ -155,7 +155,7 @@ void Player::RenderThruster(Entity& thruster, const Vector2& thrusterOffset, con
 		thruster = create.ShipThruster(entity, thrusterOffset, thrusterRotation, spriteID);
 	}
 	Transform* thrusterTrans;
-	transformManager.GetPtr(thruster, &thrusterTrans);
+	transformManager.GetMutable(thruster, thrusterTrans);
 	thrusterTrans->pos = parentTrans.pos + thrusterOffset.RotateDeg(parentTrans.rot);
 	thrusterTrans->rot = parentTrans.rot + thrusterRotation;
 }

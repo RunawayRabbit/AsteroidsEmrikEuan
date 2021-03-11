@@ -107,7 +107,7 @@ void Physics::DetectInitialCollisions(const float deltaTime)
 #pragma region ShipToAsteroid
 
 	Transform* playerTrans;
-	if (transformManager.GetPtr(playerShip, &playerTrans))
+	if (transformManager.GetMutable(playerShip, playerTrans))
 	{
 
 		OBB playerOBB(playerTrans->pos, ColliderRadius::Ship, playerTrans->rot);
@@ -117,7 +117,7 @@ void Physics::DetectInitialCollisions(const float deltaTime)
 			++largeAsteroid)
 		{
 			Transform* asteroidTrans;
-			transformManager.GetPtr(largeAsteroid->entity, &asteroidTrans);
+			transformManager.GetMutable(largeAsteroid->entity, asteroidTrans);
 
 			Circle asteroid(asteroidTrans->pos, ColliderRadius::Large);
 			if (CollisionTests::OBBToCircle(playerOBB, asteroid))
@@ -131,7 +131,7 @@ void Physics::DetectInitialCollisions(const float deltaTime)
 			++mediumAsteroid)
 		{
 			Transform* asteroidTrans;
-			transformManager.GetPtr(mediumAsteroid->entity, &asteroidTrans);
+			transformManager.GetMutable(mediumAsteroid->entity, asteroidTrans);
 
 			Circle asteroid(asteroidTrans->pos, ColliderRadius::Medium);
 			if (CollisionTests::OBBToCircle(playerOBB, asteroid))
@@ -145,7 +145,7 @@ void Physics::DetectInitialCollisions(const float deltaTime)
 			++smallAsteroid)
 		{
 			Transform* asteroidTrans;
-			transformManager.GetPtr(smallAsteroid->entity, &asteroidTrans);
+			transformManager.GetMutable(smallAsteroid->entity, asteroidTrans);
 
 			Circle asteroid(asteroidTrans->pos, ColliderRadius::Small);
 			if (CollisionTests::OBBToCircle(playerOBB, asteroid))
@@ -167,7 +167,7 @@ void Physics::DetectInitialCollisions(const float deltaTime)
 			++asteroidA)
 		{
 			Transform* asteroidATrans;
-			transformManager.GetPtr(asteroidA->entity, &asteroidATrans);
+			transformManager.GetMutable(asteroidA->entity, asteroidATrans);
 
 			// Test all Large vs all other Large
 			for (auto asteroidB = asteroidA + 1;
@@ -178,7 +178,7 @@ void Physics::DetectInitialCollisions(const float deltaTime)
 					(ColliderRadius::Large + ColliderRadius::Large);
 
 				Transform* asteroidBTrans;
-				transformManager.GetPtr(asteroidB->entity, &asteroidBTrans);
+				transformManager.GetMutable(asteroidB->entity, asteroidBTrans);
 
 				float timeOfCollision;
 				if (CollisionTests::SweptCircleToCircle(
@@ -207,7 +207,7 @@ void Physics::DetectInitialCollisions(const float deltaTime)
 					(ColliderRadius::Large + ColliderRadius::Medium);
 
 				Transform* asteroidBTrans;
-				transformManager.GetPtr(asteroidB->entity, &asteroidBTrans);
+				transformManager.GetMutable(asteroidB->entity, asteroidBTrans);
 
 				float timeOfCollision;
 				if (CollisionTests::SweptCircleToCircle(
@@ -236,7 +236,7 @@ void Physics::DetectInitialCollisions(const float deltaTime)
 					(ColliderRadius::Large + ColliderRadius::Small);
 
 				Transform* asteroidBTrans;
-				transformManager.GetPtr(asteroidB->entity, &asteroidBTrans);
+				transformManager.GetMutable(asteroidB->entity, asteroidBTrans);
 
 				float timeOfCollision;
 				if (CollisionTests::SweptCircleToCircle(
@@ -267,7 +267,7 @@ void Physics::DetectInitialCollisions(const float deltaTime)
 			++asteroidA)
 		{
 			Transform* asteroidATrans;
-			transformManager.GetPtr(asteroidA->entity, &asteroidATrans);
+			transformManager.GetMutable(asteroidA->entity, asteroidATrans);
 
 			// Test all Medium vs all other Medium
 			for (auto asteroidB = asteroidA + 1;
@@ -278,7 +278,7 @@ void Physics::DetectInitialCollisions(const float deltaTime)
 					(ColliderRadius::Medium + ColliderRadius::Medium);
 
 				Transform* asteroidBTrans;
-				transformManager.GetPtr(asteroidB->entity, &asteroidBTrans);
+				transformManager.GetMutable(asteroidB->entity, asteroidBTrans);
 
 				float timeOfCollision;
 				if (CollisionTests::SweptCircleToCircle(
@@ -307,7 +307,7 @@ void Physics::DetectInitialCollisions(const float deltaTime)
 					(ColliderRadius::Medium + ColliderRadius::Small);
 
 				Transform* asteroidBTrans;
-				transformManager.GetPtr(asteroidB->entity, &asteroidBTrans);
+				transformManager.GetMutable(asteroidB->entity, asteroidBTrans);
 
 				float timeOfCollision;
 				if (CollisionTests::SweptCircleToCircle(
@@ -338,7 +338,7 @@ void Physics::DetectInitialCollisions(const float deltaTime)
 			++asteroidA)
 		{
 			Transform* asteroidATrans;
-			transformManager.GetPtr(asteroidA->entity, &asteroidATrans);
+			transformManager.GetMutable(asteroidA->entity, asteroidATrans);
 
 			// Test all Small vs all other Small
 			for (auto asteroidB = asteroidA + 1;
@@ -349,7 +349,7 @@ void Physics::DetectInitialCollisions(const float deltaTime)
 					(ColliderRadius::Small + ColliderRadius::Small);
 
 				Transform* asteroidBTrans;
-				transformManager.GetPtr(asteroidB->entity, &asteroidBTrans);
+				transformManager.GetMutable(asteroidB->entity, asteroidBTrans);
 
 				float timeOfCollision;
 				if (CollisionTests::SweptCircleToCircle(
@@ -404,12 +404,12 @@ void Physics::ResolveMove(const float deltaTime, CollisionListEntry collision)
 
 	Transform* transA;
 	Rigidbody* rigidA;
-	transformManager.GetPtr(collision.A, &transA);
+	transformManager.GetMutable(collision.A, transA);
 	rigidbodyManager.GetPtr(collision.A, &rigidA);
 
 	Transform* transB;
 	Rigidbody* rigidB;
-	transformManager.GetPtr(collision.B, &transB);
+	transformManager.GetMutable(collision.B, transB);
 	rigidbodyManager.GetPtr(collision.B, &rigidB);
 
 	Vector2 startPosA = transA->pos + rigidA->velocity * (collision.timeOfCollision * deltaTime);
@@ -475,7 +475,7 @@ void Physics::FinalizeMoves(const float deltaTime)
 	for (auto& entry : moveList)
 	{
 		Transform* trans;
-		transformManager.GetPtr(entry.entity, &trans);
+		transformManager.GetMutable(entry.entity, trans);
 		trans->pos.x =
 			Math::Repeat(trans->pos.x + (entry.velocity.x * deltaTime), screenAABB.right);
 		trans->pos.y =
@@ -490,7 +490,7 @@ void Physics::FinalizeMoves(const float deltaTime)
 		ResolvedListEntry resolvedEntry = entry.second;
 
 		Transform* trans;
-		transformManager.GetPtr(resolvedEntry.entity, &trans);
+		transformManager.GetMutable(resolvedEntry.entity, trans);
 
 		Vector2 finalPos = resolvedEntry.position + (resolvedEntry.velocity * ((1.0f - entry.first) * deltaTime));
 
