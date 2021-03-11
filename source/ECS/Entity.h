@@ -40,7 +40,6 @@ public:
 		return (this->id < other.id);
 	}
 
-
 private:
 	uint32_t id;
 	Entity& operator++()

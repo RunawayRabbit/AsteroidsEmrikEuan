@@ -2,29 +2,32 @@
 #include "AABB.h"
 #include "OBB.h"
 
-OBB::OBB(const SDL_Rect& rect, const float& rotation)
+#include "Vector2.h"
+
+
+OBB::OBB(const SDL_Rect& rect, const float& rotationDeg)
 {
-	this->center = Vector2{ (float)rect.x + (rect.w / 2.0f), (float)rect.y + (rect.h / 2.0f) };
-	this->basisX = Vector2{ 1.0f, 0.0f }.Rotate(rotation);
-	this->basisY = Vector2{ 0.0f, 1.0f }.Rotate(rotation);
+	this->center = Vector2((float)rect.x + (rect.w / 2.0f), (float)rect.y + (rect.h / 2.0f));
+	this->basisX = Vector2::Right().RotateDeg(rotationDeg);
+	this->basisY = Vector2::Forward().RotateDeg(rotationDeg);
 	this->extents.x = (float)rect.w / 2.0f;
 	this->extents.y = (float)rect.h / 2.0f;
 }
 
-OBB::OBB(const Vector2& center, const Vector2& extents, const float& rotation)
+OBB::OBB(const Vector2& center, const Vector2& extents, const float& rotationDeg)
 {
 	this->center = center;
-	this->basisX = Vector2{ 1.0f, 0.0f }.Rotate(rotation);
-	this->basisY = Vector2{ 0.0f, 1.0f }.Rotate(rotation);
+	this->basisX = Vector2::Right().RotateDeg(rotationDeg);
+	this->basisY = Vector2::Forward().RotateDeg(rotationDeg);
 	this->extents.x = extents.x;
 	this->extents.y = extents.y;
 }
 
-OBB::OBB(const Vector2& center, const float& extents, const float& rotation)
+OBB::OBB(const Vector2& center, const float& extents, const float& rotationDeg)
 {
 	this->center = center;
-	this->basisX = Vector2{ 1.0f, 0.0f }.Rotate(rotation);
-	this->basisY = Vector2{ 0.0f, 1.0f }.Rotate(rotation);
+	this->basisX = Vector2{ 1.0f, 0.0f }.RotateDeg(rotationDeg);
+	this->basisY = Vector2{ 0.0f, 1.0f }.RotateDeg(rotationDeg);
 	this->extents.x = extents;
 	this->extents.y = extents;
 }

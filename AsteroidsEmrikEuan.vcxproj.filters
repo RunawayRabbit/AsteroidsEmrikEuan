@@ -58,6 +58,12 @@
     <Filter Include="GameObject">
       <UniqueIdentifier>{69994b14-f991-45e7-b2b3-9043b7c24921}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\CPP">
+      <UniqueIdentifier>{0de66cd7-bb7f-4e01-bf15-027b8aa070e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\H">
+      <UniqueIdentifier>{8271cb0d-caa8-4491-9247-ab78ea99bd24}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\ECS\Entity.h">
@@ -138,9 +144,6 @@
     <ClInclude Include="source\Math\Vector2.h">
       <Filter>Math\H</Filter>
     </ClInclude>
-    <ClInclude Include="source\GameObject\Create.h">
-      <Filter>GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="source\Math\Circle.h">
       <Filter>Math\H</Filter>
     </ClInclude>
@@ -155,6 +158,18 @@
     </ClInclude>
     <ClInclude Include="source\ECS\RigidbodyManager.h">
       <Filter>ECS\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Math\MathConstants.h">
+      <Filter>Math\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\GameObject\Player.h">
+      <Filter>GameObject\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\GameObject\Create.h">
+      <Filter>GameObject\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\GameObject\BackgroundRenderer.h">
+      <Filter>Renderer\H</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -185,9 +200,6 @@
     <ClCompile Include="source\ECS\EntityManager.cpp">
       <Filter>ECS\CPP</Filter>
     </ClCompile>
-    <ClCompile Include="source\ECS\Transform.cpp">
-      <Filter>ECS\CPP</Filter>
-    </ClCompile>
     <ClCompile Include="source\ECS\TransformManager.cpp">
       <Filter>ECS\CPP</Filter>
     </ClCompile>
@@ -209,11 +221,14 @@
     <ClCompile Include="source\Math\OBB.cpp">
       <Filter>Math\CPP</Filter>
     </ClCompile>
-    <ClCompile Include="source\GameObject\Create.cpp">
-      <Filter>GameObject</Filter>
-    </ClCompile>
     <ClCompile Include="source\ECS\RigidbodyManager.cpp">
       <Filter>ECS\CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="source\GameObject\Create.cpp">
+      <Filter>GameObject\CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="source\GameObject\Player.cpp">
+      <Filter>GameObject\CPP</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

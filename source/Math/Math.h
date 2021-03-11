@@ -10,14 +10,10 @@
 #include "OBB.h"
 #include "Circle.h"
 
+#include "MathConstants.h"
 
 namespace Math
 {
-	static constexpr float TAU = 6.28318530717958647692f;
-	static constexpr float PI = 3.14159265358979323846f;
-	static constexpr float DEG2RAD = 0.01745329252f;
-	static constexpr float RAD2DEG = 57.29577951f;
-
 	// Angle Deltas
 
 	static float AngleDelta(float a, float b)
@@ -73,8 +69,30 @@ namespace Math
 		return range(generator);
 	}
 
+	static float RandomRange(int min, int max)
+	{
+		static std::random_device device;
+		static std::mt19937 generator(device());
+		std::uniform_int range(min, max);
+		return range(generator);
+	}
+
+
+	// Random Numbery Stuff
 	static float Repeat(float t, float length)
 	{
 		return std::clamp(t - floor(t / length) * length, 0.0f, length);
+	}
+
+	static float SignOf(float t)
+	{
+		return (t >= 0.0f) ? 1.0f : -1.0f;
+	}
+
+	static float MoveTowards(float current, float target, float maxDelta)
+	{
+		if (std::abs(target - current) <= maxDelta)
+			return target;
+		return current + Math::SignOf(target - current) * maxDelta;
 	}
 }

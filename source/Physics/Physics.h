@@ -29,7 +29,6 @@ private:
 	{
 		Entity entity;
 		Vector2 position;
-		float rotation;
 		Vector2 velocity;
 		float angularVelocity;
 	};

@@ -107,51 +107,53 @@ void Physics::DetectInitialCollisions(const float deltaTime)
 #pragma region ShipToAsteroid
 
 	Transform* playerTrans;
-	transformManager.GetPtr(playerShip, &playerTrans);
-	OBB playerOBB(playerTrans->pos, ColliderRadius::Ship, playerTrans->rot);
-
-	for (auto largeAsteroid = firstLarge;
-		largeAsteroid < firstMedium;
-		++largeAsteroid)
+	if (transformManager.GetPtr(playerShip, &playerTrans))
 	{
-		Transform* asteroidTrans;
-		transformManager.GetPtr(largeAsteroid->entity, &asteroidTrans);
 
-		Circle asteroid(asteroidTrans->pos, ColliderRadius::Large);
-		if (CollisionTests::OBBToCircle(playerOBB, asteroid))
+		OBB playerOBB(playerTrans->pos, ColliderRadius::Ship, playerTrans->rot);
+
+		for (auto largeAsteroid = firstLarge;
+			largeAsteroid < firstMedium;
+			++largeAsteroid)
 		{
-			//std::cout << "Player Be Ded." << std::endl;
+			Transform* asteroidTrans;
+			transformManager.GetPtr(largeAsteroid->entity, &asteroidTrans);
+
+			Circle asteroid(asteroidTrans->pos, ColliderRadius::Large);
+			if (CollisionTests::OBBToCircle(playerOBB, asteroid))
+			{
+				//std::cout << "Player Be Ded." << std::endl;
+			}
+		}
+
+		for (auto mediumAsteroid = firstMedium;
+			mediumAsteroid < firstSmall;
+			++mediumAsteroid)
+		{
+			Transform* asteroidTrans;
+			transformManager.GetPtr(mediumAsteroid->entity, &asteroidTrans);
+
+			Circle asteroid(asteroidTrans->pos, ColliderRadius::Medium);
+			if (CollisionTests::OBBToCircle(playerOBB, asteroid))
+			{
+				//std::cout << "Player Be Ded." << std::endl;
+			}
+		}
+
+		for (auto smallAsteroid = firstSmall;
+			smallAsteroid < endOfAsteroids;
+			++smallAsteroid)
+		{
+			Transform* asteroidTrans;
+			transformManager.GetPtr(smallAsteroid->entity, &asteroidTrans);
+
+			Circle asteroid(asteroidTrans->pos, ColliderRadius::Small);
+			if (CollisionTests::OBBToCircle(playerOBB, asteroid))
+			{
+				//std::cout << "Player Be Ded." << std::endl;
+			}
 		}
 	}
-
-	for (auto mediumAsteroid = firstMedium;
-		mediumAsteroid < firstSmall;
-		++mediumAsteroid)
-	{
-		Transform* asteroidTrans;
-		transformManager.GetPtr(mediumAsteroid->entity, &asteroidTrans);
-
-		Circle asteroid(asteroidTrans->pos, ColliderRadius::Medium);
-		if (CollisionTests::OBBToCircle(playerOBB, asteroid))
-		{
-			//std::cout << "Player Be Ded." << std::endl;
-		}
-	}
-
-	for (auto smallAsteroid = firstSmall;
-		smallAsteroid < endOfAsteroids;
-		++smallAsteroid)
-	{
-		Transform* asteroidTrans;
-		transformManager.GetPtr(smallAsteroid->entity, &asteroidTrans);
-
-		Circle asteroid(asteroidTrans->pos, ColliderRadius::Small);
-		if (CollisionTests::OBBToCircle(playerOBB, asteroid))
-		{
-			//std::cout << "Player Be Ded." << std::endl;
-		}
-	}
-
 #pragma endregion
 
 #pragma region LargeVsAll
@@ -453,7 +455,6 @@ void Physics::ResolveMove(const float deltaTime, CollisionListEntry collision)
 	ResolvedListEntry resolvedA;
 	resolvedA.angularVelocity = rigidA->angularVelocity;
 	resolvedA.entity = collision.A;
-	resolvedA.rotation = transA->rot;
 	resolvedA.position = transA->pos + (rigidA->velocity * collision.timeOfCollision * deltaTime);
 	resolvedA.velocity = (impactNormal * finalANormal) + (impactTangent * finalATangent);
 	resolvedList.insert(std::make_pair(collision.timeOfCollision, resolvedA));
@@ -462,7 +463,6 @@ void Physics::ResolveMove(const float deltaTime, CollisionListEntry collision)
 	ResolvedListEntry resolvedB;
 	resolvedB.angularVelocity = rigidB->angularVelocity;
 	resolvedB.entity = collision.B;
-	resolvedB.rotation = transB->rot;
 	resolvedB.position = transB->pos + (rigidB->velocity * collision.timeOfCollision * deltaTime);
 	resolvedB.velocity = (impactNormal * finalBNormal) + (impactTangent * finalBTangent);
 	resolvedList.insert(std::make_pair(collision.timeOfCollision, resolvedB));
@@ -496,8 +496,6 @@ void Physics::FinalizeMoves(const float deltaTime)
 
 		trans->pos.x = Math::Repeat(finalPos.x, screenAABB.right);
 		trans->pos.y = Math::Repeat(finalPos.y, screenAABB.bottom);
-
-		trans->rot = Math::Repeat(resolvedEntry.rotation, 360.0f);
 
 		Rigidbody* rigid;
 		rigidbodyManager.GetPtr(entry.second.entity, &rigid);

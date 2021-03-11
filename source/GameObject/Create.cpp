@@ -30,6 +30,81 @@ Entity Create::Asteroid(const Vector2& position, const float& rotation,
 	return entity;
 }
 
+std::array<Entity, 4> Create::SplitAsteroid(const Entity& asteroid, const float& splitImpulse) const
+{
+	std::array<Entity, 4> retVal = { Entity::null(), Entity::null(), Entity::null(), Entity::null() };
+
+	Rigidbody* parentRigid;
+	if (!rigidbodyManager.GetPtr(asteroid, &parentRigid))
+	{
+		return retVal;
+	}
+
+	std::array<SpriteID, 4> sprites;
+	ColliderType colliderType;
+	float parentRadius;
+
+	switch (parentRigid->colliderType)
+	{
+	case ColliderType::LARGE_ASTEROID:
+		sprites.at(0) = SpriteID::MEDIUM_ASTEROID_1;
+		sprites.at(1) = SpriteID::MEDIUM_ASTEROID_2;
+		sprites.at(2) = SpriteID::MEDIUM_ASTEROID_3;
+		sprites.at(3) = SpriteID::MEDIUM_ASTEROID_4;
+		colliderType = ColliderType::MEDIUM_ASTEROID;
+		parentRadius = ColliderRadius::Large;
+		break;
+
+	case ColliderType::MEDIUM_ASTEROID:
+		sprites.at(0) = (SpriteID)Math::RandomRange((int)SpriteID::SMOL_ASTEROID_1, (int)SpriteID::SMOL_ASTEROID_16);
+		sprites.at(1) = (SpriteID)Math::RandomRange((int)SpriteID::SMOL_ASTEROID_1, (int)SpriteID::SMOL_ASTEROID_16);
+		sprites.at(2) = (SpriteID)Math::RandomRange((int)SpriteID::SMOL_ASTEROID_1, (int)SpriteID::SMOL_ASTEROID_16);
+		sprites.at(3) = (SpriteID)Math::RandomRange((int)SpriteID::SMOL_ASTEROID_1, (int)SpriteID::SMOL_ASTEROID_16);
+		colliderType = ColliderType::SMOL_ASTEROID;
+		parentRadius = ColliderRadius::Medium;
+		break;
+
+	default:
+		// Only LARGE_ASTEROID and MEDIUM_ASTEROID are splittable.
+		return retVal;
+	}
+
+	Transform* parentTransform;
+	if (!transManager.GetPtr(asteroid, &parentTransform))
+	{
+		return retVal;
+	}
+
+	Vector2 halfParentForward = Vector2::Forward().RotateDeg(parentTransform->rot) * 0.5f;
+	Vector2 halfParentRight = halfParentForward.Rot90CW();
+
+	std::array<Vector2, 4> directions;
+
+	directions.at(0) = (-halfParentForward + halfParentRight);
+	directions.at(1) = (-halfParentForward - halfParentRight);
+	directions.at(2) = (halfParentForward + halfParentRight);
+	directions.at(3) = (halfParentForward - halfParentRight);
+
+
+	for (auto i = 0; i < 4; i++)
+	{
+		Entity entity = entityManager.Create();
+		
+		Transform trans;
+		trans.pos = parentTransform->pos + (directions.at(i) * (parentRadius + 0.0001f));
+		trans.rot = parentTransform->rot;
+		transManager.Add(entity, trans);
+		rigidbodyManager.Add(entity, colliderType, parentRigid->velocity + (directions.at(i) * splitImpulse), parentRigid->angularVelocity);
+		spriteManager.Create(entity, sprites.at(i), RenderQueue::Layer::DEFAULT);
+		
+		retVal.at(i) = entity;
+	}
+
+	entityManager.Destroy(asteroid);
+
+	return retVal;
+}
+
 ColliderType Create::GetColliderFor(const AsteroidType& asteroidType) const
 {
 	if (asteroidType == AsteroidType::LARGE)
@@ -92,13 +167,13 @@ SpriteID Create::GetSpriteFor(const AsteroidType& asteroidType) const
 		return SpriteID::SMOL_ASTEROID_16;
 
 	case AsteroidType::RANDOM_MEDIUM:
-		return (SpriteID)((int)SpriteID::MEDIUM_ASTEROID_1 + Math::RandomRange(0, 4));
+		return (SpriteID)((int)SpriteID::MEDIUM_ASTEROID_1 + Math::RandomRange(0, 3));
 	case AsteroidType::RANDOM_SMALL:
-		return (SpriteID)((int)SpriteID::SMOL_ASTEROID_1 + Math::RandomRange(0, 16));
+		return (SpriteID)((int)SpriteID::SMOL_ASTEROID_1 + Math::RandomRange(0, 15));
 	}
 }
 
-Entity Create::Ship(const Vector2& position, const float& rotation) const
+Entity Create::Ship(const Vector2& position, const float& rotation, const Vector2& initialVelocity, const float& initialAngularVelocity) const
 {
 	Entity entity = entityManager.Create();
 
@@ -107,6 +182,26 @@ Entity Create::Ship(const Vector2& position, const float& rotation) const
 	trans.rot = rotation;
 	transManager.Add(entity, trans);
 	spriteManager.Create(entity, SpriteID::SHIP, RenderQueue::Layer::DEFAULT);
+	rigidbodyManager.Add(entity, ColliderType::SHIP, initialVelocity, initialAngularVelocity);
+
+	return entity;
+}
+
+Entity Create::ShipThruster(const Entity& ship, const Vector2& thrusterOffset, const float& thrusterRotation, SpriteID spriteID) const
+{
+	Transform parentTrans;
+	if (!transManager.Get(ship, &parentTrans))
+	{
+		return Entity::null();
+	}
+
+	Entity entity = entityManager.Create();
+
+	Transform trans;
+	trans.pos = parentTrans.pos + thrusterOffset.RotateDeg(parentTrans.rot);
+	trans.rot = parentTrans.rot;
+	transManager.Add(entity, trans);
+	spriteManager.Create(entity, spriteID, RenderQueue::Layer::PARTICLE);
 
 	return entity;
 }

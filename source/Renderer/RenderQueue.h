@@ -9,14 +9,6 @@ class RenderQueue
 public:
 	RenderQueue();
 
-	struct Element
-	{
-		SDL_Texture* tex;
-		SDL_Rect srcRect;
-		SDL_Rect dstRect;
-		float angle;
-	};
-
 	enum class Layer
 	{
 		BACKGROUND,
@@ -28,16 +20,24 @@ public:
 		COUNT
 	};
 
+	struct Element
+	{
+		SDL_Texture* tex;
+		SDL_Rect srcRect;
+		SDL_Rect dstRect;
+		float angle;
+		RenderQueue::Layer layer;
+	};
+
+
+
 	void Enqueue(SDL_Texture* texture, const SDL_Rect& sourceRect, const SDL_Rect& targetRect, const float rotation, const RenderQueue::Layer layer);
 
-	const std::vector<RenderQueue::Element>& GetRenderQueue() const;
+	const std::vector<RenderQueue::Element>& GetRenderQueue();
 	void Clear();
 
 
 
 private:
-
-	std::vector<int> prioIndices;
-	
 	std::vector<RenderQueue::Element> renderQueue;
 };

@@ -13,6 +13,7 @@
 #include "../ECS/RigidbodyManager.h"
 
 #include "../GameObject/Create.h"
+#include "../GameObject/Player.h"
 
 #include "../Physics/Physics.h"
 
@@ -58,7 +59,7 @@ private:
 	Physics physics;
 	const AABB gameField;
 
-	//std::unique_ptr<Ship> playerShip;
+	Player player;
 
 	int GCStep;
 

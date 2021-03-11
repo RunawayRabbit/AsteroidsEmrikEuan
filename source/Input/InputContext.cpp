@@ -19,6 +19,8 @@ InputContext::InputContext(bool fillWithDefaults)
 		AddToggle(SDLK_e, InputToggle::StrafeRight);
 
 		AddToggle(SDLK_SPACE, InputToggle::Shoot);
+
+		AddOneShot(SDLK_LCTRL, InputOneShot::Bomb);
 	}
 }
 
