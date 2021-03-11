@@ -34,7 +34,7 @@ void SpriteAtlas::CreateAnimatedSprites()
 	CreateSprite(SpriteID::EXPLOSION_2, 0, 36, 34, 207, 144);
 	CreateSprite(SpriteID::EXPLOSION_3, 0, 48, 52, 8, 197);
 
-	CreateSprite(SpriteID::BULLET, 0, 4, 6, 6, 133);
+	CreateSprite(SpriteID::BULLET, 0, 4, 8, 6, 131);
 	CreateSprite(SpriteID::BULLET_1, 0, 4, 8, 198, 72);
 }
 

@@ -18,6 +18,7 @@ static std::vector<Entity> GLOBALtestEntities;
 
 
 Game::Game(std::string windowName, int width, int height) :
+	entities(time),
 	renderer(windowName, width, height),
 	input(InputHandler(*this)),
 	gameField(0.0f, (float)height, 0.0f, (float)width),
@@ -30,7 +31,7 @@ Game::Game(std::string windowName, int width, int height) :
 	GCStep(0),
 	isRunning(true)
 {
-#if 1
+#if 0
 
 	std::vector<Vector2> asteroidPositions;
 
@@ -100,6 +101,7 @@ void Game::ProcessInput()
 
 void Game::Update(float deltaTime)
 {
+	time.Update(deltaTime);
 	auto inputBuffer = input.GetBuffer();
 
 	// Gameplay Code Goes Here!
@@ -110,9 +112,6 @@ void Game::Update(float deltaTime)
 	}
 
 	player.Update(inputBuffer, deltaTime);
-
-
-
 
 	rigidbodies.Update(physics, deltaTime);
 	physics.Simulate(deltaTime);
@@ -142,16 +141,6 @@ void Game::GarbageCollection()
 {
 	// @TODO: This can be better.
 
-	// Kind of a funky way of doing GC, will likely clean this up later.
-	// Each component that does GC takes turns, one per frame.
-
-	switch (++GCStep)
-	{
-	case 1:
-		xforms.GarbageCollect(entities);
-		break;
-
-	default:
-		GCStep = 0;
-	}
+	entities.GarbageCollect();
+	xforms.GarbageCollect(entities);
 }

@@ -54,6 +54,7 @@
     <ClInclude Include="source\Renderer\Renderer.h" />
     <ClInclude Include="source\Renderer\RenderQueue.h" />
     <ClInclude Include="source\Renderer\SpriteAtlas.h" />
+    <ClInclude Include="source\Time.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\ECS\AnimatedSpriteManager.cpp" />
@@ -75,6 +76,7 @@
     <ClCompile Include="source\Renderer\Renderer.cpp" />
     <ClCompile Include="source\Renderer\RenderQueue.cpp" />
     <ClCompile Include="source\Renderer\SpriteAtlas.cpp" />
+    <ClCompile Include="source\Time.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

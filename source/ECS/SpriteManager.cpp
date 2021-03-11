@@ -2,11 +2,8 @@
 #include <iostream>
 
 #include "SpriteManager.h"
-
 #include "..\ECS\Sprite.h"
-
 #include "..\Renderer\RenderQueue.h"
-
 #include "..\Math\OBB.h"
 
 

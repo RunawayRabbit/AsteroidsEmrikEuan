@@ -123,9 +123,6 @@
     <ClInclude Include="source\ECS\Sprite.h">
       <Filter>ECS\H</Filter>
     </ClInclude>
-    <ClInclude Include="source\ECS\SpriteID.h">
-      <Filter>ECS\H</Filter>
-    </ClInclude>
     <ClInclude Include="source\Math\Vector2Int.h">
       <Filter>Math\H</Filter>
     </ClInclude>
@@ -169,6 +166,12 @@
       <Filter>GameObject\H</Filter>
     </ClInclude>
     <ClInclude Include="source\GameObject\BackgroundRenderer.h">
+      <Filter>Renderer\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Time.h">
+      <Filter>Platform\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ECS\SpriteID.h">
       <Filter>Renderer\H</Filter>
     </ClInclude>
   </ItemGroup>
@@ -229,6 +232,9 @@
     </ClCompile>
     <ClCompile Include="source\GameObject\Player.cpp">
       <Filter>GameObject\CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Time.cpp">
+      <Filter>Platform\CPP</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,7 +1,9 @@
 
 #include "EntityManager.h"
+#include "..\Time.h"
 
-EntityManager::EntityManager()
+EntityManager::EntityManager(const Time& time) :
+	time(time)
 {
 	nextEntity = Entity();
 }
@@ -27,4 +29,26 @@ bool EntityManager::Exists(Entity entity) const
 void EntityManager::Destroy(Entity entity)
 {
 	entities.erase(entity);
+}
+
+void EntityManager::DestroyDelayed(Entity entity, const float& seconds)
+{
+	deathRow.push({ time.Now() + seconds, entity });
+}
+
+void EntityManager::GarbageCollect()
+{
+	while (deathRow.size() > 0)
+	{
+		auto element = deathRow.top();
+		if (element.first < time.Now())
+		{
+			Destroy(element.second);
+			deathRow.pop();
+		}
+		else
+		{
+			return;
+		}
+	}
 }

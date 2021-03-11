@@ -173,6 +173,23 @@ SpriteID Create::GetSpriteFor(const AsteroidType& asteroidType) const
 	}
 }
 
+
+Entity Create::Bullet(const Vector2& position, const float& rotation, const float& speed, const float& secondsToLive) const
+{
+	Entity entity = entityManager.Create();
+
+	Transform trans;
+	trans.pos = position;
+	trans.rot = rotation + 180;
+	transManager.Add(entity, trans);
+	spriteManager.Create(entity, SpriteID::BULLET, RenderQueue::Layer::PARTICLE);	
+	rigidbodyManager.Add(entity, ColliderType::BULLET, -Vector2::Forward().RotateDeg(rotation)* speed, 0);
+
+	entityManager.DestroyDelayed(entity, secondsToLive);
+
+	return entity;
+}
+
 Entity Create::Ship(const Vector2& position, const float& rotation, const Vector2& initialVelocity, const float& initialAngularVelocity) const
 {
 	Entity entity = entityManager.Create();

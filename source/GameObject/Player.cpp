@@ -138,7 +138,7 @@ void Player::Update(InputBuffer& input, const float& deltaTime)
 	if (shotTimer < 0.0f && input.Contains(InputToggle::Shoot))
 	{
 		shotTimer = (shotTimer > -deltaTime) ? shotTimer + shotCooldown : shotCooldown;
-		create.Asteroid(transform.pos + (forward * 35.0f), transform.rot, forward * bulletSpeed, 0, Create::AsteroidType::SMALL_1);
+		create.Bullet(transform.pos + (forward * bulletSpawnOffsetY), transform.rot, bulletSpeed, bulletLifetime);
 	}
 #pragma endregion
 

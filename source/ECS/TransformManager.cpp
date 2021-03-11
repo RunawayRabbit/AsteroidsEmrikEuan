@@ -3,11 +3,6 @@
 #include "EntityManager.h"
 
 
-/* @TODO:
-	Becoming more and more clear that a lookup table for transforms would
-	offer a huge performance benefit for the physics system.
-*/
-
 TransformManager::TransformManager(int capacity)
 {
 	transforms.reserve(capacity);

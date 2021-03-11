@@ -57,8 +57,10 @@ private:
 	static constexpr float forwardAcceleration = maxSpeed / 0.6f;
 	static constexpr float strafeAcceleration = maxSpeed / 1.5f;
 
-	static constexpr float bulletSpeed = 150.0f;
-	static constexpr float shotCooldown = 0.4f;
+	static constexpr float bulletSpeed = 250.0f;
+	static constexpr float bulletLifetime = 2.5f;
+	static constexpr float shotCooldown = 0.3f;
+	static constexpr float bulletSpawnOffsetY = 11.0f;
 
 	static constexpr float maxAngularVelocity = 320.0f;
 	static constexpr float rotateAcceleration = maxAngularVelocity / 0.4f;

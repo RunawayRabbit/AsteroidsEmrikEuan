@@ -67,6 +67,6 @@ namespace SpriteAnimationData
 	0.0f, // zero animation
 	0.15f, 0.1f, 0.2f, 0.1f, // ship trail
 	0.1f, 0.25f, 0.3f, 0.4f, // explosion
-	0.2f, 0.25f, 0.50f, // bullet
+	0.3f, 0.07f, 0.07f, // bullet
 	};
 }

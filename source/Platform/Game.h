@@ -21,6 +21,8 @@
 
 #include "../Math/AABB.h"
 
+#include "../Time.h"
+
 
 class Game
 {
@@ -48,6 +50,8 @@ private:
 
 	// GameObject Creator
 	Create create;
+
+	Time time;
 
 	// ECS Systems
 	EntityManager entities;
