@@ -4,11 +4,13 @@
 #include "..\Renderer\SpriteAtlas.h"
 
 class TransformManager;
+class RenderQueue;
 
 class BackgroundRenderer
 {
+public:
 	BackgroundRenderer(const TransformManager& transformManager);
-	void Update();
+	void Render(RenderQueue& renderQueue);
 
 private:
 

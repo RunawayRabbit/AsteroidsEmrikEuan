@@ -4,10 +4,13 @@
 
 #include <SDL_render.h>
 
+#include "SpriteAtlas.h"
+#include "SpriteID.h"
+
 class RenderQueue
 {
 public:
-	RenderQueue();
+	RenderQueue(Renderer& renderer, int screenWidth, int screenHeight);
 
 	enum class Layer
 	{
@@ -29,15 +32,19 @@ public:
 		RenderQueue::Layer layer;
 	};
 
+	const int screenWidth;
+	const int screenHeight;
 
+	void Enqueue(SpriteID spriteID, const SDL_Rect& targetRect, const float rotation, const RenderQueue::Layer layer);
+	void Enqueue(SpriteID spriteID, const float rotation, const RenderQueue::Layer layer);
 
-	void Enqueue(SDL_Texture* texture, const SDL_Rect& sourceRect, const SDL_Rect& targetRect, const float rotation, const RenderQueue::Layer layer);
-
+	const SpriteAtlas& GetSpriteAtlas() { return spriteAtlas; }
 	const std::vector<RenderQueue::Element>& GetRenderQueue();
 	void Clear();
 
 
 
 private:
+	SpriteAtlas spriteAtlas;
 	std::vector<RenderQueue::Element> renderQueue;
 };

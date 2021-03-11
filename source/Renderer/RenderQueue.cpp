@@ -3,27 +3,44 @@
 #include <algorithm>
 
 #include "RenderQueue.h"
+#include "SpriteID.h"
+#include "Sprite.h"
 
-RenderQueue::RenderQueue() : 
-	renderQueue()
+
+RenderQueue::RenderQueue(Renderer& renderer, int screenWidth, int screenHeight) :
+	spriteAtlas(renderer),
+	screenWidth(screenWidth),
+	screenHeight(screenHeight)
 {
 	renderQueue.reserve(128); // arbitrary, but a decent starting size for total number of rendered sprites?)
 }
 
-void RenderQueue::Enqueue(SDL_Texture* texture, const SDL_Rect& sourceRect, const SDL_Rect& targetRect, const float rotation, const RenderQueue::Layer layer)
+
+void RenderQueue::Enqueue(SpriteID spriteID, const SDL_Rect& targetRect, const float rotation, const RenderQueue::Layer layer)
 {
 	//@NOTE: I used to do some complex queueing here where sorted insertion became O(log k) where k is the number of layers in use.
 	// It turns out that having an O(1) insert and doing the sort at the end is faster, since we enqueue far more often than we
 	// fetch.
+	Sprite sprite = spriteAtlas.Get(spriteID);
 
 	Element el;
-	el.tex = texture;
-	el.srcRect = sourceRect;
+	el.tex = sprite.texture;
+	el.srcRect = sprite.source;
 	el.dstRect = targetRect;
 	el.angle = rotation;
 	el.layer = layer;
 
 	renderQueue.push_back(el);
+}
+
+void RenderQueue::Enqueue(SpriteID spriteID, const float rotation, const RenderQueue::Layer layer)
+{
+	SDL_Rect targetRect;
+	targetRect.w = screenWidth;
+	targetRect.h = screenHeight;
+	targetRect.x = 0;
+	targetRect.y = 0;
+	Enqueue(spriteID, targetRect, rotation, layer);
 }
 
 

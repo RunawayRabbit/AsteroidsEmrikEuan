@@ -20,11 +20,13 @@ static std::vector<Entity> GLOBALtestEntities;
 Game::Game(std::string windowName, int width, int height) :
 	entities(time),
 	renderer(windowName, width, height),
+	renderQueue(renderer, width, height),
 	input(InputHandler(*this)),
 	gameField(0.0f, (float)height, 0.0f, (float)width),
 	xforms(2), //intial capacity. Can resize dynamically.
+	backgroundRenderer(xforms),
 	rigidbodies(entities, 2),
-	sprites(renderer, xforms, entities, AABB(0, (float)height, 0, (float)width), 128),
+	sprites(xforms, entities, renderQueue.GetSpriteAtlas(), 128 ),
 	create(entities, xforms, sprites, rigidbodies),
 	physics(xforms, rigidbodies, AABB(0, (float)height, 0, (float)width)),
 	player(entities, rigidbodies, xforms, create, physics),
@@ -126,6 +128,7 @@ void Game::Render()
 
 	// @TODO: Render all static backgrounds
 	//renderQueue.Enqueue()
+	backgroundRenderer.Render(renderQueue);
 
 	sprites.Render(renderQueue);
 

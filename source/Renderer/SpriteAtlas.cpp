@@ -3,9 +3,11 @@
 
 #include <SDL_image.h>
 
-#include "..\Renderer\Renderer.h"
-
 #include "SpriteAtlas.h"
+#include "Sprite.h"
+#include "SpriteID.h"
+
+#include "Renderer.h";
 
 SpriteAtlas::SpriteAtlas(Renderer& renderer) : 
 	spriteData((int)SpriteID::COUNT)
@@ -74,6 +76,14 @@ void SpriteAtlas::CreateRegularSprites()
 	CreateSprite(SpriteID::SHITTY_LOGO, 1, 400, 114, 0, 0);
 }
 
+void SpriteAtlas::CreateBackgroundSprites()
+{
+	CreateSprite(SpriteID::STATIC_BACKGROUND, 2, 2000, 2000, 0, 0);
+	//CreateSprite(SpriteID::PARALLAX_BACKGROUND_1,
+	//CreateSprite(SpriteID::PARALLAX_BACKGROUND_2,
+	//CreateSprite(SpriteID::PARALLAX_BACKGROUND_3,
+}
+
 void SpriteAtlas::CreateSprite(SpriteID id, int texIndex, int width, int height, int x, int y)
 {
 	Sprite sprite;
@@ -95,8 +105,12 @@ void SpriteAtlas::LoadPNGs(SDL_Renderer* renderer)
 		std::cout << ("Error initializing PNG extensions: ") << SDL_GetError();
 	}
 
-	loadedImages.push_back(PNGToTexture(renderer, "resources/asteroids-arcade.png"));
-	loadedImages.push_back(PNGToTexture(renderer, "resources/crappy_logo.png"));
+	loadedImages.push_back(PNGToTexture(renderer, "resources/asteroids-arcade.png")); //0 
+	loadedImages.push_back(PNGToTexture(renderer, "resources/crappy_logo.png")); //1
+	loadedImages.push_back(PNGToTexture(renderer, "resources/bkgd_0.png")); //2
+	loadedImages.push_back(PNGToTexture(renderer, "resources/bkgd_2.png")); //3 
+	loadedImages.push_back(PNGToTexture(renderer, "resources/bkgd_1.png")); //4 
+	loadedImages.push_back(PNGToTexture(renderer, "resources/bkgd_3.png")); //5 
 
 	IMG_Quit(); // Shut down the image loading stuff, we don't need it anymore.
 }

@@ -69,7 +69,7 @@ namespace Math
 		return range(generator);
 	}
 
-	static float RandomRange(int min, int max)
+	static int RandomRange(int min, int max)
 	{
 		static std::random_device device;
 		static std::mt19937 generator(device());

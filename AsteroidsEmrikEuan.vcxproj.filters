@@ -144,9 +144,6 @@
     <ClInclude Include="source\Math\Circle.h">
       <Filter>Math\H</Filter>
     </ClInclude>
-    <ClInclude Include="source\ECS\COLLIDER_WIP.h">
-      <Filter>ECS\H</Filter>
-    </ClInclude>
     <ClInclude Include="source\Physics\ColliderType.h">
       <Filter>Physics\H</Filter>
     </ClInclude>
@@ -165,13 +162,13 @@
     <ClInclude Include="source\GameObject\Create.h">
       <Filter>GameObject\H</Filter>
     </ClInclude>
-    <ClInclude Include="source\GameObject\BackgroundRenderer.h">
-      <Filter>Renderer\H</Filter>
-    </ClInclude>
     <ClInclude Include="source\Time.h">
       <Filter>Platform\H</Filter>
     </ClInclude>
     <ClInclude Include="source\ECS\SpriteID.h">
+      <Filter>Renderer\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Renderer\BackgroundRenderer.h">
       <Filter>Renderer\H</Filter>
     </ClInclude>
   </ItemGroup>
@@ -235,6 +232,9 @@
     </ClCompile>
     <ClCompile Include="source\Time.cpp">
       <Filter>Platform\CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Renderer\BackgroundRenderer.cpp">
+      <Filter>Renderer\CPP</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

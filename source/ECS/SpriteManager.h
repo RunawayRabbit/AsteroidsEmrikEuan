@@ -1,18 +1,16 @@
 #pragma once
 
-#include "Sprite.h"
-
 #include "Entity.h"
 #include "EntityManager.h"
 
-
 #include "..\Math\Vector2.h"
-#include "..\Math\AABB.h"
 
 #include "..\Renderer\RenderQueue.h"
-#include "..\Renderer\SpriteAtlas.h" // THIS FILE NEEDS TO BE MOVED TO ECS?!?!?
+#include "..\Renderer\SpriteAtlas.h"
 
 #include "TransformManager.h"
+
+class AABB;
 
 struct SpriteTransform
 {
@@ -25,7 +23,7 @@ struct SpriteTransform
 class SpriteManager
 {
 public:
-	SpriteManager(Renderer& renderer, const TransformManager& transManager, const EntityManager& entityManager, const AABB screenAABB, const int capacity);
+	SpriteManager(const TransformManager& transManager, const EntityManager& entityManager, const SpriteAtlas& spriteAtlas, const int capacity);
 	SpriteManager() = delete;
 
 	void Create(const Entity entity, const SpriteID spriteID, const RenderQueue::Layer layer, const bool shouldRepeatAtEdges = true);
@@ -49,14 +47,14 @@ private:
 
 		void Update(const SpriteAtlas& spriteAtlas, const float deltaTime);
 
-		void Render(RenderQueue& renderQueue, const SpriteAtlas& spriteAtlas) const;
-		void RenderLooped(RenderQueue& renderQueue, const SpriteAtlas& spriteAtlas, const AABB& screenAABB) const;
+		void Render(RenderQueue& renderQueue) const;
+		void RenderLooped(RenderQueue& renderQueue, const int screenWidth, const int screenHeight) const;
 
 		// helper functions
-		void DrawAtTop(RenderQueue& renderQueue, const Sprite* sprite, const SpriteTransform* transform, const AABB& screenAABB) const;
-		void DrawAtBottom(RenderQueue& renderQueue, const Sprite* sprite, const SpriteTransform* transform, const AABB& screenAABB) const;
-		void DrawAtLeft(RenderQueue& renderQueue, const Sprite* sprite, const SpriteTransform* transform, const AABB& screenAABB) const;
-		void DrawAtRight(RenderQueue& renderQueue, const Sprite* sprite, const SpriteTransform* transform, const AABB& screenAABB) const;
+		void DrawAtTop(RenderQueue& renderQueue, const SpriteID spriteID, const SpriteTransform* transform, const AABB& screenAABB) const;
+		void DrawAtBottom(RenderQueue& renderQueue, const SpriteID spriteID, const SpriteTransform* transform, const AABB& screenAABB) const;
+		void DrawAtLeft(RenderQueue& renderQueue, const SpriteID spriteID, const SpriteTransform* transform, const AABB& screenAABB) const;
+		void DrawAtRight(RenderQueue& renderQueue, const SpriteID spriteID, const SpriteTransform* transform, const AABB& screenAABB) const;
 
 	private:
 		const TransformManager& transManager;
@@ -73,8 +71,7 @@ private:
 		std::vector<float> currentFrameTimes;
 	};
 
-	AABB screenAABB;
-	SpriteAtlas spriteAtlas;
+	const SpriteAtlas& spriteAtlas;
 
 	SpriteCategory repeating;
 	SpriteCategory nonRepeating;

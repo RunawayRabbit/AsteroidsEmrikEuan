@@ -1,8 +1,14 @@
 #pragma once
 
-#include "..\ECS\Sprite.h"
-#include "..\Renderer\Renderer.h"
-#include "..\ECS\SpriteID.h"
+#include <SDL_render.h>
+#include <vector>
+#include <string>
+
+#include "..\Renderer\Sprite.h"
+#include "..\Renderer\SpriteID.h"
+
+class Renderer;
+
 
 class SpriteAtlas
 {
@@ -23,6 +29,7 @@ public:
 private:
 	void CreateAnimatedSprites();
 	void CreateRegularSprites();
+	void CreateBackgroundSprites();
 	void CreateSprite(SpriteID id, int texIndex, int width, int height, int x, int y);
 
 	void LoadPNGs(SDL_Renderer* renderer);

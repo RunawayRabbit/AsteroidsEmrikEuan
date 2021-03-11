@@ -5,6 +5,7 @@
 
 #include "../Renderer/Renderer.h"
 #include "../Renderer/RenderQueue.h"
+#include "../Renderer/BackgroundRenderer.h"
 
 #include "../ECS/EntityManager.h"
 #include "../ECS/TransformManager.h"
@@ -45,6 +46,7 @@ public:
 private:
 	Renderer renderer;
 	RenderQueue renderQueue;
+	BackgroundRenderer backgroundRenderer;
 
 	InputHandler input;
 

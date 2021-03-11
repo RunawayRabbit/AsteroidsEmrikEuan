@@ -21,7 +21,6 @@
   <ItemGroup>
     <ClInclude Include="source\ECS\AnimatedSpriteManager.h" />
     <ClInclude Include="source\ECS\RigidbodyManager.h" />
-    <ClInclude Include="source\ECS\COLLIDER_WIP.h" />
     <ClInclude Include="source\ECS\Entity.h" />
     <ClInclude Include="source\ECS\EntityManager.h" />
     <ClInclude Include="source\ECS\Sprite.h" />
@@ -29,7 +28,6 @@
     <ClInclude Include="source\ECS\SpriteManager.h" />
     <ClInclude Include="source\ECS\Transform.h" />
     <ClInclude Include="source\ECS\TransformManager.h" />
-    <ClInclude Include="source\GameObject\BackgroundRenderer.h" />
     <ClInclude Include="source\GameObject\Create.h" />
     <ClInclude Include="source\GameObject\Player.h" />
     <ClInclude Include="source\Input\InputBuffer.h" />
@@ -49,6 +47,7 @@
     <ClInclude Include="source\Physics\Physics.h" />
     <ClInclude Include="source\Platform\FrameTimer.h" />
     <ClInclude Include="source\Platform\Game.h" />
+    <ClInclude Include="source\Renderer\BackgroundRenderer.h" />
     <ClInclude Include="source\Renderer\Color.h" />
     <ClInclude Include="source\Renderer\GaussianBlur.h" />
     <ClInclude Include="source\Renderer\Renderer.h" />
@@ -72,6 +71,7 @@
     <ClCompile Include="source\Platform\FrameTimer.cpp" />
     <ClCompile Include="source\Platform\Game.cpp" />
     <ClCompile Include="source\Platform\Main.cpp" />
+    <ClCompile Include="source\Renderer\BackgroundRenderer.cpp" />
     <ClCompile Include="source\Renderer\GaussianBlur.cpp" />
     <ClCompile Include="source\Renderer\Renderer.cpp" />
     <ClCompile Include="source\Renderer\RenderQueue.cpp" />
