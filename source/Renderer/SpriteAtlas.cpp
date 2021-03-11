@@ -18,6 +18,7 @@ SpriteAtlas::SpriteAtlas(Renderer& renderer) :
 
 	CreateAnimatedSprites();
 	CreateRegularSprites();
+	CreateBackgroundSprites();
 }
 
 void SpriteAtlas::CreateAnimatedSprites()
@@ -79,9 +80,9 @@ void SpriteAtlas::CreateRegularSprites()
 void SpriteAtlas::CreateBackgroundSprites()
 {
 	CreateSprite(SpriteID::STATIC_BACKGROUND, 2, 2000, 2000, 0, 0);
-	//CreateSprite(SpriteID::PARALLAX_BACKGROUND_1,
-	//CreateSprite(SpriteID::PARALLAX_BACKGROUND_2,
-	//CreateSprite(SpriteID::PARALLAX_BACKGROUND_3,
+	CreateSprite(SpriteID::PARALLAX_BACKGROUND_1, 3, 2000, 2000, 0, 0);
+	CreateSprite(SpriteID::PARALLAX_BACKGROUND_2, 4, 2000, 2000, 0, 0);
+	CreateSprite(SpriteID::PARALLAX_BACKGROUND_3, 5, 2000, 2000, 0, 0);
 }
 
 void SpriteAtlas::CreateSprite(SpriteID id, int texIndex, int width, int height, int x, int y)
@@ -109,7 +110,7 @@ void SpriteAtlas::LoadPNGs(SDL_Renderer* renderer)
 	loadedImages.push_back(PNGToTexture(renderer, "resources/crappy_logo.png")); //1
 	loadedImages.push_back(PNGToTexture(renderer, "resources/bkgd_0.png")); //2
 	loadedImages.push_back(PNGToTexture(renderer, "resources/bkgd_2.png")); //3 
-	loadedImages.push_back(PNGToTexture(renderer, "resources/bkgd_1.png")); //4 
+	loadedImages.push_back(PNGToTexture(renderer, "resources/bkgd_7.png")); //4 
 	loadedImages.push_back(PNGToTexture(renderer, "resources/bkgd_3.png")); //5 
 
 	IMG_Quit(); // Shut down the image loading stuff, we don't need it anymore.

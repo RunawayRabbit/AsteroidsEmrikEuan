@@ -13,13 +13,7 @@ public:
 	void Render(RenderQueue& renderQueue);
 
 private:
-
 	const TransformManager& transformManager;
 
 	Entity PlayerShip;
-
-	SpriteID staticBackground;
-	SpriteID Parallax1;
-	SpriteID Parallax2;
-	SpriteID Parallax3;
 };

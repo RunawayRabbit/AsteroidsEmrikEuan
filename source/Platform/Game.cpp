@@ -126,8 +126,6 @@ void Game::Render()
 {
 	renderQueue.Clear();
 
-	// @TODO: Render all static backgrounds
-	//renderQueue.Enqueue()
 	backgroundRenderer.Render(renderQueue);
 
 	sprites.Render(renderQueue);

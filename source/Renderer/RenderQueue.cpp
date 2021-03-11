@@ -43,16 +43,13 @@ void RenderQueue::Enqueue(SpriteID spriteID, const float rotation, const RenderQ
 	Enqueue(spriteID, targetRect, rotation, layer);
 }
 
-
-#include <iostream>
-
 // @TODO: Consider locking here and unlocking on clear. Rename methods to be explicit if you do so.
 const std::vector<RenderQueue::Element>& RenderQueue::GetRenderQueue()
 {
 	std::sort(renderQueue.begin(), renderQueue.end(),
 		[](const RenderQueue::Element& a, const RenderQueue::Element& b) -> bool
 		{
-			return a.layer > b.layer;
+			return a.layer < b.layer;
 		});
 
 	return renderQueue;
