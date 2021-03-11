@@ -30,11 +30,11 @@ Game::Game(std::string windowName, int width, int height) :
 	GCStep(0),
 	isRunning(true)
 {
-#if 0
+#if 1
 
 	std::vector<Vector2> asteroidPositions;
 
-	for (auto i = 0; i < 16; i++)
+	for (auto i = 0; i < 400; i++)
 	{
 		bool isValidPosition = false;
 		int attempts = 0;
@@ -45,7 +45,7 @@ Game::Game(std::string windowName, int width, int height) :
 				// Yea I know. It's temporary, ok?
 				return;
 			}
-			constexpr float asteroidRadius = 15;
+			constexpr float asteroidRadius = 10;
 			Vector2 startPos = Vector2{ Math::RandomRange(asteroidRadius, width - asteroidRadius),
 				Math::RandomRange(asteroidRadius, height - asteroidRadius) };
 
@@ -70,11 +70,14 @@ Game::Game(std::string windowName, int width, int height) :
 
 				asteroidPositions.push_back(startPos);
 				
-				GLOBALtestEntities.push_back(create.Asteroid(startPos, startRot, startVel, rotVel, Create::AsteroidType::LARGE));
+				GLOBALtestEntities.push_back(create.Asteroid(startPos, startRot, startVel, rotVel, Create::AsteroidType::RANDOM_SMALL));
 			}
 			++attempts;
 		}
+		std::cout << asteroidPositions.size() << std::endl;
 	}
+
+
 #endif
 
 }

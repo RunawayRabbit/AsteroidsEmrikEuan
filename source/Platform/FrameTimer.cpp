@@ -70,10 +70,10 @@ void FrameTimer::PrintDebugStats() const
 
 void FrameTimer::Sleep(Timestamp frameBegin) const
 {
-	float frameTime = GetSecondsElapsed(frameBegin);
+	float frameTime = GetSecondsElapsed(frameBegin) * 1000.0f;
 	float renderTime = EstimatedRenderTime();
 
-	int32_t sleepTime = floor((int32_t)(fixedDeltaTime - renderTime - frameTime)) - 1;
+	int32_t sleepTime = floor(fixedDeltaTime - renderTime - frameTime) - 1;
 	
 	
 	if (sleepTime > 1)
