@@ -47,12 +47,36 @@ private:
 		}
 	};
 
-	void DetectInitialCollisions(const float deltaTime);
+	void DetectInitialCollisions(const float& deltaTime);
 	void DetectSecondaryCollisions();
-	void ResolveUpdatedMovement(const float deltaTime);
-	void ResolveMove(const float deltaTime, CollisionListEntry collision);
-	void FinalizeMoves(const float deltaTime);
+	void ResolveUpdatedMovement(const float& deltaTime);
+	void ResolveMove(const float& deltaTime, CollisionListEntry collision);
+	void FinalizeMoves(const float& deltaTime);
 	void End();
+
+	struct ColliderRanges
+	{
+		std::vector<Rigidbody>::iterator shipBegin;
+		std::vector<Rigidbody>::iterator shipEnd;
+		std::vector<Rigidbody>::iterator bulletBegin;
+		std::vector<Rigidbody>::iterator bulletEnd;
+		std::vector<Rigidbody>::iterator largeBegin;
+		std::vector<Rigidbody>::iterator largeEnd;
+		std::vector<Rigidbody>::iterator mediumBegin;
+		std::vector<Rigidbody>::iterator mediumEnd;
+		std::vector<Rigidbody>::iterator smallBegin;
+		std::vector<Rigidbody>::iterator smallEnd;
+	};
+
+	void ShipVsAsteroid(const ColliderRanges& ranges);
+	void OBBVsSpecificAsteroid(const OBB& ship, std::vector<Rigidbody>::iterator asteroidBegin,
+		std::vector<Rigidbody>::iterator asteroidEnd, const float& asteroidRadius);
+
+	void BulletVsAsteroid(const ColliderRanges& ranges, const float& deltaTime);
+	void AsteroidVsAsteroid(const ColliderRanges& ranges, const float& deltaTime);
+	void CircleVsCircles(const Rigidbody& circle, const float& circleRadius, const float& circleMass,
+		std::vector<Rigidbody>::iterator circlesBegin, std::vector<Rigidbody>::iterator circlesEnd,
+		const float& circlesMass, const float& circlesRadii, const float& deltaTime);
 
 	static constexpr int MaxSolverIterations = 3;
 	static constexpr float AsteroidMasses[]{ 16.0f, 4.0f, 1.0f };
@@ -63,7 +87,7 @@ private:
 	const AABB screenAABB;
 	Entity playerShip;
 
-	std::array<int, 3> colliderCounts;
+	std::array<int, (int)ColliderType::COUNT> colliderCounts;
 
 	std::vector<Rigidbody> moveList;
 

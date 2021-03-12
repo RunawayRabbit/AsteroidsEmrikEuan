@@ -11,6 +11,8 @@ TransformManager::TransformManager(int capacity)
 
 bool TransformManager::Get(const Entity entity, Transform& transform) const
 {
+	//@TODO This performs a copy when what I *really* want is an immutable
+	// reference to the existing data. Any way to fix that?
 	auto search = transforms.find(entity);
 
 	if (search != transforms.end()) {

@@ -26,22 +26,7 @@ void Physics::Enqueue(const Entity& entity)
 	if (rigidbodyManager.GetPtr(entity, &rb))
 	{
 		moveList.push_back(*rb);
-		switch (rb->colliderType)
-		{
-		case ColliderType::BULLET:
-			//@TODO: Here's where we'd do the bullet thing.
-			break;
-
-		case ColliderType::LARGE_ASTEROID:
-			colliderCounts[0]++;
-			break;
-		case ColliderType::MEDIUM_ASTEROID:
-			colliderCounts[1]++;
-			break;
-		case ColliderType::SMOL_ASTEROID:
-			colliderCounts[2]++;
-			break;
-		}
+		++colliderCounts[(int)rb->colliderType];
 	}
 }
 
@@ -90,291 +75,198 @@ void Physics::End()
 	resolvedList.clear();
 	dirtyList.clear();
 
-	colliderCounts[0] = 0;
-	colliderCounts[1] = 0;
-	colliderCounts[2] = 0;
+	for (auto& count : colliderCounts)
+		count = 0;
 }
 
-void Physics::DetectInitialCollisions(const float deltaTime)
+void Physics::DetectInitialCollisions(const float& deltaTime)
 {
+	// Sort to get our movelist in order.
 	std::sort(moveList.begin(), moveList.end());
 
-	auto firstLarge = moveList.begin();
-	auto firstMedium = firstLarge + colliderCounts[0];
-	auto firstSmall = firstMedium + colliderCounts[1];
-	auto endOfAsteroids = moveList.end();
+	// The order of these has to match the order of enum ColliderType defined in ColliderType.h.
+	ColliderRanges ranges;
+	ranges.shipBegin = moveList.begin();
+	ranges.shipEnd = ranges.bulletBegin = ranges.shipBegin + colliderCounts[(int)ColliderType::SHIP];
+	ranges.bulletEnd = ranges.largeBegin = ranges.bulletBegin + colliderCounts[(int)ColliderType::BULLET];
+	ranges.largeEnd = ranges.mediumBegin = ranges.largeBegin + colliderCounts[(int)ColliderType::LARGE_ASTEROID];
+	ranges.mediumEnd = ranges.smallBegin = ranges.mediumBegin + colliderCounts[(int)ColliderType::MEDIUM_ASTEROID];
+	ranges.smallEnd = moveList.end();
 
-#pragma region ShipToAsteroid
+	ShipVsAsteroid(ranges);
+	BulletVsAsteroid(ranges, deltaTime);
+	AsteroidVsAsteroid(ranges, deltaTime);
+}
 
-	Transform* playerTrans;
-	if (transformManager.GetMutable(playerShip, playerTrans))
+void Physics::ShipVsAsteroid(const ColliderRanges& ranges)
+{
+	for (auto ship = ranges.shipBegin; ship != ranges.shipEnd; ++ship)
 	{
-
-		OBB playerOBB(playerTrans->pos, ColliderRadius::Ship, playerTrans->rot);
-
-		for (auto largeAsteroid = firstLarge;
-			largeAsteroid < firstMedium;
-			++largeAsteroid)
+		Transform shipTrans;
+		if (!transformManager.Get(ship->entity, shipTrans))
 		{
-			Transform* asteroidTrans;
-			transformManager.GetMutable(largeAsteroid->entity, asteroidTrans);
-
-			Circle asteroid(asteroidTrans->pos, ColliderRadius::Large);
-			if (CollisionTests::OBBToCircle(playerOBB, asteroid))
-			{
-				//std::cout << "Player Be Ded." << std::endl;
-			}
+			// @TODO: Are you ever going to write that logging module? Because this should be logged.
+			continue;
 		}
+		OBB playerOBB(shipTrans.pos, ColliderRadius::Ship, shipTrans.rot);
 
-		for (auto mediumAsteroid = firstMedium;
-			mediumAsteroid < firstSmall;
-			++mediumAsteroid)
+		OBBVsSpecificAsteroid(playerOBB, ranges.largeBegin, ranges.largeEnd, ColliderRadius::Large);
+		OBBVsSpecificAsteroid(playerOBB, ranges.mediumBegin, ranges.mediumEnd, ColliderRadius::Medium);
+		OBBVsSpecificAsteroid(playerOBB, ranges.smallBegin, ranges.smallEnd, ColliderRadius::Small);
+	}
+}
+
+void Physics::OBBVsSpecificAsteroid(const OBB& ship, std::vector<Rigidbody>::iterator asteroidBegin,
+	std::vector<Rigidbody>::iterator asteroidEnd, const float& asteroidRadius)
+{
+	for (auto asteroid = asteroidBegin; asteroid != asteroidEnd; ++asteroid)
+	{
+		Transform asteroidTrans;
+		transformManager.Get(asteroid->entity, asteroidTrans);
+
+		Circle collider(asteroidTrans.pos, ColliderRadius::Small);
+		if (CollisionTests::OBBToCircle(ship, collider))
 		{
-			Transform* asteroidTrans;
-			transformManager.GetMutable(mediumAsteroid->entity, asteroidTrans);
-
-			Circle asteroid(asteroidTrans->pos, ColliderRadius::Medium);
-			if (CollisionTests::OBBToCircle(playerOBB, asteroid))
-			{
-				//std::cout << "Player Be Ded." << std::endl;
-			}
-		}
-
-		for (auto smallAsteroid = firstSmall;
-			smallAsteroid < endOfAsteroids;
-			++smallAsteroid)
-		{
-			Transform* asteroidTrans;
-			transformManager.GetMutable(smallAsteroid->entity, asteroidTrans);
-
-			Circle asteroid(asteroidTrans->pos, ColliderRadius::Small);
-			if (CollisionTests::OBBToCircle(playerOBB, asteroid))
-			{
-				//std::cout << "Player Be Ded." << std::endl;
-			}
+			std::cout << "Player Be Ded." << std::endl;
 		}
 	}
-#pragma endregion
-
-#pragma region LargeVsAll
-
-	if (colliderCounts[0] > 0)
-	{
-
-
-		for (auto asteroidA = firstLarge;
-			asteroidA < firstMedium - 1;
-			++asteroidA)
-		{
-			Transform* asteroidATrans;
-			transformManager.GetMutable(asteroidA->entity, asteroidATrans);
-
-			// Test all Large vs all other Large
-			for (auto asteroidB = asteroidA + 1;
-				asteroidB < firstMedium;
-				++asteroidB)
-			{
-				constexpr float largeVsLargeSqRadius = (ColliderRadius::Large + ColliderRadius::Large) *
-					(ColliderRadius::Large + ColliderRadius::Large);
-
-				Transform* asteroidBTrans;
-				transformManager.GetMutable(asteroidB->entity, asteroidBTrans);
-
-				float timeOfCollision;
-				if (CollisionTests::SweptCircleToCircle(
-					asteroidATrans->pos, asteroidA->velocity,
-					asteroidBTrans->pos, asteroidB->velocity,
-					ColliderRadius::Large, largeVsLargeSqRadius, deltaTime, timeOfCollision))
-				{
-					CollisionListEntry col;
-					col.A = asteroidA->entity;
-					col.massA = AsteroidMasses[0];
-
-					col.B = asteroidB->entity;
-					col.massB = AsteroidMasses[0];
-
-					col.timeOfCollision = timeOfCollision;
-					collisionList.push_back(col);
-				}
-			}
-
-			// Test all Large vs all Medium
-			for (auto asteroidB = firstMedium;
-				asteroidB < firstSmall;
-				++asteroidB)
-			{
-				constexpr float largeVsMediumSqRadius = (ColliderRadius::Large + ColliderRadius::Medium) *
-					(ColliderRadius::Large + ColliderRadius::Medium);
-
-				Transform* asteroidBTrans;
-				transformManager.GetMutable(asteroidB->entity, asteroidBTrans);
-
-				float timeOfCollision;
-				if (CollisionTests::SweptCircleToCircle(
-					asteroidATrans->pos, asteroidA->velocity,
-					asteroidBTrans->pos, asteroidB->velocity,
-					ColliderRadius::Large, largeVsMediumSqRadius, deltaTime, timeOfCollision))
-				{
-					CollisionListEntry col;
-					col.A = asteroidA->entity;
-					col.massA = AsteroidMasses[0];
-
-					col.B = asteroidB->entity;
-					col.massB = AsteroidMasses[1];
-
-					col.timeOfCollision = timeOfCollision;
-					collisionList.push_back(col);
-				}
-			}
-
-			// Test all Large vs all Small
-			for (auto asteroidB = firstSmall;
-				asteroidB < endOfAsteroids;
-				++asteroidB)
-			{
-				constexpr float largeVsSmallSqRadius = (ColliderRadius::Large + ColliderRadius::Small) *
-					(ColliderRadius::Large + ColliderRadius::Small);
-
-				Transform* asteroidBTrans;
-				transformManager.GetMutable(asteroidB->entity, asteroidBTrans);
-
-				float timeOfCollision;
-				if (CollisionTests::SweptCircleToCircle(
-					asteroidATrans->pos, asteroidA->velocity,
-					asteroidBTrans->pos, asteroidB->velocity,
-					ColliderRadius::Large, largeVsSmallSqRadius, deltaTime, timeOfCollision))
-				{
-					CollisionListEntry col;
-					col.A = asteroidA->entity;
-					col.massA = AsteroidMasses[0];
-
-					col.B = asteroidB->entity;
-					col.massB = AsteroidMasses[2];
-
-					col.timeOfCollision = timeOfCollision;
-					collisionList.push_back(col);
-				}
-			}
-		}
-	}
-#pragma endregion
-
-#pragma region Medium_vs_All
-	if (colliderCounts[1] > 0)
-	{
-		for (auto asteroidA = firstMedium;
-			asteroidA < firstSmall - 1;
-			++asteroidA)
-		{
-			Transform* asteroidATrans;
-			transformManager.GetMutable(asteroidA->entity, asteroidATrans);
-
-			// Test all Medium vs all other Medium
-			for (auto asteroidB = asteroidA + 1;
-				asteroidB < firstSmall;
-				++asteroidB)
-			{
-				constexpr float  mediumVsMediumSqRadius = (ColliderRadius::Medium + ColliderRadius::Medium) *
-					(ColliderRadius::Medium + ColliderRadius::Medium);
-
-				Transform* asteroidBTrans;
-				transformManager.GetMutable(asteroidB->entity, asteroidBTrans);
-
-				float timeOfCollision;
-				if (CollisionTests::SweptCircleToCircle(
-					asteroidATrans->pos, asteroidA->velocity,
-					asteroidBTrans->pos, asteroidB->velocity,
-					ColliderRadius::Medium, mediumVsMediumSqRadius, deltaTime, timeOfCollision))
-				{
-					CollisionListEntry col;
-					col.A = asteroidA->entity;
-					col.massA = AsteroidMasses[1];
-
-					col.B = asteroidB->entity;
-					col.massB = AsteroidMasses[1];
-
-					col.timeOfCollision = timeOfCollision;
-					collisionList.push_back(col);
-				}
-			}
-
-			// Test all Medium vs all Small
-			for (auto asteroidB = firstSmall;
-				asteroidB < endOfAsteroids;
-				++asteroidB)
-			{
-				constexpr float  mediumVsSmallSqRadius = (ColliderRadius::Medium + ColliderRadius::Small) *
-					(ColliderRadius::Medium + ColliderRadius::Small);
-
-				Transform* asteroidBTrans;
-				transformManager.GetMutable(asteroidB->entity, asteroidBTrans);
-
-				float timeOfCollision;
-				if (CollisionTests::SweptCircleToCircle(
-					asteroidATrans->pos, asteroidA->velocity,
-					asteroidBTrans->pos, asteroidB->velocity,
-					ColliderRadius::Medium, mediumVsSmallSqRadius, deltaTime, timeOfCollision))
-				{
-					CollisionListEntry col;
-					col.A = asteroidA->entity;
-					col.massA = AsteroidMasses[1];
-
-					col.B = asteroidB->entity;
-					col.massB = AsteroidMasses[2];
-
-					col.timeOfCollision = timeOfCollision;
-					collisionList.push_back(col);
-				}
-			}
-		}
-	}
-#pragma endregion
-
-#pragma region Small_vs_Small
-	if (colliderCounts[2] > 0)
-	{
-		for (auto asteroidA = firstSmall;
-			asteroidA < endOfAsteroids - 1;
-			++asteroidA)
-		{
-			Transform* asteroidATrans;
-			transformManager.GetMutable(asteroidA->entity, asteroidATrans);
-
-			// Test all Small vs all other Small
-			for (auto asteroidB = asteroidA + 1;
-				asteroidB < endOfAsteroids;
-				++asteroidB)
-			{
-				constexpr float smallVsSmallSqRadius = (ColliderRadius::Small + ColliderRadius::Small) *
-					(ColliderRadius::Small + ColliderRadius::Small);
-
-				Transform* asteroidBTrans;
-				transformManager.GetMutable(asteroidB->entity, asteroidBTrans);
-
-				float timeOfCollision;
-				if (CollisionTests::SweptCircleToCircle(
-					asteroidATrans->pos, asteroidA->velocity,
-					asteroidBTrans->pos, asteroidB->velocity,
-					ColliderRadius::Small, smallVsSmallSqRadius, deltaTime, timeOfCollision))
-				{
-					CollisionListEntry col;
-					col.A = asteroidA->entity;
-					col.massA = AsteroidMasses[2];
-
-					col.B = asteroidB->entity;
-					col.massB = AsteroidMasses[2];
-
-					col.timeOfCollision = timeOfCollision;
-					collisionList.push_back(col);
-				}
-			}
-		}
-	}
-#pragma endregion
 }
 
 
-void Physics::ResolveUpdatedMovement(const float deltaTime)
+void Physics::BulletVsAsteroid(const ColliderRanges& ranges, const float& deltaTime)
+{
+	constexpr float bulletMass = 0; // Fuck it, circles don't have mass. I have decided this.
+
+	for (auto bullet = ranges.bulletBegin; bullet != ranges.bulletEnd; ++bullet)
+	{
+		constexpr float bulletVsLargeRadius =
+			(ColliderRadius::Bullet + ColliderRadius::Large) *
+			(ColliderRadius::Bullet + ColliderRadius::Large);
+		CircleVsCircles(*bullet, ColliderRadius::Bullet, bulletMass,
+			ranges.largeBegin, ranges.largeEnd, AsteroidMasses[0], bulletVsLargeRadius, deltaTime);
+
+		constexpr float bulletVsMediumRadius =
+			(ColliderRadius::Bullet + ColliderRadius::Medium) *
+			(ColliderRadius::Bullet + ColliderRadius::Medium);
+		CircleVsCircles(*bullet, ColliderRadius::Bullet, bulletMass,
+			ranges.mediumBegin, ranges.mediumEnd, AsteroidMasses[1], bulletVsMediumRadius, deltaTime);
+
+		constexpr float bulletVsSmallRadius =
+			(ColliderRadius::Bullet + ColliderRadius::Small) *
+			(ColliderRadius::Bullet + ColliderRadius::Small);
+		CircleVsCircles(*bullet, ColliderRadius::Bullet, bulletMass,
+			ranges.smallBegin, ranges.smallEnd, AsteroidMasses[2], bulletVsSmallRadius, deltaTime);
+	}
+}
+
+void Physics::AsteroidVsAsteroid(const ColliderRanges& ranges, const float& deltaTime)
+{
+
+	for (auto large = ranges.largeBegin; large != ranges.largeEnd; ++large)
+	{
+		// Large Vs Large
+		constexpr float largeVsLargeSqRadius =
+			(ColliderRadius::Large + ColliderRadius::Large) *
+			(ColliderRadius::Large + ColliderRadius::Large);
+
+		// @NOTE: starting the range at large+1 guarantees that we don't check A against itself,
+		// and that we don't repeat test pairs that have already been computed.
+		CircleVsCircles(*large, ColliderRadius::Large, AsteroidMasses[0],
+			large + 1, ranges.largeEnd, AsteroidMasses[0], largeVsLargeSqRadius, deltaTime);
+
+
+		// Large Vs Medium
+		constexpr float largeVsMediumSqRadius =
+			(ColliderRadius::Large + ColliderRadius::Medium) *
+			(ColliderRadius::Large + ColliderRadius::Medium);
+
+		CircleVsCircles(*large, ColliderRadius::Large, AsteroidMasses[0],
+			ranges.mediumBegin, ranges.mediumEnd, AsteroidMasses[1], largeVsMediumSqRadius, deltaTime);
+
+
+		// Large Vs Small
+		constexpr float largeVsSmallSqRadius =
+			(ColliderRadius::Large + ColliderRadius::Small) *
+			(ColliderRadius::Large + ColliderRadius::Small);
+
+		CircleVsCircles(*large, ColliderRadius::Large, AsteroidMasses[0],
+			ranges.smallBegin, ranges.smallEnd, AsteroidMasses[2], largeVsSmallSqRadius, deltaTime);
+	}
+
+
+	for (auto medium = ranges.mediumBegin; medium != ranges.mediumEnd; ++medium)
+	{
+
+		// Medium Vs Medium
+		constexpr float mediumVsMediumSqRadius =
+			(ColliderRadius::Medium + ColliderRadius::Medium) *
+			(ColliderRadius::Medium + ColliderRadius::Medium);
+
+		// @NOTE: starting the range at medium+1 guarantees that we don't check A against itself,
+		// and that we don't repeat test pairs that have already been computed.
+		CircleVsCircles(*medium, ColliderRadius::Medium, AsteroidMasses[1],
+			medium + 1, ranges.mediumEnd, AsteroidMasses[1], mediumVsMediumSqRadius, deltaTime);
+
+
+		// Medium Vs Small
+		constexpr float mediumVsSmallSqRadius =
+			(ColliderRadius::Medium + ColliderRadius::Small) *
+			(ColliderRadius::Medium + ColliderRadius::Small);
+
+		CircleVsCircles(*medium, ColliderRadius::Medium, AsteroidMasses[1],
+			ranges.smallBegin, ranges.smallEnd, AsteroidMasses[2], mediumVsSmallSqRadius, deltaTime);
+	}
+
+
+	for (auto small = ranges.smallBegin; small != ranges.smallEnd; ++small)
+	{
+		// Small Vs Small
+		constexpr float smallVsSmallSqRadius =
+			(ColliderRadius::Small + ColliderRadius::Small) *
+			(ColliderRadius::Small + ColliderRadius::Small);
+
+		// @NOTE: starting the range at small+1 guarantees that we don't check A against itself,
+		// and that we don't repeat test pairs that have already been computed.
+		CircleVsCircles(*small, ColliderRadius::Small, AsteroidMasses[2],
+			small + 1, ranges.smallEnd, AsteroidMasses[2], smallVsSmallSqRadius, deltaTime);
+	}
+}
+
+
+void Physics::CircleVsCircles(const Rigidbody& circle, const float& circleRadius, const float& circleMass,
+	std::vector<Rigidbody>::iterator circlesBegin,	std::vector<Rigidbody>::iterator circlesEnd,
+	const float& circlesMass, const float& radiusPlusRadiusSquared, const float& deltaTime)
+{
+	// Get transform information for our first circle
+	Transform circleATrans;
+	transformManager.Get(circle.entity, circleATrans);
+
+	// Check our first circle against every circle in the range that we were passed
+	for (auto circleB = circlesBegin; circleB != circlesEnd; ++circleB)
+	{
+		Transform circleBTrans;
+		transformManager.Get(circleB->entity, circleBTrans);
+
+		float timeOfCollision;
+		if (CollisionTests::SweptCircleToCircle(
+			circleATrans.pos, circle.velocity,
+			circleBTrans.pos, circleB->velocity,
+			circleRadius, radiusPlusRadiusSquared, deltaTime, timeOfCollision))
+		{
+			CollisionListEntry col;
+			col.A = circle.entity;
+			col.massA = circleMass;
+
+			col.B = circleB->entity;
+			col.massB = circlesMass;
+
+			col.timeOfCollision = timeOfCollision;
+			collisionList.push_back(col);
+		}		
+	}
+}
+
+void Physics::ResolveUpdatedMovement(const float& deltaTime)
 {
 	// Start with the earliest collision and resolve the new motion and add the entities that collided to a "dirty set".
 	for (auto& collision : collisionList)
@@ -394,7 +286,7 @@ void Physics::ResolveUpdatedMovement(const float deltaTime)
 }
 
 
-void Physics::ResolveMove(const float deltaTime, CollisionListEntry collision)
+void Physics::ResolveMove(const float& deltaTime, CollisionListEntry collision)
 {
 	// This is probably all kinds of wrong, but I have never studied physics
 	// so I'm just sort of making this up as I go along, helped with some
@@ -469,7 +361,7 @@ void Physics::ResolveMove(const float deltaTime, CollisionListEntry collision)
 }
 
 
-void Physics::FinalizeMoves(const float deltaTime)
+void Physics::FinalizeMoves(const float& deltaTime)
 {
 	// Step 9. Iterate MoveList and complete every move.
 	for (auto& entry : moveList)

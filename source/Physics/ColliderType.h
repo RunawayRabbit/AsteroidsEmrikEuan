@@ -2,8 +2,6 @@
 
 enum class ColliderType
 {
-	NONE,
-
 	SHIP,
 
 	BULLET,
@@ -11,6 +9,8 @@ enum class ColliderType
 	LARGE_ASTEROID,
 	MEDIUM_ASTEROID,
 	SMOL_ASTEROID,
+
+	COUNT,
 };
 
 namespace ColliderRadius

@@ -33,11 +33,11 @@ Game::Game(std::string windowName, int width, int height) :
 	GCStep(0),
 	isRunning(true)
 {
-#if 0
+#if 1
 
 	std::vector<Vector2> asteroidPositions;
 
-	for (auto i = 0; i < 1200; i++)
+	for (auto i = 0; i < 128; i++)
 	{
 		bool isValidPosition = false;
 		int attempts = 0;
@@ -68,12 +68,12 @@ Game::Game(std::string windowName, int width, int height) :
 			if (isValidPosition)
 			{
 				float startRot = rand() % 360;
-				Vector2 startVel = Vector2{ Math::RandomRange(-40, 40), Math::RandomRange(-40, 40) };
+				Vector2 startVel = Vector2{ Math::RandomRange(-40.0f, 40.0f), Math::RandomRange(-40.0f, 40.0f) };
 				float rotVel = Math::RandomRange(-45, 45);
 
 				asteroidPositions.push_back(startPos);
 				
-				GLOBALtestEntities.push_back(create.Asteroid(startPos, startRot, startVel, rotVel, Create::AsteroidType::RANDOM_SMALL));
+				GLOBALtestEntities.push_back(create.Asteroid(startPos, startRot, startVel, rotVel, Create::AsteroidType::RANDOM_MEDIUM));
 			}
 			++attempts;
 		}
