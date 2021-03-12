@@ -35,7 +35,7 @@ std::array<Entity, 4> Create::SplitAsteroid(const Entity& asteroid, const float&
 	std::array<Entity, 4> retVal = { Entity::null(), Entity::null(), Entity::null(), Entity::null() };
 
 	Rigidbody* parentRigid;
-	if (!rigidbodyManager.GetPtr(asteroid, &parentRigid))
+	if (!rigidbodyManager.GetMutable(asteroid, parentRigid))
 	{
 		return retVal;
 	}

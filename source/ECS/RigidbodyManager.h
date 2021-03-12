@@ -3,23 +3,14 @@
 #include "..\Math\Vector2.h"
 
 #include "Entity.h"
+#include "Rigidbody.h"
+
 #include "..\Physics\ColliderType.h"
+
+
 
 class EntityManager;
 class Physics;
-
-struct Rigidbody
-{
-	Entity entity;
-	ColliderType colliderType;
-	Vector2 velocity;
-	float angularVelocity;
-
-	bool operator<(const Rigidbody& other) const
-	{
-		return ((int)this->colliderType < (int)other.colliderType);
-	}
-};
 
 class RigidbodyManager
 {
@@ -28,10 +19,10 @@ public:
 
 	void Allocate(const int capacity);
 
-	void Update(Physics& physics, const float& deltaTime);
+	void EnqueueAll(Physics& physics, const float& deltaTime);
 	void Add(const Entity& entity, const ColliderType colliderType, const Vector2 velocity, const float rotVelocity);
 	bool Lookup(const Entity entity, size_t* index) const;
-	bool GetPtr(const Entity entity, Rigidbody** rb);
+	bool GetMutable(const Entity entity, Rigidbody*& rb);
 
 
 

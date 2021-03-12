@@ -37,7 +37,7 @@ Game::Game(std::string windowName, int width, int height) :
 
 	std::vector<Vector2> asteroidPositions;
 
-	for (auto i = 0; i < 128; i++)
+	for (auto i = 0; i < 16; i++)
 	{
 		bool isValidPosition = false;
 		int attempts = 0;
@@ -67,22 +67,19 @@ Game::Game(std::string windowName, int width, int height) :
 
 			if (isValidPosition)
 			{
-				float startRot = rand() % 360;
+				float startRot = (float)(rand() % 360);
 				Vector2 startVel = Vector2{ Math::RandomRange(-40.0f, 40.0f), Math::RandomRange(-40.0f, 40.0f) };
-				float rotVel = Math::RandomRange(-45, 45);
+				float rotVel = Math::RandomRange(-45.0f, 45.0f);
 
 				asteroidPositions.push_back(startPos);
 				
-				GLOBALtestEntities.push_back(create.Asteroid(startPos, startRot, startVel, rotVel, Create::AsteroidType::RANDOM_MEDIUM));
+				GLOBALtestEntities.push_back(create.Asteroid(startPos, startRot, startVel, rotVel, Create::AsteroidType::LARGE));
 			}
 			++attempts;
 		}
 		std::cout << asteroidPositions.size() << std::endl;
 	}
-
-
 #endif
-
 }
 
 Game::~Game()
@@ -112,10 +109,9 @@ void Game::Update(float deltaTime)
 	{
 		player.Spawn(gameField.max * 0.5f, 180.0f);
 	}
-
 	player.Update(inputBuffer, deltaTime);
 
-	rigidbodies.Update(physics, deltaTime);
+	rigidbodies.EnqueueAll(physics, deltaTime);
 	physics.Simulate(deltaTime);
 	sprites.Update(deltaTime);
 

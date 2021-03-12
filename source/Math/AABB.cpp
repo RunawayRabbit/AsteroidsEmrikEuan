@@ -1,6 +1,7 @@
 
 #include "AABB.h"
 #include "OBB.h"
+#include "Circle.h"
 
 AABB::AABB(const float& top, const float& bottom, const float& left, const float& right)
 {
@@ -24,7 +25,6 @@ bool AABB::Contains(const Vector2& point) const
 
 bool AABB::FullyContains(const OBB& oriented) const
 {
-	// @TODO: Optimize. This is a clear candidate for simd
 	for (Vector2& corner : oriented.GetCorners())
 	{
 		if (!this->Contains(corner)) return false;

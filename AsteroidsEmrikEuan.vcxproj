@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\ECS\AnimatedSpriteManager.h" />
+    <ClInclude Include="source\ECS\Rigidbody.h" />
     <ClInclude Include="source\ECS\RigidbodyManager.h" />
     <ClInclude Include="source\ECS\Entity.h" />
     <ClInclude Include="source\ECS\EntityManager.h" />
@@ -56,7 +56,6 @@
     <ClInclude Include="source\Time.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\ECS\AnimatedSpriteManager.cpp" />
     <ClCompile Include="source\ECS\RigidbodyManager.cpp" />
     <ClCompile Include="source\ECS\EntityManager.cpp" />
     <ClCompile Include="source\ECS\SpriteManager.cpp" />

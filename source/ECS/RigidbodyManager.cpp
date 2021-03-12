@@ -81,19 +81,19 @@ bool RigidbodyManager::Lookup(const Entity entity, size_t* index) const
 	return false;
 }
 
-bool RigidbodyManager::GetPtr(const Entity entity, Rigidbody** rb)
+bool RigidbodyManager::GetMutable(const Entity entity, Rigidbody*& rb)
 {
 	size_t index;
 	if (Lookup(entity, &index))
 	{
-		*rb = (rigidbodies + index);
+		rb = (rigidbodies + index);
 		return true;
 	}
 	return false;
 }
 
 
-void RigidbodyManager::Update(Physics& physics, const float& deltaTime)
+void RigidbodyManager::EnqueueAll(Physics& physics, const float& deltaTime)
 {
 	int i = 0;
 	while (i < size)
@@ -103,7 +103,7 @@ void RigidbodyManager::Update(Physics& physics, const float& deltaTime)
 
 		if (entityManager.Exists(*entity))
 		{
-			physics.Enqueue(*entity);
+			physics.Enqueue(*rb);
 			++i;
 		}
 		else

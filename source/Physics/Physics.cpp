@@ -1,32 +1,73 @@
 
+
+#include <unordered_set>
+
 #include "Physics.h"
+#include "ColliderType.h"
+#include "CollisionTests.h"
+
 #include "..\ECS\RigidbodyManager.h"
 #include "..\ECS\TransformManager.h"
 
 #include "..\Math\Math.h"
 #include "..\Math\OBB.h"
+#include "..\Math\Vector2.h"
 
-#include "ColliderType.h"
-#include "CollisionTests.h"
+
 
 Physics::Physics(TransformManager& transformManager, RigidbodyManager& rigidbodyManager, const AABB& screenAABB) :
 	transformManager(transformManager),
 	rigidbodyManager(rigidbodyManager),
-	screenAABB(screenAABB)
+	screenAABB(screenAABB),
+	colliderCounts()
 {}
 
-void Physics::RegisterPlayerShip(const Entity& playerShip)
-{
-	this->playerShip = playerShip;
-}
 
-void Physics::Enqueue(const Entity& entity)
+void Physics::Enqueue(const Rigidbody& rb)
 {
-	Rigidbody* rb;
-	if (rigidbodyManager.GetPtr(entity, &rb))
+	// Enqueue the element in it's actual position
+	Transform rbTrans;
+	transformManager.Get(rb.entity, rbTrans);
+	moveList.push_back({ rb, rbTrans.pos });
+	++colliderCounts[(int)rb.colliderType];
+
+	// Enqueue any wrapped objects.
+
+	// I'm assuming we'll never have colliders that are bigger than the screen height.
+	// Because that would literally break the entire game.
+	// Just sayin'.
+
+	AABB rbAABB = ColliderRadius::GetAABB(rb.colliderType, rbTrans.pos);
+	float repeatX = 0.0f;
+	float repeatY = 0.0f;
+
+	if (screenAABB.bottom < rbAABB.bottom)
+		repeatY -= 1.0f;
+	else if (screenAABB.top > rbAABB.top)
+		repeatY += 1.0f;
+
+	if (screenAABB.right < rbAABB.right)
+		repeatX -= 1.0f;
+	else if (screenAABB.left > rbAABB.left)
+		repeatX += 1.0f;
+
+	if (repeatY != 0.0f)
 	{
-		moveList.push_back(*rb);
-		++colliderCounts[(int)rb->colliderType];
+		Vector2 wrappedPos = rbTrans.pos + (Vector2(0.0f, screenAABB.bottom * repeatY));
+		moveList.push_back({ rb, wrappedPos });
+		++colliderCounts[(int)rb.colliderType];
+	}
+	if (repeatX != 0.0f)
+	{
+		Vector2 wrappedPos = rbTrans.pos + (Vector2(screenAABB.right * repeatX, 0.0f));
+		moveList.push_back({rb, wrappedPos });
+		++colliderCounts[(int)rb.colliderType];
+	}
+	if (repeatX != 0.0f && repeatY != 0.0f)
+	{
+		Vector2 wrappedPos = rbTrans.pos + (Vector2(screenAABB.right * repeatX, screenAABB.bottom * repeatY));
+		moveList.push_back({ rb, wrappedPos });
+		++colliderCounts[(int)rb.colliderType];
 	}
 }
 
@@ -64,8 +105,7 @@ void Physics::Simulate(const float& deltaTime)
 
 void Physics::DetectSecondaryCollisions()
 {
-	// STUB
-	// Let's pretend that we do this step :kappa:
+	// Step 7. Check the NEW elements in resolved list against the full move list, looking for further collisions.
 }
 
 void Physics::End()
@@ -82,7 +122,10 @@ void Physics::End()
 void Physics::DetectInitialCollisions(const float& deltaTime)
 {
 	// Sort to get our movelist in order.
-	std::sort(moveList.begin(), moveList.end());
+	std::sort(moveList.begin(), moveList.end(), [](const MoveListEntry& a, const MoveListEntry& b) -> bool
+		{
+			return a.rb.colliderType < b.rb.colliderType;
+		});
 
 	// The order of these has to match the order of enum ColliderType defined in ColliderType.h.
 	ColliderRanges ranges;
@@ -98,12 +141,14 @@ void Physics::DetectInitialCollisions(const float& deltaTime)
 	AsteroidVsAsteroid(ranges, deltaTime);
 }
 
+
+
 void Physics::ShipVsAsteroid(const ColliderRanges& ranges)
 {
 	for (auto ship = ranges.shipBegin; ship != ranges.shipEnd; ++ship)
 	{
 		Transform shipTrans;
-		if (!transformManager.Get(ship->entity, shipTrans))
+		if (!transformManager.Get(ship->rb.entity, shipTrans))
 		{
 			// @TODO: Are you ever going to write that logging module? Because this should be logged.
 			continue;
@@ -116,15 +161,12 @@ void Physics::ShipVsAsteroid(const ColliderRanges& ranges)
 	}
 }
 
-void Physics::OBBVsSpecificAsteroid(const OBB& ship, std::vector<Rigidbody>::iterator asteroidBegin,
-	std::vector<Rigidbody>::iterator asteroidEnd, const float& asteroidRadius)
+void Physics::OBBVsSpecificAsteroid(const OBB& ship, std::vector<MoveListEntry>::iterator asteroidBegin,
+	std::vector<MoveListEntry>::iterator asteroidEnd, const float& asteroidRadius)
 {
 	for (auto asteroid = asteroidBegin; asteroid != asteroidEnd; ++asteroid)
 	{
-		Transform asteroidTrans;
-		transformManager.Get(asteroid->entity, asteroidTrans);
-
-		Circle collider(asteroidTrans.pos, ColliderRadius::Small);
+		Circle collider(asteroid->pos, asteroidRadius);
 		if (CollisionTests::OBBToCircle(ship, collider))
 		{
 			std::cout << "Player Be Ded." << std::endl;
@@ -196,7 +238,6 @@ void Physics::AsteroidVsAsteroid(const ColliderRanges& ranges, const float& delt
 
 	for (auto medium = ranges.mediumBegin; medium != ranges.mediumEnd; ++medium)
 	{
-
 		// Medium Vs Medium
 		constexpr float mediumVsMediumSqRadius =
 			(ColliderRadius::Medium + ColliderRadius::Medium) *
@@ -233,31 +274,26 @@ void Physics::AsteroidVsAsteroid(const ColliderRanges& ranges, const float& delt
 }
 
 
-void Physics::CircleVsCircles(const Rigidbody& circle, const float& circleRadius, const float& circleMass,
-	std::vector<Rigidbody>::iterator circlesBegin,	std::vector<Rigidbody>::iterator circlesEnd,
+void Physics::CircleVsCircles(const MoveListEntry& circle, const float& circleRadius, const float& circleMass,
+	std::vector<MoveListEntry>::iterator circlesBegin,	std::vector<MoveListEntry>::iterator circlesEnd,
 	const float& circlesMass, const float& radiusPlusRadiusSquared, const float& deltaTime)
 {
-	// Get transform information for our first circle
-	Transform circleATrans;
-	transformManager.Get(circle.entity, circleATrans);
-
 	// Check our first circle against every circle in the range that we were passed
 	for (auto circleB = circlesBegin; circleB != circlesEnd; ++circleB)
 	{
-		Transform circleBTrans;
-		transformManager.Get(circleB->entity, circleBTrans);
+		if (circle.rb.entity == circleB->rb.entity) continue;
 
 		float timeOfCollision;
 		if (CollisionTests::SweptCircleToCircle(
-			circleATrans.pos, circle.velocity,
-			circleBTrans.pos, circleB->velocity,
+			circle.pos, circle.rb.velocity,
+			circleB->pos, circleB->rb.velocity,
 			circleRadius, radiusPlusRadiusSquared, deltaTime, timeOfCollision))
 		{
 			CollisionListEntry col;
-			col.A = circle.entity;
+			col.A = circle.rb.entity;
 			col.massA = circleMass;
 
-			col.B = circleB->entity;
+			col.B = circleB->rb.entity;
 			col.massB = circlesMass;
 
 			col.timeOfCollision = timeOfCollision;
@@ -297,12 +333,12 @@ void Physics::ResolveMove(const float& deltaTime, CollisionListEntry collision)
 	Transform* transA;
 	Rigidbody* rigidA;
 	transformManager.GetMutable(collision.A, transA);
-	rigidbodyManager.GetPtr(collision.A, &rigidA);
+	rigidbodyManager.GetMutable(collision.A, rigidA);
 
 	Transform* transB;
 	Rigidbody* rigidB;
 	transformManager.GetMutable(collision.B, transB);
-	rigidbodyManager.GetPtr(collision.B, &rigidB);
+	rigidbodyManager.GetMutable(collision.B, rigidB);
 
 	Vector2 startPosA = transA->pos + rigidA->velocity * (collision.timeOfCollision * deltaTime);
 	Vector2 startPosB = transB->pos + rigidB->velocity * (collision.timeOfCollision * deltaTime);
@@ -361,19 +397,28 @@ void Physics::ResolveMove(const float& deltaTime, CollisionListEntry collision)
 }
 
 
+
 void Physics::FinalizeMoves(const float& deltaTime)
 {
-	// Step 9. Iterate MoveList and complete every move.
+	// Step 9, create a new MoveList set that contains no duplicates.
+	std::unordered_set<MoveListEntry> UniqueMoves;
+	for (auto& move: moveList)
+		UniqueMoves.insert(move);
+
+	moveList.assign(UniqueMoves.begin(), UniqueMoves.end());
+
+
+	// Step 9.5.. Iterate MoveList and complete every move.
 	for (auto& entry : moveList)
 	{
 		Transform* trans;
-		transformManager.GetMutable(entry.entity, trans);
+		transformManager.GetMutable(entry.rb.entity, trans);
 		trans->pos.x =
-			Math::Repeat(trans->pos.x + (entry.velocity.x * deltaTime), screenAABB.right);
+			Math::Repeat(trans->pos.x + (entry.rb.velocity.x * deltaTime), screenAABB.right);
 		trans->pos.y =
-			Math::Repeat(trans->pos.y + (entry.velocity.y * deltaTime), screenAABB.bottom);
+			Math::Repeat(trans->pos.y + (entry.rb.velocity.y * deltaTime), screenAABB.bottom);
 
-		trans->rot = Math::Repeat(trans->rot + (entry.angularVelocity * deltaTime), 360.0f);
+		trans->rot = Math::Repeat(trans->rot + (entry.rb.angularVelocity * deltaTime), 360.0f);
 	}
 
 	// Step 10 Iterate ResolvedList and stomp over with revised moves that are legal.
@@ -390,7 +435,7 @@ void Physics::FinalizeMoves(const float& deltaTime)
 		trans->pos.y = Math::Repeat(finalPos.y, screenAABB.bottom);
 
 		Rigidbody* rigid;
-		rigidbodyManager.GetPtr(entry.second.entity, &rigid);
+		rigidbodyManager.GetMutable(entry.second.entity, rigid);
 		rigid->velocity = resolvedEntry.velocity;
 		rigid->angularVelocity = resolvedEntry.angularVelocity;
 	}

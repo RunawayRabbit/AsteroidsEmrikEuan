@@ -5,5 +5,5 @@
 struct Transform
 {
 	Vector2 pos;
-	float rot;
+	float rot = 0;
 };

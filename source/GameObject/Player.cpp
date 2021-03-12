@@ -39,11 +39,11 @@ void Player::Spawn(const Vector2& startPos, const float& startRot)
 {
 	if (IsAlive())
 	{
+		//@TODO: LOGGING oh my GOD JUST WRITE THE LOGGER ALREADY
 		std::cout << "We just tried to spawn a player, but we already HAVE a player.\n";
 		return;
 	}
 	entity = create.Ship(startPos, startRot);
-	physics.RegisterPlayerShip(entity);
 }
 
 void Player::Update(InputBuffer& input, const float& deltaTime)
@@ -57,7 +57,7 @@ void Player::Update(InputBuffer& input, const float& deltaTime)
 	// Get the rb and the transform from the respective managers
 	Rigidbody* rigid;
 	Transform transform;
-	if (!rigidbodyManager.GetPtr(entity, &rigid) || !transformManager.Get(entity, transform))
+	if (!rigidbodyManager.GetMutable(entity, rigid) || !transformManager.Get(entity, transform))
 	{
 		// If we end up here, a serious bug has occured.
 		__assume(false);

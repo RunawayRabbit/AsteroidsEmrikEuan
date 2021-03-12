@@ -9,7 +9,6 @@
 
 #include "../ECS/EntityManager.h"
 #include "../ECS/TransformManager.h"
-#include "../ECS/AnimatedSpriteManager.h"
 #include "../ECS/SpriteManager.h"
 #include "../ECS/RigidbodyManager.h"
 
