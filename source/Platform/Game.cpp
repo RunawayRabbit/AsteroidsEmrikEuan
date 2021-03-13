@@ -36,7 +36,7 @@ Game::Game(std::string windowName, int width, int height) :
 #if 1
 	std::vector<Vector2> asteroidPositions;
 
-	for (auto i = 0; i < 256; i++)
+	for (auto i = 0; i < 16; i++)
 	{
 		bool isValidPosition = false;
 		int attempts = 0;

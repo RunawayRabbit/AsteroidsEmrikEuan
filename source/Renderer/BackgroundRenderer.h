@@ -26,6 +26,7 @@ private:
 	Vector2 offset;
 	const AABB screen;
 
+	SpriteTransform background;
 	SpriteTransform parallax1;
 	SpriteTransform parallax2;
 	SpriteTransform parallax3;

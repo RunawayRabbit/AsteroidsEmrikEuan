@@ -15,6 +15,12 @@ BackgroundRenderer::BackgroundRenderer(const TransformManager& transformManager,
 	screenRect.w = screen.max.x;
 	screenRect.h = screen.max.y;
 
+	// Background
+	background.id = SpriteID::STATIC_BACKGROUND;
+	background.layer = RenderQueue::Layer::BACKGROUND;
+	background.rotation = 0;
+	background.position = screenRect;
+
 	// Parallax 1
 	parallax1.id = SpriteID::PARALLAX_BACKGROUND_1;
 	parallax1.layer = RenderQueue::Layer::PARALLAX;
@@ -39,7 +45,7 @@ void BackgroundRenderer::Render(RenderQueue& renderQueue, const float& deltaTime
 	// Static background
 	renderQueue.Enqueue(SpriteID::STATIC_BACKGROUND, 0, RenderQueue::Layer::BACKGROUND);
 
-	position.x += 10.0f * deltaTime;
+	position.x += 20.0f * deltaTime;
 	position.y += 10.0f * deltaTime;
 	
 	if (playerShip == Entity::null())
@@ -72,19 +78,34 @@ void BackgroundRenderer::Render(RenderQueue& renderQueue, const float& deltaTime
 
 
 
-		parallax3.position.x = floor(position.x / 3);
+		parallax3.position.x = floor(position.x / 4);
 		if (parallax3.position.x < 0)
 			parallax3.position.x += screen.max.x;
 		else if (parallax3.position.x > screen.max.x)
 			parallax3.position.x -= screen.max.x;
 
-		parallax3.position.y = floor(position.y / 3);
+		parallax3.position.y = floor(position.y / 4);
 		if (parallax3.position.y < 0)
 			parallax3.position.y += screen.max.y;
 		else if (parallax3.position.y > screen.max.y)
 			parallax3.position.y -= screen.max.y;
+
+
+
+		background.position.x = floor(position.x / 5);
+		if (background.position.x < 0)
+			background.position.x += screen.max.x;
+		else if (background.position.x > screen.max.x)
+			background.position.x -= screen.max.x;
+
+		background.position.y = floor(position.y / 5);
+		if (background.position.y < 0)
+			background.position.y += screen.max.y;
+		else if (background.position.y > screen.max.y)
+			background.position.y -= screen.max.y;
 	}
 
+	renderQueue.EnqueueLooped(background);
 	renderQueue.EnqueueLooped(parallax1);
 	renderQueue.EnqueueLooped(parallax2);
 	renderQueue.EnqueueLooped(parallax3);
