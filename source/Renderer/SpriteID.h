@@ -10,6 +10,9 @@ enum class SpriteID
 	SHIP_TRAIL_2,
 	SHIP_TRAIL_3,
 
+	SMALL_EXPLOSION,
+	SMALL_EXPLOSION_1,
+
 	EXPLOSION,
 	EXPLOSION_1,
 	EXPLOSION_2,
@@ -66,6 +69,7 @@ namespace SpriteAnimationData
 	constexpr SpriteID nextFrameIndex[] = {
 		SpriteID::NONE, // null animation
 		SpriteID::SHIP_TRAIL_1, SpriteID::SHIP_TRAIL_2, SpriteID::SHIP_TRAIL_3, SpriteID::SHIP_TRAIL, // ship trail
+		SpriteID::SMALL_EXPLOSION_1, SpriteID::SMALL_EXPLOSION,// small explosion
 		SpriteID::EXPLOSION_1, SpriteID::EXPLOSION_2, SpriteID::EXPLOSION_3, SpriteID::EXPLOSION, // explosion
 		SpriteID::BULLET, SpriteID::BULLET_1, SpriteID::BULLET, // bullet
 	};
@@ -73,6 +77,7 @@ namespace SpriteAnimationData
 	constexpr float frameTime[] = {
 	0.0f, // zero animation
 	0.15f, 0.1f, 0.2f, 0.1f, // ship trail
+	0.2f, 0.15f, // small explosion
 	0.1f, 0.25f, 0.3f, 0.4f, // explosion
 	0.15f, 0.07f, 0.07f, // bullet
 	};

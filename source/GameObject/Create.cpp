@@ -65,7 +65,8 @@ std::array<Entity, 4> Create::SplitAsteroid(const Entity& asteroid, const float&
 		break;
 
 	default:
-		// Only LARGE_ASTEROID and MEDIUM_ASTEROID are splittable.
+		// Only LARGE_ASTEROID and MEDIUM_ASTEROID are splittable. Destroy smalls.
+		entityManager.Destroy(asteroid);
 		return retVal;
 	}
 
@@ -103,6 +104,33 @@ std::array<Entity, 4> Create::SplitAsteroid(const Entity& asteroid, const float&
 	entityManager.Destroy(asteroid);
 
 	return retVal;
+}
+
+Entity Create::SmallExplosion(const Vector2& position)
+{
+	Entity entity = entityManager.Create();
+
+	Transform trans;
+	trans.pos = position;
+	trans.rot = Math::RandomRange(0, 360);;
+	transManager.Add(entity, trans);
+	spriteManager.Create(entity, SpriteID::SMALL_EXPLOSION, RenderQueue::Layer::PARTICLE);
+	entityManager.DestroyDelayed(entity, 0.5f);
+
+	return entity;
+}
+Entity Create::LargeExplosion(const Vector2& position)
+{
+	Entity entity = entityManager.Create();
+
+	Transform trans;
+	trans.pos = position;
+	trans.rot = Math::RandomRange(0, 360);;
+	transManager.Add(entity, trans);
+	spriteManager.Create(entity, SpriteID::EXPLOSION, RenderQueue::Layer::PARTICLE);
+	entityManager.DestroyDelayed(entity, 0.8f);
+
+	return entity;
 }
 
 ColliderType Create::GetColliderFor(const AsteroidType& asteroidType) const

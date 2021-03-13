@@ -23,7 +23,6 @@
     <ClInclude Include="source\ECS\RigidbodyManager.h" />
     <ClInclude Include="source\ECS\Entity.h" />
     <ClInclude Include="source\ECS\EntityManager.h" />
-    <ClInclude Include="source\ECS\SpriteID.h" />
     <ClInclude Include="source\ECS\SpriteManager.h" />
     <ClInclude Include="source\ECS\Transform.h" />
     <ClInclude Include="source\ECS\TransformManager.h" />

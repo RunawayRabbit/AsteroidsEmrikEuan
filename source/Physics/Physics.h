@@ -4,6 +4,7 @@
 #include <set>
 #include <map>
 #include <future>
+#include <mutex>
 
 #include "..\Math\AABB.h"
 
@@ -29,6 +30,8 @@ public:
 	{
 		Entity A;
 		Entity B;
+		ColliderType EntityAType;
+		ColliderType EntityBType;
 		float massA;
 		float massB;
 		float timeOfCollision;
@@ -39,8 +42,16 @@ public:
 		}
 	};
 
-	const std::vector<CollisionListEntry>& GetCollisions(){ return collisionList; };
+	const std::vector<CollisionListEntry>& GetCollisions()
+	{
+		std::sort(collisionReport.begin(), collisionReport.end(),
+			[](const CollisionListEntry& a, const CollisionListEntry& b) -> bool
+			{
+				return a.EntityAType < b.EntityAType;
+			});
 
+		return collisionReport;
+	};
 
 private:
 
@@ -53,6 +64,8 @@ private:
 		float time = 0;
 	};
 
+	// Physics Pipeline
+
 	std::vector<Physics::CollisionListEntry> DetectInitialCollisions(MoveList& moveList, const float& deltaTime);
 	void DetectSecondaryCollisions(const std::vector<Physics::ResolvedListEntry> resolvedThisIteration);
 	std::vector<Physics::ResolvedListEntry> ResolveUpdatedMovement(const float& deltaTime);
@@ -60,16 +73,25 @@ private:
 	void FinalizeMoves(const float& deltaTime);
 	void End();
 
+
+	// OBB Collisions
+
 	void ShipVsAsteroid(const MoveList::ColliderRanges& ranges, std::vector<CollisionListEntry>& collisions);
-	void OBBVsSpecificAsteroid(const OBB& ship, std::vector<MoveList::Entry>::iterator asteroidBegin,
-		std::vector<MoveList::Entry>::iterator asteroidEnd, const float& asteroidRadius);
+	void OBBVsSpecificAsteroid(const OBB& ship, const Entity& shipEntity, std::vector<MoveList::Entry>::iterator asteroidBegin,
+		std::vector<MoveList::Entry>::iterator asteroidEnd, const float& asteroidRadius, std::vector<CollisionListEntry>& collisions);
+
+
+	// Circle Collisions
 
 	void BulletVsAsteroid(const MoveList::ColliderRanges& ranges, std::vector<CollisionListEntry>& collisions, const float& deltaTime);
 	void AsteroidVsAsteroid(const MoveList::ColliderRanges& ranges, std::vector<CollisionListEntry>& collisions, const float& deltaTime);
+
 	void CircleVsCircles(const MoveList::Entry& circle, const float& circleRadius, const float& circleMass,
 		std::vector<MoveList::Entry>::iterator circlesBegin, std::vector<MoveList::Entry>::iterator circlesEnd,
-		const float& circlesMass, const float& radiusPlusRadiusSquared, const float& deltaTime,
-		std::vector<CollisionListEntry>& collisions);
+		const float& circlesMass, const float& radiusPlusRadiusSquared, const float& deltaTime, const ColliderType& typeA,
+		const ColliderType& typeB, std::vector<CollisionListEntry>& collisions);
+
+	float GetMassFromColliderType(const ColliderType& type);
 
 	static constexpr int MaxSolverIterations = 3;
 	static constexpr float AsteroidMasses[]{ 16.0f, 4.0f, 1.0f };
@@ -90,6 +112,7 @@ private:
 	std::array<std::future<std::vector<CollisionListEntry>>, chunkCount> workers;
 
 	std::vector<CollisionListEntry> collisionList;
+	std::vector<CollisionListEntry> collisionReport;
 	std::vector<ResolvedListEntry> resolvedList;
 	std::set<Entity> dirtyList;
 };

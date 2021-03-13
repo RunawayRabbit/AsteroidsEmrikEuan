@@ -100,6 +100,28 @@ void Game::ProcessInput()
 void Game::Update(float deltaTime)
 {
 	time.Update(deltaTime);
+
+#pragma region HandleGameplayCollisions
+	for(auto& collision : physics.GetCollisions())
+	{
+		if (collision.EntityAType == ColliderType::SHIP)
+		{
+			Transform ship;
+			xforms.Get(collision.A, ship);
+			create.LargeExplosion(ship.pos);
+			entities.Destroy(collision.A);
+		}
+		if (collision.EntityAType == ColliderType::BULLET)
+		{
+			Transform bullet;
+			xforms.Get(collision.A, bullet);
+			create.SplitAsteroid(collision.B, 5.0f);
+			create.SmallExplosion(bullet.pos);
+			entities.Destroy(collision.A);
+		}
+	}
+#pragma endregion
+
 	auto inputBuffer = input.GetBuffer();
 
 	// Gameplay Code Goes Here!
@@ -108,6 +130,8 @@ void Game::Update(float deltaTime)
 	{
 		player.Spawn(gameField.max * 0.5f, 180.0f);
 	}
+
+
 	player.Update(inputBuffer, deltaTime);
 
 	rigidbodies.EnqueueAll(physics, deltaTime);

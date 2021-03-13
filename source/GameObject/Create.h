@@ -58,6 +58,9 @@ public:
 	Entity Ship(const Vector2& position, const float& rotation, const Vector2& initialVelocity = Vector2::zero(), const float& initialAngularVelocity = 0) const;
 	Entity ShipThruster(const Entity& ship, const Vector2& thrusterOffset, const float& thrusterRotation, SpriteID spriteID) const;
 
+	Entity SmallExplosion(const Vector2& position);
+	Entity LargeExplosion(const Vector2& position);
+
 private:
 
 	ColliderType GetColliderFor(const AsteroidType& asteroidType) const;

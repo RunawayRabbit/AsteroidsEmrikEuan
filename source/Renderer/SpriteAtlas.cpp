@@ -32,6 +32,9 @@ void SpriteAtlas::CreateAnimatedSprites()
 	CreateSprite(SpriteID::SHIP_TRAIL_2, 0, 8, 15, 140, 48);
 	CreateSprite(SpriteID::SHIP_TRAIL_3, 0, 8, 15, 172, 48);
 
+	CreateSprite(SpriteID::SMALL_EXPLOSION, 0, 6, 6, 93, 157);
+	CreateSprite(SpriteID::SMALL_EXPLOSION_1, 0, 16, 18, 151, 151);
+
 	CreateSprite(SpriteID::EXPLOSION, 0, 6, 6, 93, 157);
 	CreateSprite(SpriteID::EXPLOSION_1, 0, 16, 18, 151, 151);
 	CreateSprite(SpriteID::EXPLOSION_2, 0, 36, 34, 207, 144);

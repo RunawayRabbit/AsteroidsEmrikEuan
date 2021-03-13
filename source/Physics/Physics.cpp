@@ -96,6 +96,8 @@ void Physics::Enqueue(const Rigidbody& rb, const float& deltaTime)
 
 void Physics::Simulate(const float& deltaTime)
 {
+	collisionReport.clear(); // Clear last frame's report.
+
 	// Start our worker threads churning through the Initial collision tests.
 	for(auto i = 0; i < chunkCount; ++i)
 	{
@@ -108,7 +110,7 @@ void Physics::Simulate(const float& deltaTime)
 	{
 		auto result = worker.get();
 		collisionList.reserve(collisionList.size() + result.size());
-		std::copy(result.begin(), result.end(), std::back_inserter(collisionList));
+		collisionList.insert(collisionList.end(), result.begin(), result.end());
 	}
 
 	int solverIterations = 0;
@@ -121,6 +123,8 @@ void Physics::Simulate(const float& deltaTime)
 		auto resolvedThisIteration = ResolveUpdatedMovement(deltaTime);
 
 		// Step 6. Clear the collision list and the dirty set.
+		collisionReport.reserve(collisionReport.size() + collisionList.size());
+		collisionReport.insert(collisionReport.end(), collisionList.begin(), collisionList.end());
 		collisionList.clear();
 		dirtyList.clear();
 
@@ -196,29 +200,56 @@ void Physics::ShipVsAsteroid(const MoveList::ColliderRanges& ranges, std::vector
 		}
 		OBB playerOBB(shipTrans.pos, ColliderRadius::Ship, shipTrans.rot);
 
-		OBBVsSpecificAsteroid(playerOBB, ranges.largeBegin, ranges.largeEnd, ColliderRadius::Large);
-		OBBVsSpecificAsteroid(playerOBB, ranges.mediumBegin, ranges.mediumEnd, ColliderRadius::Medium);
-		OBBVsSpecificAsteroid(playerOBB, ranges.smallBegin, ranges.smallEnd, ColliderRadius::Small);
+		OBBVsSpecificAsteroid(playerOBB, ship->rb.entity, ranges.largeBegin, ranges.largeEnd, ColliderRadius::Large, collisions);
+		OBBVsSpecificAsteroid(playerOBB, ship->rb.entity, ranges.mediumBegin, ranges.mediumEnd, ColliderRadius::Medium, collisions);
+		OBBVsSpecificAsteroid(playerOBB, ship->rb.entity, ranges.smallBegin, ranges.smallEnd, ColliderRadius::Small, collisions);
 	}
 }
 
-void Physics::OBBVsSpecificAsteroid(const OBB& ship, std::vector<MoveList::Entry>::iterator asteroidBegin,
-	std::vector<MoveList::Entry>::iterator asteroidEnd, const float& asteroidRadius)
+void Physics::OBBVsSpecificAsteroid(const OBB& ship, const Entity& shipEntity, std::vector<MoveList::Entry>::iterator asteroidBegin,
+	std::vector<MoveList::Entry>::iterator asteroidEnd, const float& asteroidRadius, std::vector<CollisionListEntry>& collisions)
 {
 	for (auto asteroid = asteroidBegin; asteroid != asteroidEnd; ++asteroid)
 	{
 		Circle collider(asteroid->pos, asteroidRadius);
 		if (CollisionTests::OBBToCircle(ship, collider))
 		{
-			std::cout << "Player Be Ded." << std::endl;
+			CollisionListEntry entry;
+			entry.A = shipEntity;
+			entry.EntityAType = ColliderType::SHIP;
+			entry.massA = GetMassFromColliderType(ColliderType::SHIP);
+			entry.B = asteroid->rb.entity;
+			entry.EntityBType = asteroid->rb.colliderType;
+			entry.massB = GetMassFromColliderType(asteroid->rb.colliderType);
+
+			entry.timeOfCollision = 0.0f; // Made-up.
+
+			collisions.push_back(entry);
 		}
 	}
 }
 
+float Physics::GetMassFromColliderType(const ColliderType& type)
+{
+	switch (type)
+	{
+	case ColliderType::LARGE_ASTEROID:
+		return AsteroidMasses[0];
+	case ColliderType::MEDIUM_ASTEROID:
+		return AsteroidMasses[1];
+	case ColliderType::SMOL_ASTEROID:
+		return AsteroidMasses[2];
+
+	case ColliderType::SHIP:
+		return AsteroidMasses[1] / 2;
+	default:
+		return 0.0f;
+	}
+}
 
 void Physics::BulletVsAsteroid(const MoveList::ColliderRanges& ranges, std::vector<CollisionListEntry> &collisions, const float& deltaTime)
 {
-	constexpr float bulletMass = 0; // Fuck it, circles don't have mass. I have decided this.
+	constexpr float bulletMass = 0; // Fuck it, bullets don't have mass. I have decided this.
 
 	for (auto bullet = ranges.bulletBegin; bullet != ranges.bulletEnd; ++bullet)
 	{
@@ -226,19 +257,28 @@ void Physics::BulletVsAsteroid(const MoveList::ColliderRanges& ranges, std::vect
 			(ColliderRadius::Bullet + ColliderRadius::Large) *
 			(ColliderRadius::Bullet + ColliderRadius::Large);
 		CircleVsCircles(*bullet, ColliderRadius::Bullet, bulletMass,
-			ranges.largeBegin, ranges.largeEnd, AsteroidMasses[0], bulletVsLargeRadius, deltaTime, collisions);
+			ranges.largeBegin, ranges.largeEnd,
+			AsteroidMasses[0], bulletVsLargeRadius, deltaTime,
+			ColliderType::BULLET, ColliderType::LARGE_ASTEROID,
+			collisions);
 
 		constexpr float bulletVsMediumRadius =
 			(ColliderRadius::Bullet + ColliderRadius::Medium) *
 			(ColliderRadius::Bullet + ColliderRadius::Medium);
 		CircleVsCircles(*bullet, ColliderRadius::Bullet, bulletMass,
-			ranges.mediumBegin, ranges.mediumEnd, AsteroidMasses[1], bulletVsMediumRadius, deltaTime, collisions);
+			ranges.mediumBegin, ranges.mediumEnd,
+			AsteroidMasses[1], bulletVsMediumRadius, deltaTime,
+			ColliderType::BULLET, ColliderType::MEDIUM_ASTEROID,
+			collisions);
 
 		constexpr float bulletVsSmallRadius =
 			(ColliderRadius::Bullet + ColliderRadius::Small) *
 			(ColliderRadius::Bullet + ColliderRadius::Small);
 		CircleVsCircles(*bullet, ColliderRadius::Bullet, bulletMass,
-			ranges.smallBegin, ranges.smallEnd, AsteroidMasses[2], bulletVsSmallRadius, deltaTime, collisions);
+			ranges.smallBegin, ranges.smallEnd,
+			AsteroidMasses[2], bulletVsSmallRadius, deltaTime,
+			ColliderType::BULLET, ColliderType::SMOL_ASTEROID,
+			collisions);
 	}
 }
 
@@ -254,7 +294,10 @@ void Physics::AsteroidVsAsteroid(const MoveList::ColliderRanges& ranges, std::ve
 		// @NOTE: starting the range at large+1 guarantees that we don't check A against itself,
 		// and that we don't repeat test pairs that have already been computed.
 		CircleVsCircles(*large, ColliderRadius::Large, AsteroidMasses[0],
-			large + 1, ranges.largeEnd, AsteroidMasses[0], largeVsLargeSqRadius, deltaTime, collisions);
+			large + 1, ranges.largeEnd,
+			AsteroidMasses[0], largeVsLargeSqRadius, deltaTime,
+			ColliderType::LARGE_ASTEROID, ColliderType::LARGE_ASTEROID,
+			collisions);
 
 
 		// Large Vs Medium
@@ -263,7 +306,10 @@ void Physics::AsteroidVsAsteroid(const MoveList::ColliderRanges& ranges, std::ve
 			(ColliderRadius::Large + ColliderRadius::Medium);
 
 		CircleVsCircles(*large, ColliderRadius::Large, AsteroidMasses[0],
-			ranges.mediumBegin, ranges.mediumEnd, AsteroidMasses[1], largeVsMediumSqRadius, deltaTime, collisions);
+			ranges.mediumBegin, ranges.mediumEnd,
+			AsteroidMasses[1], largeVsMediumSqRadius, deltaTime,
+			ColliderType::LARGE_ASTEROID, ColliderType::MEDIUM_ASTEROID,
+			collisions);
 
 
 		// Large Vs Small
@@ -272,7 +318,10 @@ void Physics::AsteroidVsAsteroid(const MoveList::ColliderRanges& ranges, std::ve
 			(ColliderRadius::Large + ColliderRadius::Small);
 
 		CircleVsCircles(*large, ColliderRadius::Large, AsteroidMasses[0],
-			ranges.smallBegin, ranges.smallEnd, AsteroidMasses[2], largeVsSmallSqRadius, deltaTime, collisions);
+			ranges.smallBegin, ranges.smallEnd,
+			AsteroidMasses[2], largeVsSmallSqRadius, deltaTime,
+			ColliderType::LARGE_ASTEROID, ColliderType::SMOL_ASTEROID,
+			collisions);
 	}
 
 
@@ -286,7 +335,10 @@ void Physics::AsteroidVsAsteroid(const MoveList::ColliderRanges& ranges, std::ve
 		// @NOTE: starting the range at medium+1 guarantees that we don't check A against itself,
 		// and that we don't repeat test pairs that have already been computed.
 		CircleVsCircles(*medium, ColliderRadius::Medium, AsteroidMasses[1],
-			medium + 1, ranges.mediumEnd, AsteroidMasses[1], mediumVsMediumSqRadius, deltaTime, collisions);
+			medium + 1, ranges.mediumEnd,
+			AsteroidMasses[1], mediumVsMediumSqRadius, deltaTime,
+			ColliderType::MEDIUM_ASTEROID, ColliderType::MEDIUM_ASTEROID,
+			collisions);
 
 
 		// Medium Vs Small
@@ -295,7 +347,10 @@ void Physics::AsteroidVsAsteroid(const MoveList::ColliderRanges& ranges, std::ve
 			(ColliderRadius::Medium + ColliderRadius::Small);
 
 		CircleVsCircles(*medium, ColliderRadius::Medium, AsteroidMasses[1],
-			ranges.smallBegin, ranges.smallEnd, AsteroidMasses[2], mediumVsSmallSqRadius, deltaTime, collisions);
+			ranges.smallBegin, ranges.smallEnd,
+			AsteroidMasses[2], mediumVsSmallSqRadius, deltaTime,
+			ColliderType::MEDIUM_ASTEROID, ColliderType::SMOL_ASTEROID,
+			collisions);
 	}
 
 
@@ -309,14 +364,18 @@ void Physics::AsteroidVsAsteroid(const MoveList::ColliderRanges& ranges, std::ve
 		// @NOTE: starting the range at small+1 guarantees that we don't check A against itself,
 		// and that we don't repeat test pairs that have already been computed.
 		CircleVsCircles(*small, ColliderRadius::Small, AsteroidMasses[2],
-			small + 1, ranges.smallEnd, AsteroidMasses[2], smallVsSmallSqRadius, deltaTime, collisions);
+			small + 1, ranges.smallEnd,
+			AsteroidMasses[2], smallVsSmallSqRadius, deltaTime,
+			ColliderType::SMOL_ASTEROID, ColliderType::SMOL_ASTEROID,
+			collisions);
 	}
 }
 
 
 void Physics::CircleVsCircles(const MoveList::Entry& circle, const float& circleRadius, const float& circleMass,
-	std::vector<MoveList::Entry>::iterator circlesBegin,	std::vector<MoveList::Entry>::iterator circlesEnd,
-	const float& circlesMass, const float& radiusPlusRadiusSquared, const float& deltaTime, std::vector<CollisionListEntry>& collisions)
+	std::vector<MoveList::Entry>::iterator circlesBegin, std::vector<MoveList::Entry>::iterator circlesEnd,
+	const float& circlesMass, const float& radiusPlusRadiusSquared, const float& deltaTime, const ColliderType& typeA,
+	const ColliderType& typeB, std::vector<CollisionListEntry>& collisions)
 {
 	// Check our first circle against every circle in the range that we were passed
 	for (auto circleB = circlesBegin; circleB != circlesEnd; ++circleB)
@@ -331,16 +390,20 @@ void Physics::CircleVsCircles(const MoveList::Entry& circle, const float& circle
 		{
 			CollisionListEntry col;
 			col.A = circle.rb.entity;
+			col.EntityAType = typeA;
 			col.massA = circleMass;
 
 			col.B = circleB->rb.entity;
+			col.EntityBType = typeB;
 			col.massB = circlesMass;
 
 			col.timeOfCollision = timeOfCollision;
 			collisions.push_back(col);
 		}		
 	}
+
 }
+
 
 std::vector<Physics::ResolvedListEntry> Physics::ResolveUpdatedMovement(const float& deltaTime)
 {

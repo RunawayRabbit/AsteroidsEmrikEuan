@@ -159,9 +159,6 @@
     <ClInclude Include="source\Time.h">
       <Filter>Platform\H</Filter>
     </ClInclude>
-    <ClInclude Include="source\ECS\SpriteID.h">
-      <Filter>Renderer\H</Filter>
-    </ClInclude>
     <ClInclude Include="source\Renderer\BackgroundRenderer.h">
       <Filter>Renderer\H</Filter>
     </ClInclude>
