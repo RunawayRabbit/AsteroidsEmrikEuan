@@ -28,7 +28,7 @@ public:
 	void Dispatch() const;
 	void AddCallback(InputCallback callback, int priority);
 
-	InputBuffer GetBuffer() const;
+	const InputBuffer& GetBuffer() const;
 	void Clear();
 
 	void AddContext(const std::string name, InputContext context, bool activated = true);
@@ -45,7 +45,7 @@ private:
 	InputBuffer _currentBuffer;
 
 	void ProcessKey(const SDL_Keycode key, const bool isDown, const bool wasDown);
-	void ProcessMouseButton(const uint8_t button, const bool isDown);
+	void ProcessMouseButton(const SDL_MouseButtonEvent button, const bool isDown);
 
 	Game& _ourGame;
 };

@@ -20,7 +20,8 @@ InputContext::InputContext(bool fillWithDefaults)
 
 		AddToggle(SDLK_SPACE, InputToggle::Shoot);
 
-		AddOneShot(SDLK_LCTRL, InputOneShot::Bomb);
+		AddOneShot(SDL_EXT_MOUSE1_DOWN, InputOneShot::MouseDown);
+		AddOneShot(SDL_EXT_MOUSE1_UP, InputOneShot::MouseUp);
 	}
 }
 

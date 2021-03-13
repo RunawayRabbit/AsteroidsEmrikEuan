@@ -4,7 +4,8 @@ enum class InputOneShot
 {
 	NONE = 0,
 
-	Bomb,
+	MouseUp,
+	MouseDown,
 };
 
 enum class InputToggle

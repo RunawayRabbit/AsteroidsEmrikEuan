@@ -11,6 +11,7 @@
 #include "../ECS/TransformManager.h"
 #include "../ECS/SpriteManager.h"
 #include "../ECS/RigidbodyManager.h"
+#include "../ECS/UIManager.h"
 
 #include "../GameObject/Create.h"
 #include "../GameObject/Player.h"
@@ -58,6 +59,7 @@ private:
 	EntityManager entities;
 	TransformManager xforms;
 	SpriteManager sprites;
+	UIManager UI;
 
 	RigidbodyManager rigidbodies;
 

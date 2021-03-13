@@ -22,6 +22,7 @@ Game::Game(std::string windowName, int width, int height) :
 	renderer(windowName, width, height),
 	renderQueue(renderer, width, height),
 	input(InputHandler(*this)),
+	UI(entities, input.GetBuffer()),
 	gameField(0.0f, (float)height, 0.0f, (float)width),
 	xforms(2), //intial capacity. Can resize dynamically.
 	backgroundRenderer(xforms, AABB(Vector2::zero(), Vector2((float)width, (float)height))),
@@ -106,10 +107,7 @@ void Game::Update(float deltaTime)
 	{
 		if (collision.EntityAType == ColliderType::SHIP)
 		{
-			Transform ship;
-			xforms.Get(collision.A, ship);
-			create.LargeExplosion(ship.pos);
-			entities.Destroy(collision.A);
+			player.Kill(collision.A);
 		}
 		if (collision.EntityAType == ColliderType::BULLET)
 		{
@@ -122,11 +120,11 @@ void Game::Update(float deltaTime)
 	}
 #pragma endregion
 
-	auto inputBuffer = input.GetBuffer();
+	const InputBuffer& inputBuffer = input.GetBuffer();
 
 	// Gameplay Code Goes Here!
-
-	if (inputBuffer.Contains(InputOneShot::Bomb))
+	
+	if (inputBuffer.Contains(InputOneShot::MouseDown))
 	{
 		player.Spawn(gameField.max * 0.5f, 180.0f);
 	}
@@ -144,6 +142,8 @@ void Game::Update(float deltaTime)
 void Game::Render()
 {
 	renderQueue.Clear();
+
+	UI.Render(renderQueue);
 
 	backgroundRenderer.Render(renderQueue, time.DeltaTime());
 

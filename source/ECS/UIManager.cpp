@@ -1,0 +1,74 @@
+
+#include "UIManager.h"
+
+#include "..\ECS\EntityManager.h"
+
+#include "..\Input\InputBuffer.h"
+
+#include "..\Renderer\RenderQueue.h"
+#include "..\ECS\EntityManager.h"
+
+#include <iostream>
+
+UIManager::UIManager(EntityManager& entityManager, const InputBuffer& inputBuffer) :
+	entityManager(entityManager),
+	inputBuffer(inputBuffer),
+	active(Entity::null()),
+	hot(Entity::null())
+{
+}
+
+void UIManager::Render(RenderQueue& renderQueue)
+{
+	for (auto& button : UIButtons)
+		DoButton(renderQueue, button);
+}
+
+bool UIManager::DoButton(RenderQueue& renderQueue, const UIButton& element)
+{
+	bool wasClicked = false;
+	bool isActive = element.entity == active;
+	bool weAreHot = false;
+
+	if (element.box.Contains(inputBuffer.mousePos))
+	{
+		// Mouse is over us, so we mark ourselves as the hot entity.
+		hot = element.entity;
+		weAreHot = true;
+	}
+
+	if (isActive)
+	{
+		// We are the active UI element, meaning that we are holding ownership
+		// over the context right now. We are responsible for freeing that
+		// ownership should we need to.
+		if (inputBuffer.Contains(InputOneShot::MouseUp))
+		{
+			// We had ownership and the mouse was lifted. Is it still on top of us?
+			if (weAreHot)
+				wasClicked = true;
+			
+			// Either way, we have to release the context now.
+			active = Entity::null();
+		}
+	}
+	else if (active == Entity::null() && weAreHot && inputBuffer.Contains(InputOneShot::MouseDown))
+	{
+		// Mouse is over us, it went down, and there is no active context. We can take ownership.
+		active = element.entity;
+	}
+
+
+	DrawButton(renderQueue, element, weAreHot, isActive);
+	return wasClicked;
+}
+
+void UIManager::DrawButton(RenderQueue& renderQueue, const UIButton& element, bool isHot, bool isActive)
+{
+	SDL_Rect targetRect;
+	targetRect.x = (int)(element.box.min.x);
+	targetRect.y = (int)(element.box.min.y);
+	targetRect.w = (int)(element.box.max.x - element.box.min.x);
+	targetRect.h = (int)(element.box.max.y - element.box.min.y);
+	renderQueue.Enqueue(SpriteID::SHITTY_LOGO, targetRect, 0, RenderQueue::Layer::UI);
+}

@@ -26,6 +26,7 @@
     <ClInclude Include="source\ECS\SpriteManager.h" />
     <ClInclude Include="source\ECS\Transform.h" />
     <ClInclude Include="source\ECS\TransformManager.h" />
+    <ClInclude Include="source\ECS\UIManager.h" />
     <ClInclude Include="source\GameObject\Create.h" />
     <ClInclude Include="source\GameObject\Player.h" />
     <ClInclude Include="source\Input\InputBuffer.h" />
@@ -60,6 +61,7 @@
     <ClCompile Include="source\ECS\EntityManager.cpp" />
     <ClCompile Include="source\ECS\SpriteManager.cpp" />
     <ClCompile Include="source\ECS\TransformManager.cpp" />
+    <ClCompile Include="source\ECS\UIManager.cpp" />
     <ClCompile Include="source\GameObject\Create.cpp" />
     <ClCompile Include="source\GameObject\Player.cpp" />
     <ClCompile Include="source\Input\InputContext.cpp" />

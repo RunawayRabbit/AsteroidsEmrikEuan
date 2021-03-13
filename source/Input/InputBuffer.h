@@ -3,6 +3,8 @@
 #include <set>
 #include <map>
 
+#include "..\Math\Vector2.h"
+
 #include "InputDefinitions.h"
 
 struct InputBuffer
@@ -10,8 +12,7 @@ struct InputBuffer
 	std::set<InputOneShot> oneShots;
 	std::set<InputToggle> toggles;
 
-	int mouseX = 0;
-	int mouseY = 0;
+	Vector2 mousePos;
 
 	inline bool Contains(const InputToggle& toggle) const
 	{

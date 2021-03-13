@@ -54,7 +54,7 @@ void InputHandler::ActivateContext(const std::string name)
 	// Icky horrible exceptions.
 	try
 	{
-		auto context = _inactive.at(name);
+		InputContext& context = _inactive.at(name);
 		auto pair = std::pair<std::string, InputContext>(name, context);
 		_active.insert(pair);
 	}
@@ -69,7 +69,7 @@ void InputHandler::DeactivateContext(const std::string name)
 	// Icky horrible copy/pasted exceptions.
 	try
 	{
-		auto context = _active.at(name);
+		InputContext& context = _active.at(name);
 		auto pair = std::pair<std::string, InputContext>(name, context);
 		_inactive.insert(pair);
 	}
@@ -110,11 +110,19 @@ void InputHandler::ProcessInput()
 			// MOUSE BUTTON //
 
 		case SDL_MOUSEBUTTONDOWN:
-			ProcessMouseButton(event.button.button, true);
+			wasDown = (event.button.state == SDL_RELEASED);
+			if (event.button.button == 1)
+				ProcessKey(SDL_EXT_MOUSE1_DOWN, true, wasDown);
+			if (event.button.button == 2)
+				ProcessKey(SDL_EXT_MOUSE2_DOWN, true, wasDown);
 			break;
 
 		case SDL_MOUSEBUTTONUP:
-			ProcessMouseButton(event.button.button, false);
+			wasDown = (event.button.state == SDL_PRESSED);
+			if (event.button.button == 1)
+				ProcessKey(SDL_EXT_MOUSE1_UP, true, wasDown);
+			if (event.button.button == 2)
+				ProcessKey(SDL_EXT_MOUSE2_UP, true, wasDown);
 			break;
 
 
@@ -130,8 +138,8 @@ void InputHandler::ProcessInput()
 			// CURSOR MOVEMENT //
 
 		case SDL_MOUSEMOTION:
-			_currentBuffer.mouseX = event.motion.x;
-			_currentBuffer.mouseY = event.motion.y;
+			_currentBuffer.mousePos.x = (float)event.motion.x;
+			_currentBuffer.mousePos.y = (float)event.motion.y;
 			break;
 
 		case SDL_QUIT:
@@ -155,7 +163,7 @@ void InputHandler::ProcessKey(const SDL_Keycode key, const bool isDown, const bo
 	{
 		for (auto& pair : _active)
 		{
-			auto context = pair.second;
+			InputContext& context = pair.second;
 			InputOneShot oneShot = context.ContainsOneShot(key);
 			if (oneShot != InputOneShot::NONE)
 			{
@@ -170,7 +178,7 @@ void InputHandler::ProcessKey(const SDL_Keycode key, const bool isDown, const bo
 	{
 		for (auto& pair : _active)
 		{
-			auto context = pair.second;
+			InputContext& context = pair.second;
 			InputToggle toggle = context.ContainsToggle(key);
 			if (toggle != InputToggle::NONE)
 			{
@@ -183,7 +191,7 @@ void InputHandler::ProcessKey(const SDL_Keycode key, const bool isDown, const bo
 	{
 		for (auto& pair : _active)
 		{
-			auto context = pair.second;
+			InputContext& context = pair.second;
 			InputToggle toggle = context.ContainsToggle(key);
 			if (toggle != InputToggle::NONE)
 			{
@@ -195,9 +203,9 @@ void InputHandler::ProcessKey(const SDL_Keycode key, const bool isDown, const bo
 
 }
 
-void InputHandler::ProcessMouseButton(const uint8_t button, const bool isDown)
+void InputHandler::ProcessMouseButton(const SDL_MouseButtonEvent button, const bool isDown)
 {
-	// @TODO: @STUB:
+	// @TODO:
 	//  Mouse input is a whole special case that I haven't really thought
 	//  through in great detail. Single and Double-clicks ought to be OneShot
 	//  events, but dragging should be a Toggle. This can all be handled right
@@ -206,7 +214,7 @@ void InputHandler::ProcessMouseButton(const uint8_t button, const bool isDown)
 	return;
 }
 
-InputBuffer InputHandler::GetBuffer() const
+const InputBuffer& InputHandler::GetBuffer() const
 {
 	return _currentBuffer;
 }

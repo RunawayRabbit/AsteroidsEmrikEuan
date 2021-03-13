@@ -6,6 +6,17 @@
 
 #include "InputDefinitions.h"
 
+// Hack to add mouse stuff to SDL's keycodes. Saves me a lot of work.
+// SDL maps it's keycodes to chars, but skips all uppercase letters.
+// We take advantage of that here.
+enum SDL_KeyCode_Extensions
+{
+	SDL_EXT_MOUSE1_DOWN = 'A',
+	SDL_EXT_MOUSE1_UP = 'B',
+	SDL_EXT_MOUSE2_DOWN = 'C',
+	SDL_EXT_MOUSE2_UP = 'D',
+};
+
 class InputContext
 {
 public:

@@ -46,7 +46,23 @@ void Player::Spawn(const Vector2& startPos, const float& startRot)
 	entity = create.Ship(startPos, startRot);
 }
 
-void Player::Update(InputBuffer& input, const float& deltaTime)
+void Player::Kill(const Entity& playerEntity)
+{
+	// Don't destroy if it isn't our entity being destroyed!
+	if (entity != playerEntity) return;
+	Transform ship;
+	transformManager.Get(entity, ship);
+
+	DestroyThruster(mainThruster);
+	DestroyThruster(strafeThrusterLeft);
+	DestroyThruster(strafeThrusterRight);
+
+	entityManager.Destroy(entity);
+
+	create.LargeExplosion(ship.pos);
+}
+
+void Player::Update(const InputBuffer& input, const float& deltaTime)
 {
 	// Early-out if the player's ship isn't currently spawned.
 	if (!IsAlive()) return;

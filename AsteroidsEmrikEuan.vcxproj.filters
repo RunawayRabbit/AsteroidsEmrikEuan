@@ -171,6 +171,9 @@
     <ClInclude Include="source\Renderer\SpriteTransform.h">
       <Filter>Renderer\H</Filter>
     </ClInclude>
+    <ClInclude Include="source\ECS\UIManager.h">
+      <Filter>ECS\H</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Input\InputContext.cpp">
@@ -232,6 +235,9 @@
     </ClCompile>
     <ClCompile Include="source\Renderer\BackgroundRenderer.cpp">
       <Filter>Renderer\CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ECS\UIManager.cpp">
+      <Filter>ECS\CPP</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

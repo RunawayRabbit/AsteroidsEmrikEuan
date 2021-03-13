@@ -106,26 +106,26 @@ std::array<Entity, 4> Create::SplitAsteroid(const Entity& asteroid, const float&
 	return retVal;
 }
 
-Entity Create::SmallExplosion(const Vector2& position)
+Entity Create::SmallExplosion(const Vector2& position) const
 {
 	Entity entity = entityManager.Create();
 
 	Transform trans;
 	trans.pos = position;
-	trans.rot = Math::RandomRange(0, 360);;
+	trans.rot = Math::RandomRange(0.0f, 360.0f);
 	transManager.Add(entity, trans);
 	spriteManager.Create(entity, SpriteID::SMALL_EXPLOSION, RenderQueue::Layer::PARTICLE);
 	entityManager.DestroyDelayed(entity, 0.5f);
 
 	return entity;
 }
-Entity Create::LargeExplosion(const Vector2& position)
+Entity Create::LargeExplosion(const Vector2& position) const
 {
 	Entity entity = entityManager.Create();
 
 	Transform trans;
 	trans.pos = position;
-	trans.rot = Math::RandomRange(0, 360);;
+	trans.rot = Math::RandomRange(0.0f, 360.0f);
 	transManager.Add(entity, trans);
 	spriteManager.Create(entity, SpriteID::EXPLOSION, RenderQueue::Layer::PARTICLE);
 	entityManager.DestroyDelayed(entity, 0.8f);

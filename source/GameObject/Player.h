@@ -16,8 +16,9 @@ public:
 		TransformManager& transformManager, const Create& create, Physics& physics);
 
 	void Spawn(const Vector2& startPos, const float& startRot);
+	void Kill(const Entity& playerEntity);
 
-	void Update(InputBuffer& inputBuffer, const float& deltaTime);
+	void Update(const InputBuffer& inputBuffer, const float& deltaTime);
 	inline bool IsAlive()
 	{
 		return entityManager.Exists(entity);
