@@ -44,6 +44,7 @@
     <ClInclude Include="source\Math\Vector2Int.h" />
     <ClInclude Include="source\Physics\CollisionTests.h" />
     <ClInclude Include="source\Physics\ColliderType.h" />
+    <ClInclude Include="source\Physics\MoveList.h" />
     <ClInclude Include="source\Physics\Physics.h" />
     <ClInclude Include="source\Platform\FrameTimer.h" />
     <ClInclude Include="source\Platform\Game.h" />

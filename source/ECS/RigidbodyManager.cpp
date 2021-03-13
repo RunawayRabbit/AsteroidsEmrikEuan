@@ -103,7 +103,7 @@ void RigidbodyManager::EnqueueAll(Physics& physics, const float& deltaTime)
 
 		if (entityManager.Exists(*entity))
 		{
-			physics.Enqueue(*rb);
+			physics.Enqueue(*rb, deltaTime);
 			++i;
 		}
 		else

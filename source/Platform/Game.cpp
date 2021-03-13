@@ -37,7 +37,7 @@ Game::Game(std::string windowName, int width, int height) :
 
 	std::vector<Vector2> asteroidPositions;
 
-	for (auto i = 0; i < 16; i++)
+	for (auto i = 0; i < 256; i++)
 	{
 		bool isValidPosition = false;
 		int attempts = 0;
@@ -48,7 +48,7 @@ Game::Game(std::string windowName, int width, int height) :
 				// Yea I know. It's temporary, ok?
 				return;
 			}
-			constexpr float asteroidRadius = 5;
+			constexpr float asteroidRadius = ColliderRadius::Large;
 			Vector2 startPos = Vector2{ Math::RandomRange(asteroidRadius, width - asteroidRadius),
 				Math::RandomRange(asteroidRadius, height - asteroidRadius) };
 

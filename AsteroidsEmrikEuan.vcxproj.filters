@@ -171,6 +171,9 @@
     <ClInclude Include="source\ECS\Rigidbody.h">
       <Filter>ECS\H</Filter>
     </ClInclude>
+    <ClInclude Include="source\Physics\MoveList.h">
+      <Filter>Physics\H</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Input\InputContext.cpp">

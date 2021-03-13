@@ -51,6 +51,8 @@ namespace ColliderRadius
 		//	we are assuming that it is square and axis-alligned.
 
 		float radius = GetRadiusFromType(type);
-		return AABB(center.y - radius, center.y + radius, center.x - radius, center.x + radius);
+		Vector2 min = Vector2(center.x - radius, center.y - radius);
+		Vector2 max = Vector2(center.x + radius, center.y + radius);
+		return AABB(min, max);
 	}
 }
