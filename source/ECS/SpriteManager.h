@@ -7,18 +7,11 @@
 
 #include "..\Renderer\RenderQueue.h"
 #include "..\Renderer\SpriteAtlas.h"
+#include "..\Renderer\SpriteTransform.h"
 
 #include "TransformManager.h"
 
 class AABB;
-
-struct SpriteTransform
-{
-	SpriteID id;
-	SDL_Rect position;
-	float rotation;
-	RenderQueue::Layer layer;
-};
 
 class SpriteManager
 {
@@ -49,12 +42,6 @@ private:
 
 		void Render(RenderQueue& renderQueue) const;
 		void RenderLooped(RenderQueue& renderQueue, const int screenWidth, const int screenHeight) const;
-
-		// helper functions
-		void DrawAtTop(RenderQueue& renderQueue, const SpriteID spriteID, const SpriteTransform* transform, const AABB& screenAABB) const;
-		void DrawAtBottom(RenderQueue& renderQueue, const SpriteID spriteID, const SpriteTransform* transform, const AABB& screenAABB) const;
-		void DrawAtLeft(RenderQueue& renderQueue, const SpriteID spriteID, const SpriteTransform* transform, const AABB& screenAABB) const;
-		void DrawAtRight(RenderQueue& renderQueue, const SpriteID spriteID, const SpriteTransform* transform, const AABB& screenAABB) const;
 
 	private:
 		const TransformManager& transManager;

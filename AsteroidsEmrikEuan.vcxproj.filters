@@ -117,9 +117,6 @@
     <ClInclude Include="source\ECS\SpriteManager.h">
       <Filter>ECS\H</Filter>
     </ClInclude>
-    <ClInclude Include="source\ECS\Sprite.h">
-      <Filter>ECS\H</Filter>
-    </ClInclude>
     <ClInclude Include="source\Math\Vector2Int.h">
       <Filter>Math\H</Filter>
     </ClInclude>
@@ -173,6 +170,9 @@
     </ClInclude>
     <ClInclude Include="source\Physics\MoveList.h">
       <Filter>Physics\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Renderer\SpriteTransform.h">
+      <Filter>Renderer\H</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

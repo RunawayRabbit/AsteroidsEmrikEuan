@@ -5,6 +5,7 @@
 
 #include "..\Renderer\Sprite.h"
 #include "..\Renderer\RenderQueue.h"
+#include "..\Renderer\SpriteTransform.h"
 
 #include "..\Math\OBB.h"
 #include "..\Math\AABB.h"
@@ -117,137 +118,16 @@ void SpriteManager::SpriteCategory::Render(RenderQueue& renderQueue) const
 	}
 }
 
-void SpriteManager::SpriteCategory::DrawAtTop(RenderQueue &renderQueue, const SpriteID spriteID, const SpriteTransform* transform, const AABB& screenAABB) const
-{
-	SDL_Rect newPos = transform->position;
-	newPos.y -= (int)floor(screenAABB.bottom);
-	renderQueue.Enqueue(spriteID, newPos, transform->rotation, transform->layer);
-
-}
-void SpriteManager::SpriteCategory::DrawAtBottom(RenderQueue& renderQueue, const SpriteID spriteID, const SpriteTransform* transform, const AABB& screenAABB) const
-{
-	SDL_Rect newPos = transform->position;
-	newPos.y += (int)floor(screenAABB.bottom);
-	renderQueue.Enqueue(spriteID, newPos, transform->rotation, transform->layer);
-}
-
-void SpriteManager::SpriteCategory::DrawAtLeft(RenderQueue& renderQueue, const SpriteID spriteID, const SpriteTransform* transform, const AABB& screenAABB) const
-{
-	SDL_Rect newPos = transform->position;
-	newPos.x -= (int)floor(screenAABB.right);
-	renderQueue.Enqueue(spriteID, newPos, transform->rotation, transform->layer);
-}
-void SpriteManager::SpriteCategory::DrawAtRight(RenderQueue& renderQueue, const SpriteID spriteID, const SpriteTransform* transform, const AABB& screenAABB) const
-{
-	SDL_Rect newPos = transform->position;
-	newPos.x += (int)floor(screenAABB.right);
-	renderQueue.Enqueue(spriteID, newPos, transform->rotation, transform->layer);
-}
-
-
 void SpriteManager::SpriteCategory::RenderLooped(RenderQueue& renderQueue, const int screenWidth, const int screenHeight) const
 {
-	AABB screenAABB(Vector2::zero(), Vector2(screenWidth, screenHeight));
+	AABB screenAABB(Vector2::zero(), Vector2((float)screenWidth, (float)screenHeight));
 
 	for (auto i = 0; i < size; i++)
 	{
 		const SpriteTransform* transform = transforms + i;
-		OBB spriteOBB = OBB(transform->position, transform->rotation);
-
-		if (!screenAABB.FullyContains(spriteOBB))
-		{
-			// Sprite is visible on the opposite side. Determine which!
-			AABB spriteAABB = spriteOBB.Bounds();
-
-			/*
-				PRETTY PICTURE TO VISUALIZE CASES
-				  A |  B | C
-				____|____|____
-				  D |    | E
-				____|____|____
-				  F	|  G | H
-					|    |
-			*/
-
-			if (spriteAABB.top < screenAABB.top)
-			{
-				// Case A - B - C
-				DrawAtBottom(renderQueue, transform->id, transform, screenAABB);
-
-				if (spriteAABB.left < screenAABB.left)
-				{
-					// Case A
-					DrawAtRight(renderQueue, transform->id, transform, screenAABB);
-
-					// DrawAtBottomRight
-					SDL_Rect newPos = transform->position;
-					newPos.y += (int)floor(screenAABB.bottom);
-					newPos.x += (int)floor(screenAABB.right);
-					renderQueue.Enqueue(transform->id, newPos, transform->rotation, transform->layer);
-				}				
-				else if (spriteAABB.right > screenAABB.right)
-				{
-					// Case C
-					DrawAtLeft(renderQueue, transform->id, transform, screenAABB);
-					
-					// DrawAtBottomLeft
-					SDL_Rect newPos = transform->position;
-					newPos.y += (int)floor(screenAABB.bottom);
-					newPos.x -= (int)floor(screenAABB.right);
-					renderQueue.Enqueue(transform->id, newPos, transform->rotation, transform->layer);
-				}
-			}
-			else if (spriteAABB.bottom > screenAABB.bottom)
-			{
-				// Case F - G - H
-				DrawAtTop(renderQueue, transform->id, transform, screenAABB);
-				if (spriteAABB.left < screenAABB.left)
-				{
-					// Case F
-					DrawAtRight(renderQueue, transform->id, transform, screenAABB);
-
-					// DrawAtTopRight
-
-					SDL_Rect newPos = transform->position;
-					newPos.y -= (int)floor(screenAABB.bottom);
-					newPos.x += (int)floor(screenAABB.right);
-					renderQueue.Enqueue(transform->id, newPos, transform->rotation, transform->layer);
-				}
-				else if (spriteAABB.right > screenAABB.right)
-				{
-					// Case H
-					DrawAtLeft(renderQueue, transform->id, transform, screenAABB);
-
-					// DrawAtTopLeft
-
-					SDL_Rect newPos = transform->position;
-					newPos.y -= (int)floor(screenAABB.bottom);
-					newPos.x -= (int)floor(screenAABB.right);
-					renderQueue.Enqueue(transform->id, newPos, transform->rotation, transform->layer);
-
-				}
-			}
-			else
-			{
-				// Case D - E
-				if (spriteAABB.left < screenAABB.left)
-				{
-					// Case D
-					DrawAtRight(renderQueue, transform->id, transform, screenAABB);
-				}
-				else if (spriteAABB.right > screenAABB.right)
-				{
-					// Case E
-					DrawAtLeft(renderQueue, transform->id, transform, screenAABB);
-				}
-			}
-		}
-
-		// Render at the original position
-		renderQueue.Enqueue(transform->id, transform->position, transform->rotation, transform->layer);
+		renderQueue.EnqueueLooped(*transform);
 	}
 }
-
 
 void SpriteManager::SpriteCategory::Create(const Entity entity, const SpriteID spriteID, const SpriteTransform trans)
 {

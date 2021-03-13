@@ -7,14 +7,14 @@
 #include "Sprite.h"
 #include "SpriteID.h"
 
-#include "Renderer.h";
+#include "Renderer.h"
 
 SpriteAtlas::SpriteAtlas(Renderer& renderer) : 
 	spriteData((int)SpriteID::COUNT)
 {
 	LoadPNGs(renderer.GetRenderer());
 
-	spriteData[(int)SpriteID::NONE]; // null data, default, nothing, nadda, zip.
+	//spriteData[(int)SpriteID::NONE]; // null data, default, nothing, nadda, zip.
 
 	CreateAnimatedSprites();
 	CreateRegularSprites();
@@ -89,7 +89,7 @@ void SpriteAtlas::CreateSprite(SpriteID id, int texIndex, int width, int height,
 {
 	Sprite sprite;
 	sprite.id = id; //@TODO: Redundant?
-	sprite.texture = loadedImages[texIndex]; // resources/asteroids-arcade.png
+	sprite.texture = loadedImages[texIndex];
 	sprite.source.w = width;
 	sprite.source.h = height;
 	sprite.source.x = x;
@@ -109,9 +109,9 @@ void SpriteAtlas::LoadPNGs(SDL_Renderer* renderer)
 	loadedImages.push_back(PNGToTexture(renderer, "resources/asteroids-arcade.png")); //0 
 	loadedImages.push_back(PNGToTexture(renderer, "resources/crappy_logo.png")); //1
 	loadedImages.push_back(PNGToTexture(renderer, "resources/bkgd_0.png")); //2
-	loadedImages.push_back(PNGToTexture(renderer, "resources/bkgd_2.png")); //3 
+	loadedImages.push_back(PNGToTexture(renderer, "resources/bkgd_6.png")); //3 
 	loadedImages.push_back(PNGToTexture(renderer, "resources/bkgd_7.png")); //4 
-	loadedImages.push_back(PNGToTexture(renderer, "resources/bkgd_3.png")); //5 
+	loadedImages.push_back(PNGToTexture(renderer, "resources/bkgd_2.png")); //5 
 
 	IMG_Quit(); // Shut down the image loading stuff, we don't need it anymore.
 }

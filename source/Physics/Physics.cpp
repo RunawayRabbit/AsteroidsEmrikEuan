@@ -67,7 +67,6 @@ void Physics::Enqueue(const Rigidbody& rb, const float& deltaTime)
 		++endTileY;
 	}
 
-
 	// Enqueue the rigidbody into the appropriate moveLists by the chunk it's in.
 	auto mod = [](int a, int b) { return (b + (a % b)) % b; };
 	for (auto y = startTileY; y <= endTileY; ++y)

@@ -24,17 +24,16 @@ Game::Game(std::string windowName, int width, int height) :
 	input(InputHandler(*this)),
 	gameField(0.0f, (float)height, 0.0f, (float)width),
 	xforms(2), //intial capacity. Can resize dynamically.
-	backgroundRenderer(xforms),
+	backgroundRenderer(xforms, AABB(Vector2::zero(), Vector2((float)width, (float)height))),
 	rigidbodies(entities, 2),
 	sprites(xforms, entities, renderQueue.GetSpriteAtlas(), 128 ),
 	create(entities, xforms, sprites, rigidbodies),
-	physics(xforms, rigidbodies, AABB(0, (float)height, 0, (float)width)),
+	physics(xforms, rigidbodies, AABB(Vector2::zero(), Vector2((float)width, (float)height))),
 	player(entities, rigidbodies, xforms, create, physics),
 	GCStep(0),
 	isRunning(true)
 {
 #if 1
-
 	std::vector<Vector2> asteroidPositions;
 
 	for (auto i = 0; i < 256; i++)
@@ -122,7 +121,7 @@ void Game::Render()
 {
 	renderQueue.Clear();
 
-	backgroundRenderer.Render(renderQueue);
+	backgroundRenderer.Render(renderQueue, time.DeltaTime());
 
 	sprites.Render(renderQueue);
 

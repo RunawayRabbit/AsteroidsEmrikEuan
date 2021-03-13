@@ -170,6 +170,9 @@ SpriteID Create::GetSpriteFor(const AsteroidType& asteroidType) const
 		return (SpriteID)((int)SpriteID::MEDIUM_ASTEROID_1 + Math::RandomRange(0, 3));
 	case AsteroidType::RANDOM_SMALL:
 		return (SpriteID)((int)SpriteID::SMOL_ASTEROID_1 + Math::RandomRange(0, 15));
+
+	default:
+		return SpriteID::NONE;
 	}
 }
 

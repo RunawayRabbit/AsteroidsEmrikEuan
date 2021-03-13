@@ -23,7 +23,6 @@
     <ClInclude Include="source\ECS\RigidbodyManager.h" />
     <ClInclude Include="source\ECS\Entity.h" />
     <ClInclude Include="source\ECS\EntityManager.h" />
-    <ClInclude Include="source\ECS\Sprite.h" />
     <ClInclude Include="source\ECS\SpriteID.h" />
     <ClInclude Include="source\ECS\SpriteManager.h" />
     <ClInclude Include="source\ECS\Transform.h" />
@@ -54,6 +53,7 @@
     <ClInclude Include="source\Renderer\Renderer.h" />
     <ClInclude Include="source\Renderer\RenderQueue.h" />
     <ClInclude Include="source\Renderer\SpriteAtlas.h" />
+    <ClInclude Include="source\Renderer\SpriteTransform.h" />
     <ClInclude Include="source\Time.h" />
   </ItemGroup>
   <ItemGroup>

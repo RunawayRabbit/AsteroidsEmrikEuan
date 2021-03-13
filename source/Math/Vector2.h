@@ -40,8 +40,8 @@ public:
 	}
 	inline void operator+=(const Vector2& b)
 	{
-		x += b.x;
-		y += b.y;
+		this->x = this->x + b.x;
+		this->y = this->y + b.y;
 	}
 
 	inline Vector2 operator-() const

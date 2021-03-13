@@ -7,8 +7,8 @@ public:
 
 	void Update(float deltaTime)
 	{
-		deltaTime = deltaTime;
-		time += deltaTime;
+		this->deltaTime = deltaTime;
+		this->time += deltaTime;
 	}
 
 	const float& Now() const { return time; };

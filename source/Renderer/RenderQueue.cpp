@@ -5,6 +5,10 @@
 #include "RenderQueue.h"
 #include "SpriteID.h"
 #include "Sprite.h"
+#include "SpriteTransform.h"
+
+#include "..\Math\OBB.h"
+#include "..\Math\AABB.h"
 
 
 RenderQueue::RenderQueue(Renderer& renderer, int screenWidth, int screenHeight) :
@@ -42,6 +46,132 @@ void RenderQueue::Enqueue(SpriteID spriteID, const float rotation, const RenderQ
 	targetRect.y = 0;
 	Enqueue(spriteID, targetRect, rotation, layer);
 }
+
+void RenderQueue::EnqueueLooped(const SpriteTransform& transform)
+{
+	AABB screenAABB(Vector2::zero(), Vector2((float)screenWidth, (float)screenHeight));
+	OBB spriteOBB = OBB(transform.position, transform.rotation);
+	if (!screenAABB.FullyContains(spriteOBB))
+	{
+		// Sprite is visible on the opposite side. Determine which!
+		AABB spriteAABB = spriteOBB.Bounds();
+
+		/*
+			PRETTY PICTURE TO VISUALIZE CASES
+				A |  B | C
+			  ____|____|____
+				D |    | E
+			  ____|____|____
+			    F |  G | H
+				  |    |
+		*/
+
+		if (spriteAABB.top < screenAABB.top)
+		{
+			// Case A - B - C
+			DrawAtBottom(transform, screenAABB);
+
+			if (spriteAABB.left < screenAABB.left)
+			{
+				// Case A
+				DrawAtRight(transform, screenAABB);
+
+				// DrawAtBottomRight
+				SDL_Rect newPos = transform.position;
+				newPos.y += (int)floor(screenAABB.bottom);
+				newPos.x += (int)floor(screenAABB.right);
+				Enqueue(transform.id, newPos, transform.rotation, transform.layer);
+			}
+			else if (spriteAABB.right > screenAABB.right)
+			{
+				// Case C
+				DrawAtLeft(transform, screenAABB);
+
+				// DrawAtBottomLeft
+				SDL_Rect newPos = transform.position;
+				newPos.y += (int)floor(screenAABB.bottom);
+				newPos.x -= (int)floor(screenAABB.right);
+				Enqueue(transform.id, newPos, transform.rotation, transform.layer);
+			}
+		}
+		else if (spriteAABB.bottom > screenAABB.bottom)
+		{
+			// Case F - G - H
+			DrawAtTop(transform, screenAABB);
+			if (spriteAABB.left < screenAABB.left)
+			{
+				// Case F
+				DrawAtRight(transform, screenAABB);
+
+				// DrawAtTopRight
+
+				SDL_Rect newPos = transform.position;
+				newPos.y -= (int)floor(screenAABB.bottom);
+				newPos.x += (int)floor(screenAABB.right);
+				Enqueue(transform.id, newPos, transform.rotation, transform.layer);
+			}
+			else if (spriteAABB.right > screenAABB.right)
+			{
+				// Case H
+				DrawAtLeft(transform, screenAABB);
+
+				// DrawAtTopLeft
+
+				SDL_Rect newPos = transform.position;
+				newPos.y -= (int)floor(screenAABB.bottom);
+				newPos.x -= (int)floor(screenAABB.right);
+				Enqueue(transform.id, newPos, transform.rotation, transform.layer);
+			}
+		}
+		else
+		{
+			// Case D - E
+			if (spriteAABB.left < screenAABB.left)
+			{
+				// Case D
+				DrawAtRight(transform, screenAABB);
+			}
+			else if (spriteAABB.right > screenAABB.right)
+			{
+				// Case E
+				DrawAtLeft(transform, screenAABB);
+			}
+		}
+	}
+
+	// Render at the original position
+	Enqueue(transform.id, transform.position, transform.rotation, transform.layer);
+}
+
+
+void RenderQueue::DrawAtTop(const SpriteTransform& transform, const AABB& screenAABB)
+{
+	SDL_Rect newPos = transform.position;
+	newPos.y -= (int)floor(screenAABB.bottom);
+	Enqueue(transform.id, newPos, transform.rotation, transform.layer);
+
+}
+void RenderQueue::DrawAtBottom(const SpriteTransform& transform, const AABB& screenAABB)
+{
+	SDL_Rect newPos = transform.position;
+	newPos.y += (int)floor(screenAABB.bottom);
+	Enqueue(transform.id, newPos, transform.rotation, transform.layer);
+}
+
+void RenderQueue::DrawAtLeft(const SpriteTransform& transform, const AABB& screenAABB)
+{
+	SDL_Rect newPos = transform.position;
+	newPos.x -= (int)floor(screenAABB.right);
+	Enqueue(transform.id, newPos, transform.rotation, transform.layer);
+}
+void RenderQueue::DrawAtRight(const SpriteTransform& transform, const AABB& screenAABB)
+{
+	SDL_Rect newPos = transform.position;
+	newPos.x += (int)floor(screenAABB.right);
+	Enqueue(transform.id, newPos, transform.rotation, transform.layer);
+}
+
+
 
 // @TODO: Consider locking here and unlocking on clear. Rename methods to be explicit if you do so.
 const std::vector<RenderQueue::Element>& RenderQueue::GetRenderQueue()
