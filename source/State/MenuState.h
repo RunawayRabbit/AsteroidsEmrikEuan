@@ -26,9 +26,13 @@ private:
 	void SpawnRandomAsteroids();
 
 	Game& game;
-
+	
 	std::vector<Entity> floatingAsteroids;
+
+	Entity title;
+
 	Entity startButton;
 	Entity quitButton;
+	Entity euanityMeme;
 
 };

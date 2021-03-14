@@ -19,6 +19,7 @@ SpriteAtlas::SpriteAtlas(Renderer& renderer) :
 	CreateAnimatedSprites();
 	CreateRegularSprites();
 	CreateBackgroundSprites();
+	CreateMenuSprites();
 }
 
 void SpriteAtlas::CreateAnimatedSprites()
@@ -77,7 +78,6 @@ void SpriteAtlas::CreateRegularSprites()
 
 	CreateSprite(SpriteID::MUZZLE_FLASH, 0, 6, 5, 133, 75);
 
-	CreateSprite(SpriteID::SHITTY_LOGO, 1, 400, 114, 0, 0);
 }
 
 void SpriteAtlas::CreateBackgroundSprites()
@@ -86,6 +86,14 @@ void SpriteAtlas::CreateBackgroundSprites()
 	CreateSprite(SpriteID::PARALLAX_BACKGROUND_1, 3, 2000, 2000, 0, 0);
 	CreateSprite(SpriteID::PARALLAX_BACKGROUND_2, 4, 2000, 2000, 0, 0);
 	CreateSprite(SpriteID::PARALLAX_BACKGROUND_3, 5, 2000, 2000, 0, 0);
+}
+
+void SpriteAtlas::CreateMenuSprites()
+{
+	CreateSprite(SpriteID::MAIN_LOGO, 7, 623, 168, 0, 0);
+	CreateSprite(SpriteID::SHITTY_LOGO, 1, 600, 186, 0, 0);
+	CreateSprite(SpriteID::START_BUTTON, 6, 200, 80, 0, 0);
+	CreateSprite(SpriteID::QUIT_BUTTON, 6, 200, 80, 0, 80);
 }
 
 void SpriteAtlas::CreateSprite(SpriteID id, int texIndex, int width, int height, int x, int y)
@@ -115,6 +123,8 @@ void SpriteAtlas::LoadPNGs(SDL_Renderer* renderer)
 	loadedImages.push_back(PNGToTexture(renderer, "resources/bkgd_6.png")); //3 
 	loadedImages.push_back(PNGToTexture(renderer, "resources/bkgd_7.png")); //4 
 	loadedImages.push_back(PNGToTexture(renderer, "resources/bkgd_2.png")); //5 
+	loadedImages.push_back(PNGToTexture(renderer, "resources/MenuButtons.png")); //6
+	loadedImages.push_back(PNGToTexture(renderer, "resources/MainLogo.png")); //7
 
 	IMG_Quit(); // Shut down the image loading stuff, we don't need it anymore.
 }

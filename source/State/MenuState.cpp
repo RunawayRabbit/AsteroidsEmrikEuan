@@ -26,7 +26,10 @@ void MenuState::OnExit()
 	{
 		game.entities.Destroy(asteroid);
 	}
+	game.entities.Destroy(title);
 	game.entities.Destroy(startButton);
+	game.entities.Destroy(quitButton);
+	game.entities.Destroy(euanityMeme);
 }
 
 void MenuState::Update()
@@ -43,13 +46,37 @@ void MenuState::Render()
 void MenuState::SpawnMenuButtons()
 {
 	Vector2 screenCenter = game.gameField.max * 0.5f;
-	Vector2 buttonSize(300.0f, 100.0f);
+	Vector2 buttonSize(200.0f, 80.0f);
 
-	AABB playButton(screenCenter - (buttonSize * 0.5f), screenCenter + (buttonSize * 0.5f));
+	AABB titleAABB(screenCenter.y * 0.4f,
+		(screenCenter.y *0.4f)+168,
+		screenCenter.x - 311,
+		screenCenter.x + 311);
+	title = game.create.UIButton(titleAABB, SpriteID::MAIN_LOGO, []() {});
 
+	AABB playAABB((screenCenter.y * 1.1f),
+		(screenCenter.y * 1.1f) + buttonSize.y,
+		screenCenter.x - buttonSize.x * 0.5f,
+		screenCenter.x + buttonSize.x * 0.5f);
+	startButton = game.create.UIButton(playAABB, SpriteID::START_BUTTON,
+		[&]() -> void
+		{
+			game.ChangeState<MenuState>();
+		});
 	
-	std::function<void()> test = [&]() -> void {game.ChangeState<MenuState>(); };
-	startButton = game.create.UIButton(playButton, SpriteID::SHITTY_LOGO, test);
+
+	AABB quitAABB((screenCenter.y * 1.1f) + 90,
+		(screenCenter.y * 1.1f) + buttonSize.y + 90,
+		screenCenter.x - buttonSize.x * 0.5f,
+		screenCenter.x + buttonSize.x * 0.5f);
+	quitButton = game.create.UIButton(quitAABB, SpriteID::QUIT_BUTTON,
+		[&]() -> void
+		{
+			game.Quit();
+		});
+
+	AABB euanityAABB((screenCenter * 2) - Vector2(205.0f, 67.0f), (screenCenter * 2) - Vector2(5.0f, 5.0f));
+	euanityMeme = game.create.UIButton(euanityAABB, SpriteID::SHITTY_LOGO, []() {});
 }
 
 void MenuState::SpawnRandomAsteroids()

@@ -23,7 +23,11 @@ void UIManager::Render(RenderQueue& renderQueue)
 	for (auto& button : UIButtons)
 	{
 		if (DoButton(renderQueue, button))
+		{
 			button.callback();
+			return;
+		}
+
 	}
 }
 

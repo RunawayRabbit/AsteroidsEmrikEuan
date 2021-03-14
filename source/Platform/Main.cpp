@@ -11,7 +11,7 @@
 int main(int argc, char* args[])
 {
 	// Game Setup
-	std::string windowName = "Window Name!";
+	std::string windowName = "Just Asteroids";
 	int screenWidth = 800;
 	int screenHeight = 600;
 	Game game(windowName, screenWidth, screenHeight);

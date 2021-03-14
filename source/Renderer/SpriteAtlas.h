@@ -30,6 +30,7 @@ private:
 	void CreateAnimatedSprites();
 	void CreateRegularSprites();
 	void CreateBackgroundSprites();
+	void CreateMenuSprites();
 	void CreateSprite(SpriteID id, int texIndex, int width, int height, int x, int y);
 
 	void LoadPNGs(SDL_Renderer* renderer);
