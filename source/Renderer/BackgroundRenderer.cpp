@@ -9,11 +9,11 @@ BackgroundRenderer::BackgroundRenderer(const TransformManager& transformManager,
 	screen(screen),
 	position(0.0f, 0.0f)
 {
-	SDL_Rect screenRect;
+	SDL_Rect screenRect{};
 	screenRect.x = 0;
 	screenRect.y = 0;
-	screenRect.w = screen.max.x;
-	screenRect.h = screen.max.y;
+	screenRect.w = (int)screen.max.x;
+	screenRect.h = (int)screen.max.y;
 
 	// Background
 	background.id = SpriteID::STATIC_BACKGROUND;
@@ -46,63 +46,63 @@ void BackgroundRenderer::Render(RenderQueue& renderQueue, const float& deltaTime
 	renderQueue.Enqueue(SpriteID::STATIC_BACKGROUND, 0, RenderQueue::Layer::BACKGROUND);
 
 	position.x += 20.0f * deltaTime;
-	position.y += 10.0f * deltaTime;
+	//position.y += 10.0f * deltaTime; // Corner rendering bugs. This is unfortunately the easiest fix..
 	
 	if (playerShip == Entity::null())
 	{
-		parallax1.position.x = floor(position.x);
+		parallax1.position.x = (int)floor(position.x);
 		if (parallax1.position.x < 0)
-			parallax1.position.x += screen.max.x;
+			parallax1.position.x += (int)screen.max.x;
 		else if (parallax1.position.x > screen.max.x)
-			parallax1.position.x -= screen.max.x;
+			parallax1.position.x -= (int)screen.max.x;
 
-		parallax1.position.y = floor(position.y);
+		parallax1.position.y = (int)floor(position.y);
 		if (parallax1.position.y < 0)
-			parallax1.position.y += screen.max.y;
+			parallax1.position.y += (int)screen.max.y;
 		else if (parallax1.position.y > screen.max.y)
-			parallax1.position.y -= screen.max.y;
+			parallax1.position.y -= (int)screen.max.y;
 
 
 
-		parallax2.position.x = floor(position.x / 2);
+		parallax2.position.x = (int)floor(position.x / 2);
 		if (parallax2.position.x < 0)
-			parallax2.position.x += screen.max.x;
+			parallax2.position.x += (int)screen.max.x;
 		else if (parallax2.position.x > screen.max.x)
-			parallax2.position.x -= screen.max.x;
+			parallax2.position.x -= (int)screen.max.x;
 
-		parallax2.position.y = floor(position.y / 2);
+		parallax2.position.y = (int)floor(position.y / 2);
 		if (parallax2.position.y < 0)
-			parallax2.position.y += screen.max.y;
+			parallax2.position.y += (int)screen.max.y;
 		else if (parallax2.position.y > screen.max.y)
-			parallax2.position.y -= screen.max.y;
+			parallax2.position.y -= (int)screen.max.y;
 
 
 
-		parallax3.position.x = floor(position.x / 4);
+		parallax3.position.x = (int)floor(position.x / 4);
 		if (parallax3.position.x < 0)
-			parallax3.position.x += screen.max.x;
+			parallax3.position.x += (int)screen.max.x;
 		else if (parallax3.position.x > screen.max.x)
-			parallax3.position.x -= screen.max.x;
+			parallax3.position.x -= (int)screen.max.x;
 
-		parallax3.position.y = floor(position.y / 4);
+		parallax3.position.y = (int)floor(position.y / 4);
 		if (parallax3.position.y < 0)
-			parallax3.position.y += screen.max.y;
+			parallax3.position.y += (int)screen.max.y;
 		else if (parallax3.position.y > screen.max.y)
-			parallax3.position.y -= screen.max.y;
+			parallax3.position.y -= (int)screen.max.y;
 
 
 
-		background.position.x = floor(position.x / 5);
+		background.position.x = (int)floor(position.x / 5);
 		if (background.position.x < 0)
-			background.position.x += screen.max.x;
+			background.position.x += (int)screen.max.x;
 		else if (background.position.x > screen.max.x)
-			background.position.x -= screen.max.x;
+			background.position.x -= (int)screen.max.x;
 
-		background.position.y = floor(position.y / 5);
+		background.position.y = (int)floor(position.y / 5);
 		if (background.position.y < 0)
-			background.position.y += screen.max.y;
+			background.position.y += (int)screen.max.y;
 		else if (background.position.y > screen.max.y)
-			background.position.y -= screen.max.y;
+			background.position.y -= (int)screen.max.y;
 	}
 
 	renderQueue.EnqueueLooped(background);

@@ -6,8 +6,8 @@
 
 #include "..\Platform\Game.h"
 
-InputHandler::InputHandler(Game& ourGame) :
-	_ourGame(ourGame)
+InputHandler::InputHandler(bool& isRunning) :
+	isRunning(isRunning)
 {
 	AddContext("Default", InputContext(true), true);
 }
@@ -143,7 +143,7 @@ void InputHandler::ProcessInput()
 			break;
 
 		case SDL_QUIT:
-			_ourGame.Quit();
+			isRunning = false;
 			break;
 		}
 	}
@@ -200,18 +200,6 @@ void InputHandler::ProcessKey(const SDL_Keycode key, const bool isDown, const bo
 			}
 		}
 	}
-
-}
-
-void InputHandler::ProcessMouseButton(const SDL_MouseButtonEvent button, const bool isDown)
-{
-	// @TODO:
-	//  Mouse input is a whole special case that I haven't really thought
-	//  through in great detail. Single and Double-clicks ought to be OneShot
-	//  events, but dragging should be a Toggle. This can all be handled right
-	//  here in this method, but I haven't done *any* of it.
-
-	return;
 }
 
 const InputBuffer& InputHandler::GetBuffer() const

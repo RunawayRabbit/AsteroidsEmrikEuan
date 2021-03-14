@@ -22,7 +22,9 @@
 
 #include "../Math/AABB.h"
 
-#include "../Time.h"
+#include "..\State\GameMode.h"
+#include "..\State\Time.h"
+#include "..\State\MenuState.h"
 
 
 class Game
@@ -41,18 +43,30 @@ public:
 	void Render();
 	void Quit();
 
+	//@NOTE: This has to be declared out here so that the state machine compilation units
+	// can see the code and generate their templated versions. I don't like this one bit.
+	template<typename T>
+	void ChangeState()
+	{
+		currentState->OnExit();
+		currentState = std::make_unique<T>(*this);
+		currentState->OnEnter();
+	}
+
 	void GarbageCollection();
 
-private:
+	// Renderer Stuff
 	Renderer renderer;
 	RenderQueue renderQueue;
 	BackgroundRenderer backgroundRenderer;
 
+	//Input
 	InputHandler input;
 
 	// GameObject Creator
 	Create create;
 
+	// IDK what this is honestly
 	Time time;
 
 	// ECS Systems
@@ -61,14 +75,14 @@ private:
 	SpriteManager sprites;
 	UIManager UI;
 
-	RigidbodyManager rigidbodies;
-
+	// Physics
 	Physics physics;
+	RigidbodyManager rigidbodies;
 	const AABB gameField;
 
+	// Gameplay
 	Player player;
-
-	int GCStep;
+	std::unique_ptr<IState> currentState;
 
 	bool isRunning;
 };

@@ -5,15 +5,17 @@
 #include "..\ECS\TransformManager.h"
 #include "..\ECS\SpriteManager.h"
 #include "..\ECS\EntityManager.h"
+#include "..\ECS\UIManager.h"
 
 #include "..\Math\Math.h"
 
 Create::Create(EntityManager& entities, TransformManager& transforms,
-	SpriteManager& sprites, RigidbodyManager& rigidbodies) :
+	SpriteManager& sprites, RigidbodyManager& rigidbodies, UIManager& uiManager) :
 	entityManager(entities),
 	transManager(transforms),
 	spriteManager(sprites),
-	rigidbodyManager(rigidbodies) {}
+	rigidbodyManager(rigidbodies),
+	uiManager(uiManager) {}
 
 Entity Create::Asteroid(const Vector2& position, const float& rotation,
 	const Vector2& velocity, const float& rotVelocity, const AsteroidType& asteroidType) const
@@ -34,13 +36,13 @@ std::array<Entity, 4> Create::SplitAsteroid(const Entity& asteroid, const float&
 {
 	std::array<Entity, 4> retVal = { Entity::null(), Entity::null(), Entity::null(), Entity::null() };
 
-	Rigidbody* parentRigid;
+	Rigidbody* parentRigid{};
 	if (!rigidbodyManager.GetMutable(asteroid, parentRigid))
 	{
 		return retVal;
 	}
 
-	std::array<SpriteID, 4> sprites;
+	std::array<SpriteID, 4> sprites{};
 	ColliderType colliderType;
 	float parentRadius;
 
@@ -250,6 +252,14 @@ Entity Create::ShipThruster(const Entity& ship, const Vector2& thrusterOffset, c
 	trans.rot = parentTrans.rot;
 	transManager.Add(entity, trans);
 	spriteManager.Create(entity, spriteID, RenderQueue::Layer::PARTICLE);
+
+	return entity;
+}
+
+Entity Create::UIButton(const AABB& position, SpriteID spriteID,std::function<void()> callback) const
+{
+	Entity entity = entityManager.Create();
+	uiManager.MakeButton(entity, position, spriteID, callback);
 
 	return entity;
 }

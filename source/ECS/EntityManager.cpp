@@ -1,6 +1,6 @@
 
 #include "EntityManager.h"
-#include "..\Time.h"
+#include "..\State\Time.h"
 
 EntityManager::EntityManager(const Time& time) :
 	time(time)

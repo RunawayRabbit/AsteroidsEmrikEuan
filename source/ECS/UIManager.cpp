@@ -21,7 +21,10 @@ UIManager::UIManager(EntityManager& entityManager, const InputBuffer& inputBuffe
 void UIManager::Render(RenderQueue& renderQueue)
 {
 	for (auto& button : UIButtons)
-		DoButton(renderQueue, button);
+	{
+		if (DoButton(renderQueue, button))
+			button.callback();
+	}
 }
 
 bool UIManager::DoButton(RenderQueue& renderQueue, const UIButton& element)
@@ -65,10 +68,25 @@ bool UIManager::DoButton(RenderQueue& renderQueue, const UIButton& element)
 
 void UIManager::DrawButton(RenderQueue& renderQueue, const UIButton& element, bool isHot, bool isActive)
 {
-	SDL_Rect targetRect;
+	SDL_Rect targetRect{};
 	targetRect.x = (int)(element.box.min.x);
 	targetRect.y = (int)(element.box.min.y);
 	targetRect.w = (int)(element.box.max.x - element.box.min.x);
 	targetRect.h = (int)(element.box.max.y - element.box.min.y);
-	renderQueue.Enqueue(SpriteID::SHITTY_LOGO, targetRect, 0, RenderQueue::Layer::UI);
+	renderQueue.Enqueue(element.spriteID, targetRect, 0, RenderQueue::Layer::UI);
+}
+
+
+void UIManager::MakeButton(const Entity& entity, const AABB& box, SpriteID spriteID, std::function<void()> callback)
+{
+	UIButtons.push_back(UIButton(entity, box, spriteID, callback));
+}
+
+void UIManager::GarbageCollect()
+{
+	UIButtons.erase(std::remove_if(UIButtons.begin(), UIButtons.end(),
+		[&](UIButton& button) -> bool
+		{
+			return (!entityManager.Exists(button.entity));
+		}), UIButtons.end()); // <-- Don't forget this bad boy here. C++ isn't user-friendly.
 }

@@ -64,6 +64,15 @@
     <Filter Include="GameObject\H">
       <UniqueIdentifier>{8271cb0d-caa8-4491-9247-ab78ea99bd24}</UniqueIdentifier>
     </Filter>
+    <Filter Include="State">
+      <UniqueIdentifier>{c9bfb428-c22a-45bf-b8ab-be979cd46fbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="State\CPP">
+      <UniqueIdentifier>{39e52eab-7b77-4a04-bf31-302eb0276559}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="State\H">
+      <UniqueIdentifier>{0aa2acd7-0a85-47f1-9d59-c73cc3a89c9e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\ECS\Entity.h">
@@ -156,9 +165,6 @@
     <ClInclude Include="source\GameObject\Create.h">
       <Filter>GameObject\H</Filter>
     </ClInclude>
-    <ClInclude Include="source\Time.h">
-      <Filter>Platform\H</Filter>
-    </ClInclude>
     <ClInclude Include="source\Renderer\BackgroundRenderer.h">
       <Filter>Renderer\H</Filter>
     </ClInclude>
@@ -173,6 +179,18 @@
     </ClInclude>
     <ClInclude Include="source\ECS\UIManager.h">
       <Filter>ECS\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\State\GameMode.h">
+      <Filter>State\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\State\Time.h">
+      <Filter>State\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\State\MenuState.h">
+      <Filter>State\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\State\IState.h">
+      <Filter>State\H</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -230,14 +248,17 @@
     <ClCompile Include="source\GameObject\Player.cpp">
       <Filter>GameObject\CPP</Filter>
     </ClCompile>
-    <ClCompile Include="source\Time.cpp">
-      <Filter>Platform\CPP</Filter>
-    </ClCompile>
     <ClCompile Include="source\Renderer\BackgroundRenderer.cpp">
       <Filter>Renderer\CPP</Filter>
     </ClCompile>
     <ClCompile Include="source\ECS\UIManager.cpp">
       <Filter>ECS\CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="source\State\Time.cpp">
+      <Filter>State\CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="source\State\MenuState.cpp">
+      <Filter>State\CPP</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

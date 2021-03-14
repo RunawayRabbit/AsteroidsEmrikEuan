@@ -19,7 +19,7 @@ typedef std::function<void(const InputBuffer& inputs)> InputCallback;
 class InputHandler
 {
 public:
-	InputHandler(Game& ourGame);
+	InputHandler(bool& isRunning);
 	InputHandler() = delete;
 	// ~InputHandler();
 
@@ -45,7 +45,6 @@ private:
 	InputBuffer _currentBuffer;
 
 	void ProcessKey(const SDL_Keycode key, const bool isDown, const bool wasDown);
-	void ProcessMouseButton(const SDL_MouseButtonEvent button, const bool isDown);
 
-	Game& _ourGame;
+	bool& isRunning;
 };

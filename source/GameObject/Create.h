@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <functional>
 
 #include "..\Physics\ColliderType.h"
 #include "..\Renderer\SpriteAtlas.h"
@@ -12,7 +13,7 @@ class EntityManager;
 class TransformManager;
 class RigidbodyManager;
 class SpriteManager;
-
+class UIManager;
 
 class Create
 {
@@ -47,7 +48,7 @@ public:
 	};
 
 	Create(EntityManager& entities, TransformManager& transforms,
-		SpriteManager& sprites, RigidbodyManager& rigidbodies);
+		SpriteManager& sprites, RigidbodyManager& rigidbodies, UIManager& uiManager);
 
 	Entity Asteroid(const Vector2& position, const float& rotation,
 		const Vector2& velocity, const float& rotVelocity, const AsteroidType& asteroidType) const;
@@ -61,6 +62,8 @@ public:
 	Entity SmallExplosion(const Vector2& position) const;
 	Entity LargeExplosion(const Vector2& position) const;
 
+	Entity UIButton(const AABB& position, SpriteID spriteID, std::function<void()> callback) const;
+
 private:
 
 	ColliderType GetColliderFor(const AsteroidType& asteroidType) const;
@@ -70,4 +73,5 @@ private:
 	TransformManager& transManager;
 	RigidbodyManager& rigidbodyManager;
 	SpriteManager& spriteManager;
+	UIManager& uiManager;
 };
