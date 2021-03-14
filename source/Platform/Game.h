@@ -23,7 +23,7 @@
 #include "../Math/AABB.h"
 
 #include "..\State\GameMode.h"
-#include "..\State\Time.h"
+#include "..\State\Timer.h"
 #include "..\State\MenuState.h"
 
 
@@ -67,7 +67,7 @@ public:
 	Create create;
 
 	// IDK what this is honestly
-	Time time;
+	Timer time;
 
 	// ECS Systems
 	EntityManager entities;

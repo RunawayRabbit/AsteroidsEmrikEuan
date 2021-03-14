@@ -1,8 +1,8 @@
 
 #include "EntityManager.h"
-#include "..\State\Time.h"
+#include "..\State\Timer.h"
 
-EntityManager::EntityManager(const Time& time) :
+EntityManager::EntityManager(const Timer& time) :
 	time(time)
 {
 	nextEntity = Entity();
@@ -40,7 +40,7 @@ void EntityManager::GarbageCollect()
 {
 	while (deathRow.size() > 0)
 	{
-		auto element = deathRow.top();
+		auto& element = deathRow.top();
 		if (element.first < time.Now())
 		{
 			Destroy(element.second);

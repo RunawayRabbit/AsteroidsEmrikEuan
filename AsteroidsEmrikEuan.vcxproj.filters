@@ -183,13 +183,16 @@
     <ClInclude Include="source\State\GameMode.h">
       <Filter>State\H</Filter>
     </ClInclude>
-    <ClInclude Include="source\State\Time.h">
-      <Filter>State\H</Filter>
-    </ClInclude>
     <ClInclude Include="source\State\MenuState.h">
       <Filter>State\H</Filter>
     </ClInclude>
     <ClInclude Include="source\State\IState.h">
+      <Filter>State\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\State\PlayState.h">
+      <Filter>State\H</Filter>
+    </ClInclude>
+    <ClInclude Include="source\State\Timer.h">
       <Filter>State\H</Filter>
     </ClInclude>
   </ItemGroup>
@@ -254,10 +257,13 @@
     <ClCompile Include="source\ECS\UIManager.cpp">
       <Filter>ECS\CPP</Filter>
     </ClCompile>
-    <ClCompile Include="source\State\Time.cpp">
+    <ClCompile Include="source\State\MenuState.cpp">
       <Filter>State\CPP</Filter>
     </ClCompile>
-    <ClCompile Include="source\State\MenuState.cpp">
+    <ClCompile Include="source\State\PlayState.cpp">
+      <Filter>State\CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="source\State\Timer.cpp">
       <Filter>State\CPP</Filter>
     </ClCompile>
   </ItemGroup>

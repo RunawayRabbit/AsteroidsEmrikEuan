@@ -8,12 +8,12 @@
 
 #include "Entity.h"
 
-class Time;
+class Timer;
 
 class EntityManager
 {
 public:
-	EntityManager(const Time& time);
+	EntityManager(const Timer& time);
 
 	Entity Create();
 	bool Exists(Entity entity) const;
@@ -31,7 +31,7 @@ public:
 	}
 
 private:
-	const Time& time;
+	const Timer& time;
 
 	Entity nextEntity;
 	std::unordered_set<Entity> entities;

@@ -34,5 +34,4 @@ private:
 	Entity startButton;
 	Entity quitButton;
 	Entity euanityMeme;
-
 };

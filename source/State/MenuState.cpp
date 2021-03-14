@@ -1,5 +1,6 @@
 
 #include "MenuState.h"
+#include "PlayState.h"
 
 #include "..\Math\Math.h"
 
@@ -7,10 +8,12 @@
 
 #include "..\Platform\Game.h"
 
-MenuState::MenuState(Game& game) : 
+MenuState::MenuState(Game& game) :
 	game(game),
+	title(Entity::null()),
 	startButton(Entity::null()),
-	quitButton(Entity::null())
+	quitButton(Entity::null()),
+	euanityMeme(Entity::null())
 {}
 
 void MenuState::OnEnter()
@@ -61,7 +64,7 @@ void MenuState::SpawnMenuButtons()
 	startButton = game.create.UIButton(playAABB, SpriteID::START_BUTTON,
 		[&]() -> void
 		{
-			game.ChangeState<MenuState>();
+			game.ChangeState<PlayState>();
 		});
 	
 

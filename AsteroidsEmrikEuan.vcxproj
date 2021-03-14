@@ -57,7 +57,8 @@
     <ClInclude Include="source\State\GameMode.h" />
     <ClInclude Include="source\State\MenuState.h" />
     <ClInclude Include="source\State\IState.h" />
-    <ClInclude Include="source\State\Time.h" />
+    <ClInclude Include="source\State\PlayState.h" />
+    <ClInclude Include="source\State\Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\ECS\RigidbodyManager.cpp" />
@@ -81,7 +82,8 @@
     <ClCompile Include="source\Renderer\RenderQueue.cpp" />
     <ClCompile Include="source\Renderer\SpriteAtlas.cpp" />
     <ClCompile Include="source\State\MenuState.cpp" />
-    <ClCompile Include="source\State\Time.cpp" />
+    <ClCompile Include="source\State\PlayState.cpp" />
+    <ClCompile Include="source\State\Timer.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
