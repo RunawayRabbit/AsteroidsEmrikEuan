@@ -37,12 +37,8 @@ Player::Player(EntityManager& entityManager, RigidbodyManager& rigidbodyManager,
 
 void Player::Spawn(const Vector2& startPos, const float& startRot)
 {
-	if (IsAlive())
-	{
-		//@TODO: LOGGING oh my GOD JUST WRITE THE LOGGER ALREADY
-		std::cout << "We just tried to spawn a player, but we already HAVE a player.\n";
-		return;
-	}
+	if (IsAlive()) return;
+
 	entity = create.Ship(startPos, startRot);
 }
 

@@ -7,15 +7,19 @@
 #include "..\ECS\EntityManager.h"
 #include "..\ECS\UIManager.h"
 
+#include "..\State\Timer.h"
+
 #include "..\Math\Math.h"
 
-Create::Create(EntityManager& entities, TransformManager& transforms,
-	SpriteManager& sprites, RigidbodyManager& rigidbodies, UIManager& uiManager) :
+Create::Create(EntityManager& entities, TransformManager& transforms, SpriteManager& sprites,
+	RigidbodyManager& rigidbodies, UIManager& uiManager, Timer& timer) :
 	entityManager(entities),
 	transManager(transforms),
 	spriteManager(sprites),
 	rigidbodyManager(rigidbodies),
-	uiManager(uiManager) {}
+	uiManager(uiManager),
+	timer(timer)
+{}
 
 Entity Create::Asteroid(const Vector2& position, const float& rotation,
 	const Vector2& velocity, const float& rotVelocity, const AsteroidType& asteroidType) const
@@ -232,6 +236,7 @@ Entity Create::Ship(const Vector2& position, const float& rotation, const Vector
 	trans.rot = rotation;
 	transManager.Add(entity, trans);
 	spriteManager.Create(entity, SpriteID::SHIP, RenderQueue::Layer::DEFAULT);
+
 	rigidbodyManager.Add(entity, ColliderType::SHIP, initialVelocity, initialAngularVelocity);
 
 	return entity;
@@ -262,4 +267,9 @@ Entity Create::UIButton(const AABB& position, SpriteID spriteID,std::function<vo
 	uiManager.MakeButton(entity, position, spriteID, callback);
 
 	return entity;
+}
+
+Entity Create::GameOver()
+{
+	return {};
 }

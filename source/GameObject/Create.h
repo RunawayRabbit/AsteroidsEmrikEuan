@@ -14,6 +14,7 @@ class TransformManager;
 class RigidbodyManager;
 class SpriteManager;
 class UIManager;
+class Timer;
 
 class Create
 {
@@ -47,8 +48,8 @@ public:
 		SMALL_16,
 	};
 
-	Create(EntityManager& entities, TransformManager& transforms,
-		SpriteManager& sprites, RigidbodyManager& rigidbodies, UIManager& uiManager);
+	Create(EntityManager& entities, TransformManager& transforms, SpriteManager& sprites,
+		RigidbodyManager& rigidbodies, UIManager& uiManager, Timer& timer);
 
 	Entity Asteroid(const Vector2& position, const float& rotation,
 		const Vector2& velocity, const float& rotVelocity, const AsteroidType& asteroidType) const;
@@ -64,6 +65,8 @@ public:
 
 	Entity UIButton(const AABB& position, SpriteID spriteID, std::function<void()> callback) const;
 
+	Entity GameOver();
+
 private:
 
 	ColliderType GetColliderFor(const AsteroidType& asteroidType) const;
@@ -74,4 +77,5 @@ private:
 	RigidbodyManager& rigidbodyManager;
 	SpriteManager& spriteManager;
 	UIManager& uiManager;
+	Timer& timer;
 };

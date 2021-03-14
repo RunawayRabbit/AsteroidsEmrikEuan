@@ -24,7 +24,7 @@ Game::Game(std::string windowName, int width, int height) :
 	backgroundRenderer(xforms, AABB(Vector2::zero(), Vector2((float)width, (float)height))),
 	rigidbodies(entities, 2),
 	sprites(xforms, entities, renderQueue.GetSpriteAtlas(), 128),
-	create(entities, xforms, sprites, rigidbodies, UI),
+	create(entities, xforms, sprites, rigidbodies, UI, time),
 	physics(xforms, rigidbodies, AABB(Vector2::zero(), Vector2((float)width, (float)height))),
 	isRunning(true)
 {
@@ -52,29 +52,10 @@ void Game::Update(float deltaTime)
 {
 	time.Update(deltaTime);
 
-
-#pragma region HandleGameplayCollisions
-	for(auto& collision : physics.GetCollisions())
-	{
-		if (collision.EntityAType == ColliderType::SHIP)
-		{
-			//player.Kill(collision.A);
-		}
-		if (collision.EntityAType == ColliderType::BULLET)
-		{
-			Transform bullet;
-			xforms.Get(collision.A, bullet);
-			create.SplitAsteroid(collision.B, 5.0f);
-			create.SmallExplosion(bullet.pos);
-			entities.Destroy(collision.A);
-		}
-	}
-#pragma endregion
-
 	const InputBuffer& inputBuffer = input.GetBuffer();
 
-	// Gameplay Code Goes Here!
 	currentState->Update(inputBuffer, deltaTime);
+
 	rigidbodies.EnqueueAll(physics, deltaTime);
 	physics.Simulate(deltaTime);
 	sprites.Update(deltaTime);

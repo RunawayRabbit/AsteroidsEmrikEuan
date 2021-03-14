@@ -24,10 +24,18 @@ private:
 	Game& game;
 
 	Player player;
-	Entity playerEntity;
+	Entity gameOver;
 
 	std::vector<Entity> currentAsteroids;
 
+	int level;
+	int lives;
+
+	bool waitingForNextLevel;
+
 	void SpawnFreshAsteroids(const int& count, const float& minVelocity, const float& maxVelocity);
 	void SpawnPlayer();
+	void QueueNextLevel();
+	void SpawnNextLevel();
+
 };
