@@ -77,7 +77,6 @@
     <ClCompile Include="source\Platform\Game.cpp" />
     <ClCompile Include="source\Platform\Main.cpp" />
     <ClCompile Include="source\Renderer\BackgroundRenderer.cpp" />
-    <ClCompile Include="source\Renderer\GaussianBlur.cpp" />
     <ClCompile Include="source\Renderer\Renderer.cpp" />
     <ClCompile Include="source\Renderer\RenderQueue.cpp" />
     <ClCompile Include="source\Renderer\SpriteAtlas.cpp" />

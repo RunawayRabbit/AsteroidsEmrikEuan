@@ -81,7 +81,6 @@ public:
 	const AABB gameField;
 
 	// Gameplay
-	Player player;
 	std::unique_ptr<IState> currentState;
 
 	bool isRunning;

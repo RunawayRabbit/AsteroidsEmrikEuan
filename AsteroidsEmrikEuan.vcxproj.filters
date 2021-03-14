@@ -212,9 +212,6 @@
     <ClCompile Include="source\Platform\Main.cpp">
       <Filter>Platform\CPP</Filter>
     </ClCompile>
-    <ClCompile Include="source\Renderer\GaussianBlur.cpp">
-      <Filter>Renderer\CPP</Filter>
-    </ClCompile>
     <ClCompile Include="source\Renderer\Renderer.cpp">
       <Filter>Renderer\CPP</Filter>
     </ClCompile>

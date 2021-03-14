@@ -35,7 +35,7 @@ void MenuState::OnExit()
 	game.entities.Destroy(euanityMeme);
 }
 
-void MenuState::Update()
+void MenuState::Update(const InputBuffer& inputBuffer, const float& deltaTime)
 {
 
 }

@@ -26,7 +26,6 @@ Game::Game(std::string windowName, int width, int height) :
 	sprites(xforms, entities, renderQueue.GetSpriteAtlas(), 128),
 	create(entities, xforms, sprites, rigidbodies, UI),
 	physics(xforms, rigidbodies, AABB(Vector2::zero(), Vector2((float)width, (float)height))),
-	player(entities, rigidbodies, xforms, create, physics),
 	isRunning(true)
 {
 	currentState = std::make_unique<MenuState>(*this);
@@ -59,7 +58,7 @@ void Game::Update(float deltaTime)
 	{
 		if (collision.EntityAType == ColliderType::SHIP)
 		{
-			player.Kill(collision.A);
+			//player.Kill(collision.A);
 		}
 		if (collision.EntityAType == ColliderType::BULLET)
 		{
@@ -75,8 +74,7 @@ void Game::Update(float deltaTime)
 	const InputBuffer& inputBuffer = input.GetBuffer();
 
 	// Gameplay Code Goes Here!
-	player.Update(inputBuffer, deltaTime);
-
+	currentState->Update(inputBuffer, deltaTime);
 	rigidbodies.EnqueueAll(physics, deltaTime);
 	physics.Simulate(deltaTime);
 	sprites.Update(deltaTime);

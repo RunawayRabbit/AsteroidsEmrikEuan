@@ -18,7 +18,7 @@ public:
 	virtual void OnEnter() override;
 	virtual void OnExit() override;
 	
-	virtual void Update() override;
+	virtual void Update(const InputBuffer& inputBuffer, const float& deltaTime) override;
 	virtual void Render() override;
 
 private:
