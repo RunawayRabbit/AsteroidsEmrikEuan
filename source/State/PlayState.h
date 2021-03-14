@@ -30,8 +30,10 @@ private:
 
 	int level;
 	int lives;
+	int score;
 
 	bool waitingForNextLevel;
+	bool waitingToSpawn;
 
 	void SpawnFreshAsteroids(const int& count, const float& minVelocity, const float& maxVelocity);
 	void SpawnPlayer();

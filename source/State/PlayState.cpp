@@ -9,7 +9,10 @@ PlayState::PlayState(Game& game) :
 	game(game),
 	player(game.entities, game.rigidbodies, game.xforms, game.create, game.physics),
 	level(0),
-	lives(3)
+	lives(3),
+	score(0),
+	waitingForNextLevel(false),
+	waitingToSpawn(false)
 {}
 
 
@@ -44,7 +47,6 @@ void PlayState::Update(const InputBuffer& inputBuffer, const float& deltaTime)
 		if (collision.EntityAType == ColliderType::SHIP)
 		{			
 			player.Kill(collision.A);
-			--lives;			
 		}
 		if (collision.EntityAType == ColliderType::BULLET)
 		{
@@ -60,22 +62,29 @@ void PlayState::Update(const InputBuffer& inputBuffer, const float& deltaTime)
 				currentAsteroids.insert(currentAsteroids.end(), newAsteroids.begin(), newAsteroids.end());
 			game.create.SmallExplosion(bullet.pos);
 			game.entities.Destroy(collision.A);
+
+			score += 10;
 		}
 	}
 
 	player.Update(inputBuffer, deltaTime);
 
-	if (!player.IsAlive())
+	if (!waitingToSpawn && !player.IsAlive())
 	{
-		if (lives == 0)
+		if (--lives <= 0)
 		{
-			gameOver = game.create.GameOver();
+			waitingToSpawn = true;
+			Vector2 gameOverPos = game.gameField.max * 0.5f;
+			gameOverPos.y -= 100.0f;
+			gameOver = game.create.GameOver(score, gameOverPos);
 		}
 		else
 		{
+			waitingToSpawn = true;
 			game.time.ExecuteDelayed(1.5f, [&]()
 				{
 					SpawnPlayer();
+					waitingToSpawn = false;
 				});
 		}
 	}

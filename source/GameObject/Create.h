@@ -8,6 +8,8 @@
 
 #include "..\Math\Vector2.h"
 
+class Game;
+
 class Entity;
 class EntityManager;
 class TransformManager;
@@ -48,7 +50,7 @@ public:
 		SMALL_16,
 	};
 
-	Create(EntityManager& entities, TransformManager& transforms, SpriteManager& sprites,
+	Create(Game& game, EntityManager& entities, TransformManager& transforms, SpriteManager& sprites,
 		RigidbodyManager& rigidbodies, UIManager& uiManager, Timer& timer);
 
 	Entity Asteroid(const Vector2& position, const float& rotation,
@@ -65,13 +67,14 @@ public:
 
 	Entity UIButton(const AABB& position, SpriteID spriteID, std::function<void()> callback) const;
 
-	Entity GameOver();
+	Entity GameOver(int score, const Vector2& gameOverPos);
 
 private:
 
 	ColliderType GetColliderFor(const AsteroidType& asteroidType) const;
 	SpriteID GetSpriteFor(const AsteroidType& asteroidType) const;
 
+	Game& game;
 	EntityManager& entityManager;
 	TransformManager& transManager;
 	RigidbodyManager& rigidbodyManager;

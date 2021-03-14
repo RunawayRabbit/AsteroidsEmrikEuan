@@ -24,7 +24,7 @@ Game::Game(std::string windowName, int width, int height) :
 	backgroundRenderer(xforms, AABB(Vector2::zero(), Vector2((float)width, (float)height))),
 	rigidbodies(entities, 2),
 	sprites(xforms, entities, renderQueue.GetSpriteAtlas(), 128),
-	create(entities, xforms, sprites, rigidbodies, UI, time),
+	create(*this, entities, xforms, sprites, rigidbodies, UI, time),
 	physics(xforms, rigidbodies, AABB(Vector2::zero(), Vector2((float)width, (float)height))),
 	isRunning(true)
 {

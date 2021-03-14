@@ -1,6 +1,8 @@
 
 #include "Create.h"
 
+#include "..\Platform\Game.h"
+
 #include "..\ECS\RigidbodyManager.h"
 #include "..\ECS\TransformManager.h"
 #include "..\ECS\SpriteManager.h"
@@ -8,11 +10,13 @@
 #include "..\ECS\UIManager.h"
 
 #include "..\State\Timer.h"
+#include "..\State\MenuState.h"
 
 #include "..\Math\Math.h"
 
-Create::Create(EntityManager& entities, TransformManager& transforms, SpriteManager& sprites,
+Create::Create(Game& game, EntityManager& entities, TransformManager& transforms, SpriteManager& sprites,
 	RigidbodyManager& rigidbodies, UIManager& uiManager, Timer& timer) :
+	game(game),
 	entityManager(entities),
 	transManager(transforms),
 	spriteManager(sprites),
@@ -261,7 +265,7 @@ Entity Create::ShipThruster(const Entity& ship, const Vector2& thrusterOffset, c
 	return entity;
 }
 
-Entity Create::UIButton(const AABB& position, SpriteID spriteID,std::function<void()> callback) const
+Entity Create::UIButton(const AABB& position, SpriteID spriteID, std::function<void()> callback) const
 {
 	Entity entity = entityManager.Create();
 	uiManager.MakeButton(entity, position, spriteID, callback);
@@ -269,7 +273,17 @@ Entity Create::UIButton(const AABB& position, SpriteID spriteID,std::function<vo
 	return entity;
 }
 
-Entity Create::GameOver()
+Entity Create::GameOver(int score, const Vector2& gameOverPos)
 {
-	return {};
+	Entity entity = entityManager.Create();
+
+	Transform trans {};
+	trans.pos = gameOverPos;
+	trans.rot = 0;
+	transManager.Add(entity, trans);
+	spriteManager.Create(entity, SpriteID::GAME_OVER, RenderQueue::Layer::PARTICLE);
+
+	timer.ExecuteDelayed(5.0f, [&]() {game.ChangeState<MenuState>(); });
+
+	return entity;
 }

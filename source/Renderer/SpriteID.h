@@ -59,11 +59,12 @@ enum class SpriteID
 	PARALLAX_BACKGROUND_2,
 	PARALLAX_BACKGROUND_3,
 
-	// Menu
+	// Menu and related stuff
 	MAIN_LOGO,
 	START_BUTTON,
 	QUIT_BUTTON,
 	SHITTY_LOGO,
+	GAME_OVER,
 
 
 	COUNT

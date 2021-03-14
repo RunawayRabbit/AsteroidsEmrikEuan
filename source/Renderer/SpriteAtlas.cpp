@@ -94,6 +94,7 @@ void SpriteAtlas::CreateMenuSprites()
 	CreateSprite(SpriteID::SHITTY_LOGO, 1, 600, 186, 0, 0);
 	CreateSprite(SpriteID::START_BUTTON, 6, 200, 80, 0, 0);
 	CreateSprite(SpriteID::QUIT_BUTTON, 6, 200, 80, 0, 80);
+	CreateSprite(SpriteID::GAME_OVER, 8, 200, 160, 0, 0);
 }
 
 void SpriteAtlas::CreateSprite(SpriteID id, int texIndex, int width, int height, int x, int y)
@@ -125,6 +126,7 @@ void SpriteAtlas::LoadPNGs(SDL_Renderer* renderer)
 	loadedImages.push_back(PNGToTexture(renderer, "resources/bkgd_2.png")); //5 
 	loadedImages.push_back(PNGToTexture(renderer, "resources/MenuButtons.png")); //6
 	loadedImages.push_back(PNGToTexture(renderer, "resources/MainLogo.png")); //7
+	loadedImages.push_back(PNGToTexture(renderer, "resources/GameOver.png")); //8
 
 	IMG_Quit(); // Shut down the image loading stuff, we don't need it anymore.
 }
