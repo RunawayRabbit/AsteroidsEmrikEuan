@@ -137,7 +137,7 @@ void PlayState::SpawnFreshAsteroids(const int& count, const float& minVelocity, 
 		// Static in X, variable in Y
 		Vector2 startPos{};
 		startPos.x = 0;
-		startPos.y = Math::RandomRange(ColliderRadius::Large + (yBucketWidth)*i, (yBucketWidth)*i + 1);
+		startPos.y = Math::RandomRange(ColliderRadius::Large + (yBucketWidth)*i, ColliderRadius::Large + (yBucketWidth)*i + 1);
 
 		float startRot = (float)(rand() % 360);
 
@@ -154,7 +154,7 @@ void PlayState::SpawnFreshAsteroids(const int& count, const float& minVelocity, 
 	{
 		// Static in Y, variable in X
 		Vector2 startPos{};
-		startPos.x = Math::RandomRange(ColliderRadius::Large + (xBucketWidth)*i, (xBucketWidth)*i + 1);
+		startPos.x = Math::RandomRange(ColliderRadius::Large + (xBucketWidth)*i, ColliderRadius::Large + (xBucketWidth)*i + 1);
 		startPos.y = 0;
 		
 		float startRot = (float)(rand() % 360);

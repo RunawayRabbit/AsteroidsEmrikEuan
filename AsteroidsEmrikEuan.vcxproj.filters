@@ -105,9 +105,6 @@
     <ClInclude Include="source\Renderer\Color.h">
       <Filter>Renderer\H</Filter>
     </ClInclude>
-    <ClInclude Include="source\Renderer\GaussianBlur.h">
-      <Filter>Renderer\H</Filter>
-    </ClInclude>
     <ClInclude Include="source\Renderer\Renderer.h">
       <Filter>Renderer\H</Filter>
     </ClInclude>

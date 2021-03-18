@@ -66,10 +66,10 @@ std::array<Entity, 4> Create::SplitAsteroid(const Entity& asteroid, const float&
 		break;
 
 	case ColliderType::MEDIUM_ASTEROID:
-		sprites.at(0) = (SpriteID)Math::RandomRange((int)SpriteID::SMOL_ASTEROID_1, (int)SpriteID::SMOL_ASTEROID_16);
-		sprites.at(1) = (SpriteID)Math::RandomRange((int)SpriteID::SMOL_ASTEROID_1, (int)SpriteID::SMOL_ASTEROID_16);
-		sprites.at(2) = (SpriteID)Math::RandomRange((int)SpriteID::SMOL_ASTEROID_1, (int)SpriteID::SMOL_ASTEROID_16);
-		sprites.at(3) = (SpriteID)Math::RandomRange((int)SpriteID::SMOL_ASTEROID_1, (int)SpriteID::SMOL_ASTEROID_16);
+		sprites.at(0) = GetSpriteFor(AsteroidType::RANDOM_SMALL);
+		sprites.at(1) = GetSpriteFor(AsteroidType::RANDOM_SMALL);
+		sprites.at(2) = GetSpriteFor(AsteroidType::RANDOM_SMALL);
+		sprites.at(3) = GetSpriteFor(AsteroidType::RANDOM_SMALL);
 		colliderType = ColliderType::SMOL_ASTEROID;
 		parentRadius = ColliderRadius::Medium;
 		break;

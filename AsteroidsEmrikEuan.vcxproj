@@ -49,7 +49,6 @@
     <ClInclude Include="source\Platform\Game.h" />
     <ClInclude Include="source\Renderer\BackgroundRenderer.h" />
     <ClInclude Include="source\Renderer\Color.h" />
-    <ClInclude Include="source\Renderer\GaussianBlur.h" />
     <ClInclude Include="source\Renderer\Renderer.h" />
     <ClInclude Include="source\Renderer\RenderQueue.h" />
     <ClInclude Include="source\Renderer\SpriteAtlas.h" />
